@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">MisContactos</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_anadir">Añadir</string>
+    <string name="exportar">Exportar</string>
+</resources>
