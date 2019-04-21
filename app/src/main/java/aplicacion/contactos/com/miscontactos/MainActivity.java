@@ -1,30 +1,26 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import android.view.View;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 
+
 public class MainActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +37,28 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        TextView texto = findViewById(R.id.texto);
-
-        texto.setText(leerUrl("url"));
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         BDInterna bdinterna = new BDInterna(this);
         //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
 
-        //Me traigo los contactos de BD (en objetos)
+        //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         ArrayList<Contacto> contactos = bdinterna.devuelveContactos();
-        texto.setText(contactos.get(1).getNombre());
+
+        // TODO Meter un reciclerView con el contenido de contactos
+        recyclerView = (RecyclerView) findViewById(R.id.reciclerviewtoguapo);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new AdaptadorRecicler(contactos);
+        recyclerView.setAdapter(mAdapter);
 
 
 

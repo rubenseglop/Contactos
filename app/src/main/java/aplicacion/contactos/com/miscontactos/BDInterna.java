@@ -38,7 +38,7 @@ public class BDInterna extends SQLiteOpenHelper {
             bus = busquedaContacto(Integer.toString(i));
 
             if (bus.moveToFirst()) {
-                //Recorremos el cursor hasta que no haya más registros
+                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                 do {
                     int id= bus.getInt(0);
                     String nombre = bus.getString(1);
