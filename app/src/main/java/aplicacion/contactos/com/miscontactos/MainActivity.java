@@ -1,6 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import java.net.URL;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +44,21 @@ public class MainActivity extends AppCompatActivity {
         TextView texto = findViewById(R.id.texto);
 
         texto.setText(leerUrl("url"));
+
+        //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
+        BDInterna bdinterna = new BDInterna(this);
+        //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+
+        //Me traigo los contactos de BD (en objetos)
+        ArrayList<Contacto> contactos = bdinterna.devuelveContactos();
+        texto.setText(contactos.get(1).getNombre());
+
+
+
+
+
+
+
 
     }
 
