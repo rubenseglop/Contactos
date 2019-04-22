@@ -40,13 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         BDInterna bdinterna = new BDInterna(this);
-        //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+//        bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+//        bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         ArrayList<Contacto> contactos = bdinterna.devuelveContactos();
 
         // TODO Meter un reciclerView con el contenido de contactos
-        recyclerView = (RecyclerView) findViewById(R.id.reciclerviewtoguapo);
+        /*recyclerView = (RecyclerView) findViewById(R.id.reciclerviewtoguapo);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -58,7 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         mAdapter = new AdaptadorRecicler(contactos);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);*/
+
+        RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
+        rv.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
+
+        RVAdapter adapter = new RVAdapter(contactos);
+        rv.setAdapter(adapter);
+
 
 
 
