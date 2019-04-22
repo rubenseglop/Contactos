@@ -15,27 +15,47 @@
             android:padding="16dp">
 
             <ImageView
-                android:id="@+id/person_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/foto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="16dp" />
 
             <TextView
-                android:id="@+id/person_name"
+                android:id="@+id/id_nombre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/person_photo"
-                android:textSize="30sp" />
+                android:layout_toRightOf="@+id/foto"
+                android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/person_age"
+                android:id="@+id/id_apellido"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/person_name"
-                android:layout_toRightOf="@+id/person_photo" />
+                android:layout_below="@+id/id_nombre"
+                android:layout_toRightOf="@+id/foto"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/id_domicilio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/id_apellido"
+                android:layout_toRightOf="@+id/foto" />
+            <TextView
+                android:id="@+id/id_telefono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/id_domicilio"
+                android:layout_toRightOf="@+id/foto" />
+            <TextView
+                android:id="@+id/id_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/id_telefono"
+                android:layout_toRightOf="@+id/foto" />
 
         </RelativeLayout>
 

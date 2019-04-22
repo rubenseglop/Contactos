@@ -13,11 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.google.gson.Gson;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
 
 public class MainActivity extends AppCompatActivity {
+    BDInterna bdinterna;
+    ArrayList<Contacto> contactos;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -39,33 +43,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
-        BDInterna bdinterna = new BDInterna(this);
-//        bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
-//        bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
+        bdinterna = new BDInterna(this);
+        // bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+        // bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
-        ArrayList<Contacto> contactos = bdinterna.devuelveContactos();
-
-        // TODO Meter un reciclerView con el contenido de contactos
-        /*recyclerView = (RecyclerView) findViewById(R.id.reciclerviewtoguapo);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new AdaptadorRecicler(contactos);
-        recyclerView.setAdapter(mAdapter);*/
+        contactos = bdinterna.devuelveContactos();
 
         RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-
         RVAdapter adapter = new RVAdapter(contactos);
         rv.setAdapter(adapter);
 
@@ -96,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent i = new Intent(this,anadir.class);
+            //i.putExtra("basedatos", contactos);
             startActivity(i);
             return true;
         }
