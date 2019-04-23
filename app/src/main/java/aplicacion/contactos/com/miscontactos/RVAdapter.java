@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,6 +60,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion());
         personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono());
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
+
+        personViewHolder.itemView.setOnClickListener(View.OnClickListener{
+            Toast.makeText(this, contactos.get(i).getNombre());
+        });
+
+        holder?.itemView?.setOnClickListener(View.OnClickListener { Toast.makeText(context,  items.get(position).dato1, Toast.LENGTH_SHORT).show() })
+
+
+
 
         //personViewHolder.personPhoto.setImageResource(contactos.get(i).photoId);
     }
