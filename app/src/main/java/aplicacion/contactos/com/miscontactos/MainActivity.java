@@ -3,7 +3,6 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -35,16 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
             }
         });
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
-        // bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+        //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
         // bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
@@ -56,15 +55,6 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
         RVAdapter adapter = new RVAdapter(contactos);
         rv.setAdapter(adapter);
-
-
-
-
-
-
-
-
-
     }
 
     @Override
@@ -82,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_anadir) {
             Intent i = new Intent(this,anadir.class);
-            //i.putExtra("basedatos", contactos);
+            //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
         }

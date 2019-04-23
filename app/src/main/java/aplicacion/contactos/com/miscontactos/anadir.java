@@ -18,6 +18,15 @@ public class anadir extends AppCompatActivity {
     TextView tv_domicilio;
     TextView tv_telefono;
     TextView tv_email;
+    Contacto contactos;
+    BDInterna bdInterna;
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("delete");
+        super.onDestroy();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,7 @@ public class anadir extends AppCompatActivity {
         tv_domicilio = (TextView)findViewById(R.id.id_domicilio);
         tv_telefono = (TextView)findViewById(R.id.id_telefono);
         tv_email = (TextView)findViewById(R.id.id_email);
+        //contactos = (Contacto) getIntent().getExtras().getSerializable("contactos");
 
     }
     public void clickpulsar(View v){
@@ -45,10 +55,17 @@ public class anadir extends AppCompatActivity {
             error = true;
         }
         //guardar
-        if (error=false) {
-
+        if (error==false) {
+            System.out.println("GRABANDO");
+            bdInterna = new BDInterna(this);
+            bdInterna.insertarContacto(
+                    tv_nombre.getText().toString(),
+                    tv_apellido.getText().toString(),
+                    tv_domicilio.getText().toString(),
+                    tv_telefono.getText().toString(),
+                    tv_email.getText().toString()
+                    );
+            finish();
         }
-
     }
-
 }

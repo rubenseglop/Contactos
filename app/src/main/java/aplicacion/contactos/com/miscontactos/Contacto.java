@@ -1,6 +1,8 @@
 package aplicacion.contactos.com.miscontactos;
 
-public class Contacto {
+import java.io.Serializable;
+
+public class Contacto implements Serializable {
     private int id;
     private String nombre;
     private String apellidos;
