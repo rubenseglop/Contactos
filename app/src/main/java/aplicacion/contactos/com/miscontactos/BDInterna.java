@@ -36,21 +36,29 @@ public class BDInterna extends SQLiteOpenHelper {
         // Recorro todos los contactos de mi SQLite y los guardo en un ArrayList de Contacto
         Cursor bus;
         for (int i = 0; i < numerodeFilas(); i++) {
-            System.out.println("FILAS:" + i);
+
             bus = busquedaContacto(Integer.toString(i));
 
             if (bus.moveToFirst()) {
                 //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+
+                String nombre;
+                String apellidos;
+                String domicilio;
+                String telefono;
+                String email;
+
                 do {
-                    int id= bus.getInt(0);
-                    String nombre = bus.getString(1);
-                    String apellidos = bus.getString(2);
-                    String domicilio = bus.getString(3);
-                    String telefono = bus.getString(4);
-                    String email = bus.getString(5);
+                    int id = bus.getInt(0);
+                    nombre = bus.getString(1);
+                    apellidos = bus.getString(2);
+                    domicilio = bus.getString(3);
+                    telefono = bus.getString(4);
+                    email = bus.getString(5);
 
                     contactos.add(new Contacto(id,nombre,apellidos,domicilio,telefono,email));
                 } while(bus.moveToNext());
+
             }
 
 
@@ -89,7 +97,7 @@ public class BDInterna extends SQLiteOpenHelper {
         if (db != null) {
             // Creamos el registro a insertar
             ContentValues valores = new ContentValues();
-            int id = numerodeFilas();
+            int id = ultimo_id();
             valores.put("ID", id);
             valores.put("NOMBRE", nombre);
             valores.put("APELLIDOS", apellidos);
@@ -104,6 +112,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
         db.close();
     }
+
 
     // Modifica un contacto del a BD
     public void modificarContacto(int id, String nombre, String direccion,String movil,String mail){
@@ -133,7 +142,21 @@ public class BDInterna extends SQLiteOpenHelper {
 
 
 
-    // Da unos valores a la clase de Contacto
+    // ultimo id
+    public int ultimo_id() {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] valores_recuperar = {"ID"};
+
+        Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
+                null,null);
+
+        return c.getCount()+1;
+
+
+
+    }
 
 
     // Devuelve datos de un Contacto dado un nombre, los devuelve de forma ordenada por nombre
@@ -199,6 +222,8 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     public ArrayList<Contacto> devuelveContactos(){
+
+        System.out.println("midebug contactos" + contactos.size());
         return contactos;
     }
 

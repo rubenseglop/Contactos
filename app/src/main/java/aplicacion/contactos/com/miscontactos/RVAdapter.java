@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +15,8 @@ import java.util.ArrayList;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     ArrayList<Contacto> contactos;
-
-    RVAdapter(ArrayList<Contacto> contactos){
-        this.contactos = contactos;
-    }
+    RVAdapter(ArrayList<Contacto> contactos){ this.contactos = contactos;}
+    Context context;
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
@@ -60,17 +59,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion());
         personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono());
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
-
-        personViewHolder.itemView.setOnClickListener(View.OnClickListener{
-            Toast.makeText(this, contactos.get(i).getNombre());
-        });
-
-        holder?.itemView?.setOnClickListener(View.OnClickListener { Toast.makeText(context,  items.get(position).dato1, Toast.LENGTH_SHORT).show() })
-
-
-
-
         //personViewHolder.personPhoto.setImageResource(contactos.get(i).photoId);
+
+
+        // TODO hacer que aparezca el Toast de cada contacto aqui
+
     }
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

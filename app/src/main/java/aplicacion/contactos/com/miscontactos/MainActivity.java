@@ -7,14 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,15 +48,23 @@ public class MainActivity extends AppCompatActivity {
         //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
         // bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
+
+
+        actualizar();
+    }
+
+    private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         contactos = bdinterna.devuelveContactos();
 
-        RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         RVAdapter adapter = new RVAdapter(contactos);
         rv.setAdapter(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(rv);
     }
 
     @Override
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_anadir) {
-            Intent i = new Intent(this,anadir.class);
+            Intent i = new Intent(this, anadir.class);
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
@@ -81,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     public void URLJsonObjeto() {
@@ -95,8 +104,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     private String leerUrl(String urlString) {
-        String response="tuuuuuuuuu";
+        String response = "tuuuuuuuuu";
 
         return response;
     }
+
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            Toast.makeText(MainActivity.this, "on Move", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
+            //Remove swiped item from list and notify the RecyclerView
+            int position = viewHolder.getAdapterPosition();
+
+            bdinterna.borraContacto(position);
+            //contactos.remove(position);
+            actualizar();
+
+        }
+    };
 }
+
