@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
-        contactos = bdinterna.devuelveContactos();
+        bdinterna.actualizaContactos();
+        contactos=bdinterna.contactos;
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -121,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
             Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
             //Remove swiped item from list and notify the RecyclerView
-            int position = viewHolder.getAdapterPosition();
+            //int position = viewHolder.getAdapterPosition();
 
-            bdinterna.borraContacto(position);
-            //contactos.remove(position);
+            int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
+
+            bdinterna.borraContacto(position); //todo arreglar aqui la posicion
             actualizar();
 
         }

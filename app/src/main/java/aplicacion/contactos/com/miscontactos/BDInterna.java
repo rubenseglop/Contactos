@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
 
 public class BDInterna extends SQLiteOpenHelper {
 
@@ -19,7 +21,7 @@ public class BDInterna extends SQLiteOpenHelper {
     // Creacion de tabla para la BDen formato SQL en caso de no tenerla
     private static final String TABLA_USUARIOS =
             "CREATE TABLE USUARIOS (" +
-                    "ID VARCHAR(20) PRIMARY KEY," +
+                    "ID INTEGER PRIMARY KEY autoincrement," +
                     "NOMBRE VARCHAR(100)," +
                     "APELLIDOS VARCHAR(100)," +
                     "DOMICILIO VARCHAR(100)," +
@@ -34,10 +36,17 @@ public class BDInterna extends SQLiteOpenHelper {
         super(context, NOMBRE_BASEDATOS, null, VERSION_BASEDATOS);
 
         // Recorro todos los contactos de mi SQLite y los guardo en un ArrayList de Contacto
+        //actualizaContactos();
+    }
+
+    public void actualizaContactos() {
         Cursor bus;
+        contactos.clear();
+        int [] datosId = recuperaIds();
+
         for (int i = 0; i < numerodeFilas(); i++) {
 
-            bus = busquedaContacto(Integer.toString(i));
+            bus = busquedaContacto(Integer.toString(datosId[i])); //todo arregla aqui
 
             if (bus.moveToFirst()) {
                 //Recorremos el cursor hasta que no haya más registros (creo POJOS)
@@ -57,25 +66,9 @@ public class BDInterna extends SQLiteOpenHelper {
                     email = bus.getString(5);
 
                     contactos.add(new Contacto(id,nombre,apellidos,domicilio,telefono,email));
+
                 } while(bus.moveToNext());
-
             }
-
-
-
-
-            //num = c.getString(c.getColumnIndex("_id"));
-
-            //num = c.getString(c.getColumnIndex("_id"));
-
-//            contactos.add(new Contacto(
-//                    numerodeFilas(),
-//                    bus.getString(bus.getColumnIndex("NOMBRE")),
-//                    bus.getString(bus.getColumnIndex("APELLIDOS")),
-//                    bus.getString(bus.getColumnIndex("DOMICILIO")),
-//                    bus.getString(bus.getColumnIndex("TELEFONO")),
-//                    bus.getString(bus.getColumnIndex("EMAIL")))
-//            );
         }
     }
 
@@ -138,6 +131,7 @@ public class BDInterna extends SQLiteOpenHelper {
         db.delete("USUARIOS", "ID=" + id, null);
 
         db.close();
+        actualizaContactos();
     }
 
 
@@ -152,7 +146,23 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
                 null,null);
 
+
         return c.getCount()+1;
+
+
+
+    }
+    public Cursor todoContacto(String id) {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
+
+        String[] args = new String[] {id};
+
+        Cursor c = db.query("USUARIOS", valores_recuperar, "*", null, null,
+                "NOMBRE ASC",null);
+        return c;
 
 
 
@@ -169,7 +179,7 @@ public class BDInterna extends SQLiteOpenHelper {
         String[] args = new String[] {id};
 
         Cursor c = db.query("USUARIOS", valores_recuperar, "ID=?", args, null, null,
-                null,null);
+                "NOMBRE ASC",null);
         return c;
 
 
@@ -186,25 +196,27 @@ public class BDInterna extends SQLiteOpenHelper {
         // Ordena al recuperarlos
         Cursor c = db.query("USUARIOS", valores_recuperar,null,null,null,null,"nombre ASC",null);
 
+
         return c;
     }
 
     // Devuelve el numero de filas de la tabla
     public int numerodeFilas(){
         int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), "USUARIOS");
+
         return dato;
     }
 
-    // Guarda en un array de IDs todos los ID de la tabla contactos
+    // Guarda en un array de IDs todos los ID de la tabla
     public int [] recuperaIds(){
         int [] datosId;
         int i;
 
         SQLiteDatabase db = getReadableDatabase();
-        String[] valores_recuperar = {"_id"};
+        String[] valores_recuperar = {"ID"};
 
         // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
-        Cursor cursor = db.query("contactos",valores_recuperar,null,null,null,null,"nombre ASC",null);
+        Cursor cursor = db.query("USUARIOS",valores_recuperar,null,null,null,null,"nombre ASC",null);
 
         if (cursor.getCount()>0){
             datosId= new int[cursor.getCount()];
@@ -222,9 +234,13 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     public ArrayList<Contacto> devuelveContactos(){
-
-        System.out.println("midebug contactos" + contactos.size());
         return contactos;
+    }
+
+    public int devuelvoIDborrado(int id){
+        int [] datosId = recuperaIds();
+
+        return datosId[id];
     }
 
 }
