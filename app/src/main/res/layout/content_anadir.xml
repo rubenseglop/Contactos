@@ -8,29 +8,43 @@
     tools:context=".anadir"
     tools:showIn="@layout/activity_anadir">
 
-    <TextView
-        android:id="@+id/nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="Nombre"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/id_nombre"
+    <LinearLayout
+        android:id="@+id/cajanombre"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textPersonName"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nombre"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:text="Nombre" />
+
+        <EditText
+            android:id="@+id/id_nombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/imagen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:onClick="clickImagen"
+            android:text="Imagen" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/apellidos"
@@ -40,7 +54,7 @@
         android:layout_marginTop="32dp"
         android:text="Apellidos"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
 
     <EditText
         android:id="@+id/id_apellidos"
@@ -53,7 +67,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/apellidos"
-        app:layout_constraintTop_toBottomOf="@+id/id_nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
 
     <TextView
         android:id="@+id/domicilio"
@@ -129,7 +143,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="45dp"
         android:layout_marginEnd="8dp"
         android:background="@color/colorPrimary"
         android:onClick="clickpulsar"

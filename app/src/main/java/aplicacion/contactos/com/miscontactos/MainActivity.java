@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
             int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
 
-            bdinterna.borraContacto(position); //todo arreglar aqui la posicion
+            bdinterna.borraContacto(position);
             actualizar();
 
         }
