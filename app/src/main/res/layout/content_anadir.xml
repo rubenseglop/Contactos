@@ -16,14 +16,15 @@
         android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:text="Nombre" />
 
         <EditText
@@ -46,28 +47,48 @@
             android:text="Imagen" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/apellidos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="Apellidos"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
-
-    <EditText
-        android:id="@+id/id_apellidos"
+    <LinearLayout
+        android:id="@+id/cajapellido"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/apellidos"
-        app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cajanombre">
+
+        <TextView
+            android:id="@+id/apellidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:text="Apellidos" />
+
+        <EditText
+            android:id="@+id/id_apellidos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/apellidos"
+            app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
+
+        <ImageView
+            android:id="@+id/fotoperfil"
+            android:layout_width="59dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/perfil" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/domicilio"
@@ -77,7 +98,7 @@
         android:layout_marginTop="32dp"
         android:text="Domicilio"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apellidos" />
+        app:layout_constraintTop_toBottomOf="@+id/cajapellido" />
 
     <EditText
         android:id="@+id/id_domicilio"
@@ -90,7 +111,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/domicilio"
-        app:layout_constraintTop_toBottomOf="@+id/id_apellidos" />
+        app:layout_constraintTop_toBottomOf="@+id/cajapellido" />
 
     <TextView
         android:id="@+id/telefono"

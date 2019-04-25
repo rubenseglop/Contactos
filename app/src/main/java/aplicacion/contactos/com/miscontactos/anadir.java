@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,16 +39,13 @@ public class anadir extends AppCompatActivity {
     TextView tv_email;
     BDInterna bdInterna;
     Button bt_imagen;
-
-    // Activity request codes
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
+    ImageView fotoperfil;
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
 
     public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
+
 
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
@@ -110,23 +108,6 @@ public class anadir extends AppCompatActivity {
             }
         });
 
-        /**
-         * Record video on button click
-         */
-        /*btnRecordVideo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CameraUtils.checkPermissions(getApplicationContext())) {
-                    captureVideo();
-                } else {
-                    requestCameraPermission(MEDIA_TYPE_VIDEO);
-                }
-            }
-        });*/
-
-        // restoring storage image path from saved instance state
-        // otherwise the path will be null on device rotation
         restoreFromBundle(savedInstanceState);
 
     }
@@ -142,8 +123,6 @@ public class anadir extends AppCompatActivity {
                 if (!TextUtils.isEmpty(imageStoragePath)) {
                     if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
                         previewCapturedImage();
-                    } else if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + VIDEO_EXTENSION)) {
-                        previewVideo();
                     }
                 }
             }
@@ -166,12 +145,8 @@ public class anadir extends AppCompatActivity {
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
-                            if (type == MEDIA_TYPE_IMAGE) {
-                                // capture picture
-                                captureImage();
-                            } else {
-                                captureVideo();
-                            }
+                            // capture picture
+                            if (type == MEDIA_TYPE_IMAGE) captureImage();
 
                         } else if (report.isAnyPermissionPermanentlyDenied()) {
                             showPermissionsAlert();
@@ -201,10 +176,14 @@ public class anadir extends AppCompatActivity {
 
         Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
 
+        //TODO imprimir la foto en fotoperfil; (es con la URI)
+
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
+
         // start the image capture Intent
-        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        startActivityForResult(intent, 100);
     }
 
 
@@ -230,29 +209,6 @@ public class anadir extends AppCompatActivity {
         // get the file url
         imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
-
-    /**
-     * Launching camera app to record video
-     */
-    private void captureVideo() {
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-        File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_VIDEO);
-        if (file != null) {
-            imageStoragePath = file.getAbsolutePath();
-        }
-
-        Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
-
-        // set video quality
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file
-
-        // start the video capture Intent
-        startActivityForResult(intent, CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
-    }
-
 
 
     // no tocar
@@ -284,45 +240,26 @@ public class anadir extends AppCompatActivity {
         return new BigInteger(130, random).toString(32);
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                // Refreshing the gallery
-                CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
 
-                // successfully captured the image
-                // display it in image view
-                previewCapturedImage();
-            } else if (resultCode == RESULT_CANCELED) {
-                // user cancelled Image capture
-                Toast.makeText(getApplicationContext(),
-                        "User cancelled image capture", Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                // failed to capture image
-                Toast.makeText(getApplicationContext(),
-                        "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        } else if (requestCode == CAMERA_CAPTURE_VIDEO_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                // Refreshing the gallery
-                CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+        if (resultCode == RESULT_OK) {
+            // Refreshing the gallery
+            CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
 
-                // video successfully recorded
-                // preview the recorded video
-                previewVideo();
-            } else if (resultCode == RESULT_CANCELED) {
-                // user cancelled recording
-                Toast.makeText(getApplicationContext(),
-                        "User cancelled video recording", Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                // failed to record video
-                Toast.makeText(getApplicationContext(),
-                        "Sorry! Failed to record video", Toast.LENGTH_SHORT)
-                        .show();
-            }
+            // successfully captured the image
+            // display it in image view
+            previewCapturedImage();
+        } else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(getApplicationContext(),
+                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // failed to capture image
+            Toast.makeText(getApplicationContext(),
+                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                    .show();
         }
+
     }
 
     /**
@@ -346,22 +283,6 @@ public class anadir extends AppCompatActivity {
     }
 
     /**
-     * Displaying video in VideoView
-     */
-    private void previewVideo() {
-        /*try {
-            // hide image preview
-            txtDescription.setVisibility(View.GONE);
-            imgPreview.setVisibility(View.GONE);
-
-            videoPreview.setVisibility(View.VISIBLE);
-            videoPreview.setVideoPath(imageStoragePath);
-            // start playing
-            videoPreview.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-    }
 
     /**
      * Alert dialog to navigate to app settings

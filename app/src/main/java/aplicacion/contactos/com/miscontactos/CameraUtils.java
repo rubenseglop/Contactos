@@ -112,15 +112,14 @@ public class CameraUtils {
         File mediaFile;
         if (type == anadir.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + "." + anadir.IMAGE_EXTENSION);
-        } else if (type == anadir.MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + "." + anadir.VIDEO_EXTENSION);
+                    + "IMGTEMPORAL_" + timeStamp + "." + anadir.IMAGE_EXTENSION);
         } else {
             return null;
         }
 
         return mediaFile;
     }
+
+    //TODO devolver la foto;
 
 }
