@@ -1,6 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,25 +12,36 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 
-public class anadir extends AppCompatActivity {
+public class Anadir extends AppCompatActivity {
 
     Button bt_aceptar;
     TextView tv_nombre;
@@ -55,9 +67,14 @@ public class anadir extends AppCompatActivity {
 
     // Image and Video file extensions
     public static final String IMAGE_EXTENSION = "jpg";
-    public static final String VIDEO_EXTENSION = "mp4";
 
     private static String imageStoragePath;
+
+    private String UPLOAD_URL ="http://iesayala.ddns.net/BDSegura/misContactos/upload.php";
+
+    private String KEY_IMAGEN = "foto";
+    private String KEY_NOMBRE = "nombre";
+    private Bitmap bitmap;
 
 
     @Override
@@ -81,9 +98,7 @@ public class anadir extends AppCompatActivity {
         tv_telefono = (TextView)findViewById(R.id.id_telefono);
         tv_email = (TextView)findViewById(R.id.id_email);
         bt_imagen = (Button) findViewById(R.id.imagen);
-
-
-
+        fotoperfil = findViewById(R.id.fotoperfil);
 
         // Checking availability of the camera
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -212,7 +227,7 @@ public class anadir extends AppCompatActivity {
 
 
     // no tocar
-    public void clickpulsar(View v){
+    public void clickPulsar(View v){
         boolean error = false;
         if (tv_nombre.getText().length()==0) {
             Toast.makeText(this, "Debes rellenar mínimo el nombre", Toast.LENGTH_SHORT).show();
@@ -223,6 +238,7 @@ public class anadir extends AppCompatActivity {
             System.out.println("GRABANDO");
             bdInterna = new BDInterna(this);
             bdInterna.insertarContacto(
+                    imageStoragePath,
                     tv_nombre.getText().toString(),
                     tv_apellido.getText().toString(),
                     tv_domicilio.getText().toString(),
@@ -230,9 +246,69 @@ public class anadir extends AppCompatActivity {
                     tv_email.getText().toString()
             );
 
+            //TODO GUARDAR LA IMAGEN ONLINE
+
+            uploadImage(imageStoragePath);
+
+
             startActivity(getIntent());
             finish();
         }
+    }
+
+    private void uploadImage(String nombre){
+        //Mostrar el diálogo de progreso
+        final ProgressDialog loading = ProgressDialog.show(this,"Subiendo...","Espere por favor...",false,false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Descartar el diálogo de progreso
+                        loading.dismiss();
+                        //Mostrando el mensaje de la respuesta
+                        Toast.makeText(Anadir.this, s , Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Descartar el diálogo de progreso
+                        loading.dismiss();
+
+                        //Showing toast
+                        Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Convertir bits a cadena
+                String imagen = getStringImagen(bitmap);
+
+                //Creación de parámetros
+                Map<String,String> params = new Hashtable<String, String>();
+
+                //Agregando de parámetros
+                params.put(KEY_IMAGEN, imagen);
+                params.put(KEY_NOMBRE, nombre);
+
+                //Parámetros de retorno
+                return params;
+            }
+        };
+
+        //Creación de una cola de solicitudes
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Agregar solicitud a la cola
+        requestQueue.add(stringRequest);
+    }
+
+    public String getStringImagen(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 
     public String nextSessionId() {
@@ -266,20 +342,17 @@ public class anadir extends AppCompatActivity {
      * Display image from gallery
      */
     private void previewCapturedImage() {
-        /*try {
-            // hide video preview
-            txtDescription.setVisibility(View.GONE);
-            videoPreview.setVisibility(View.GONE);
+        try {
 
-            imgPreview.setVisibility(View.VISIBLE);
+            fotoperfil.setVisibility(View.VISIBLE);
 
-            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
 
-            imgPreview.setImageBitmap(bitmap);
+            fotoperfil.setImageBitmap(bitmap);
 
         } catch (NullPointerException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**
@@ -294,7 +367,7 @@ public class anadir extends AppCompatActivity {
                 .setMessage("Camera needs few permissions to work properly. Grant them in settings.")
                 .setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(anadir.this);
+                        CameraUtils.openSettings(Anadir.this);
                     }
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

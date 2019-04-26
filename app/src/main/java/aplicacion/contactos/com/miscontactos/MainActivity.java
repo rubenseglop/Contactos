@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
-        //bdinterna.insertarContacto("ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+        bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertar
         // bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_anadir) {
-            Intent i = new Intent(this, anadir.class);
+            Intent i = new Intent(this, Anadir.class);
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;

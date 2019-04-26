@@ -4,14 +4,16 @@ import java.io.Serializable;
 
 public class Contacto implements Serializable {
     private int id;
+    private String foto;
     private String nombre;
     private String apellidos;
     private String direccion;
     private String telefono;
     private String correo;
 
-    public Contacto(int id, String nombre, String apellidos, String direccion, String telefono, String correo){
+    public Contacto(int id, String foto, String nombre, String apellidos, String direccion, String telefono, String correo){
         this.setId(id);
+        this.setFoto(foto);
         this.setNombre(nombre);
         this.setApellidos(apellidos);
         this.setDireccion(direccion);
@@ -27,6 +29,13 @@ public class Contacto implements Serializable {
         this.id = id;
     }
 
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     public String getNombre() {
         return nombre;

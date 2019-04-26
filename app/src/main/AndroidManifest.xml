@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".anadir"
+            android:name=".Anadir"
             android:label="@string/title_activity_anadir"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

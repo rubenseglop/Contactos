@@ -22,6 +22,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final String TABLA_USUARIOS =
             "CREATE TABLE USUARIOS (" +
                     "ID INTEGER PRIMARY KEY autoincrement," +
+                    "FOTO VARCHAR(800)," +
                     "NOMBRE VARCHAR(100)," +
                     "APELLIDOS VARCHAR(100)," +
                     "DOMICILIO VARCHAR(100)," +
@@ -51,6 +52,7 @@ public class BDInterna extends SQLiteOpenHelper {
             if (bus.moveToFirst()) {
                 //Recorremos el cursor hasta que no haya más registros (creo POJOS)
 
+                String foto;
                 String nombre;
                 String apellidos;
                 String domicilio;
@@ -59,13 +61,14 @@ public class BDInterna extends SQLiteOpenHelper {
 
                 do {
                     int id = bus.getInt(0);
-                    nombre = bus.getString(1);
-                    apellidos = bus.getString(2);
-                    domicilio = bus.getString(3);
-                    telefono = bus.getString(4);
-                    email = bus.getString(5);
+                    //foto = bus.getString(1);
+                    nombre = bus.getString(2);
+                    apellidos = bus.getString(3);
+                    domicilio = bus.getString(4);
+                    telefono = bus.getString(5);
+                    email = bus.getString(6);
 
-                    contactos.add(new Contacto(id,nombre,apellidos,domicilio,telefono,email));
+                    contactos.add(new Contacto(id,null,nombre,apellidos,domicilio,telefono,email));
 
                 } while(bus.moveToNext());
             }
@@ -84,7 +87,7 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Inserta un contactos a la BD
-    public void insertarContacto(String nombre, String apellidos, String domicilio, String telefono, String email) {
+    public void insertarContacto(String foto, String nombre, String apellidos, String domicilio, String telefono, String email) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
@@ -92,6 +95,7 @@ public class BDInterna extends SQLiteOpenHelper {
             ContentValues valores = new ContentValues();
             int id = ultimo_id();
             valores.put("ID", id);
+            valores.put("FOTO", foto);
             valores.put("NOMBRE", nombre);
             valores.put("APELLIDOS", apellidos);
             valores.put("DOMICILIO", domicilio);

@@ -94,13 +94,13 @@ public class CameraUtils {
         File mediaStorageDir = new File(
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                anadir.GALLERY_DIRECTORY_NAME);
+                Anadir.GALLERY_DIRECTORY_NAME);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.e(anadir.GALLERY_DIRECTORY_NAME, "Oops! Failed create "
-                        + anadir.GALLERY_DIRECTORY_NAME + " directory");
+                Log.e(Anadir.GALLERY_DIRECTORY_NAME, "Oops! Failed create "
+                        + Anadir.GALLERY_DIRECTORY_NAME + " directory");
                 return null;
             }
         }
@@ -110,9 +110,9 @@ public class CameraUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         File mediaFile;
-        if (type == anadir.MEDIA_TYPE_IMAGE) {
+        if (type == Anadir.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMGTEMPORAL_" + timeStamp + "." + anadir.IMAGE_EXTENSION);
+                    + "IMGTEMPORAL_" + timeStamp + "." + Anadir.IMAGE_EXTENSION);
         } else {
             return null;
         }
