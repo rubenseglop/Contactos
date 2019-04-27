@@ -1,6 +1,9 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
@@ -25,7 +29,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         TextView tv_domicilio;
         TextView tv_telefono;
         TextView tv_email;
-
         ImageView personPhoto;
 
         PersonViewHolder(View itemView) {
@@ -59,7 +62,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion());
         personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono());
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
-        //personViewHolder.personPhoto.setImageResource(contactos.get(i).photoId);
+        personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
 
 
         // TODO hacer que aparezca el Toast de cada contacto aqui
@@ -68,5 +71,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    // Dado un string de ruta devuelve un bitmap con la imagen
+    private Bitmap recogerImagen(String c){
+        File ruta = Environment.getExternalStorageDirectory();
+        File file = new File(ruta.getAbsolutePath(), c);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        return  bitmap;
     }
 }

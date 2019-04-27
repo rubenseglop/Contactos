@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.sql.SQLOutput;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -247,6 +248,7 @@ public class Anadir extends AppCompatActivity {
             );
 
             //TODO GUARDAR LA IMAGEN ONLINE
+            System.out.println("DEBUG VOY A SUBIR");
 
             uploadImage(imageStoragePath);
 
@@ -259,6 +261,8 @@ public class Anadir extends AppCompatActivity {
     private void uploadImage(String nombre){
         //Mostrar el diálogo de progreso
         final ProgressDialog loading = ProgressDialog.show(this,"Subiendo...","Espere por favor...",false,false);
+
+        System.out.println("DEBUG ejecutrando " + UPLOAD_URL);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -266,6 +270,7 @@ public class Anadir extends AppCompatActivity {
                         //Descartar el diálogo de progreso
                         loading.dismiss();
                         //Mostrando el mensaje de la respuesta
+                        System.out.println("DEBUG HASTA AQUI" );
                         Toast.makeText(Anadir.this, s , Toast.LENGTH_LONG).show();
                     }
                 },
@@ -273,6 +278,7 @@ public class Anadir extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         //Descartar el diálogo de progreso
+                        System.out.println("DEBUG HASTA ALLA");
                         loading.dismiss();
 
                         //Showing toast

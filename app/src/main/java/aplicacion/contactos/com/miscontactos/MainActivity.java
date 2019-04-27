@@ -22,9 +22,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     BDInterna bdinterna;
     ArrayList<Contacto> contactos;
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
-        bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+        //bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertar
         // bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
 
@@ -64,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
         RVAdapter adapter = new RVAdapter(contactos);
         rv.setAdapter(adapter);
+
+        //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rv);
     }

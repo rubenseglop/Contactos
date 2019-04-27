@@ -22,7 +22,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final String TABLA_USUARIOS =
             "CREATE TABLE USUARIOS (" +
                     "ID INTEGER PRIMARY KEY autoincrement," +
-                    "FOTO VARCHAR(800)," +
+                    "FOTO VARCHAR(400)," +
                     "NOMBRE VARCHAR(100)," +
                     "APELLIDOS VARCHAR(100)," +
                     "DOMICILIO VARCHAR(100)," +
@@ -61,14 +61,14 @@ public class BDInterna extends SQLiteOpenHelper {
 
                 do {
                     int id = bus.getInt(0);
-                    //foto = bus.getString(1);
+                    foto = bus.getString(1);
                     nombre = bus.getString(2);
                     apellidos = bus.getString(3);
                     domicilio = bus.getString(4);
                     telefono = bus.getString(5);
                     email = bus.getString(6);
 
-                    contactos.add(new Contacto(id,null,nombre,apellidos,domicilio,telefono,email));
+                    contactos.add(new Contacto(id,foto,nombre,apellidos,domicilio,telefono,email));
 
                 } while(bus.moveToNext());
             }
@@ -178,7 +178,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
+        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
 
         String[] args = new String[] {id};
 
@@ -195,7 +195,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
 
-        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
+        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
 
         // Ordena al recuperarlos
         Cursor c = db.query("USUARIOS", valores_recuperar,null,null,null,null,"nombre ASC",null);
