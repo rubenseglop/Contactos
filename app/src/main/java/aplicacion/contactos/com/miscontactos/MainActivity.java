@@ -1,6 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,7 +23,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     BDInterna bdinterna;
+    BDExterna bdexterna;
+
     ArrayList<Contacto> contactos;
+    private WebView webView;
 
 
     @Override
@@ -88,7 +93,24 @@ public class MainActivity extends AppCompatActivity {
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
+
         }
+        /*if (id == R.id.exportar) {
+            bdexterna.insertar("1", "NUEVA",
+                    "UNO",
+                    "DOS",
+                    "TRES",
+                    "CUATRO",
+                    "CINCO"
+
+            );
+
+
+        }*/
+        webView = (WebView) findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=1&FOTO=una&NOMBRE=RUBEN&APELLIDOS=DOS&DOMICILIO=TRES&TELEFONO=CUATRO&EMAIL=JAJAJA\"");
+
 
         return super.onOptionsItemSelected(item);
     }

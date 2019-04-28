@@ -78,6 +78,7 @@ public class Anadir extends AppCompatActivity {
     private Bitmap bitmap;
 
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -100,6 +101,7 @@ public class Anadir extends AppCompatActivity {
         tv_email = (TextView)findViewById(R.id.id_email);
         bt_imagen = (Button) findViewById(R.id.imagen);
         fotoperfil = findViewById(R.id.fotoperfil);
+
 
         // Checking availability of the camera
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -247,11 +249,11 @@ public class Anadir extends AppCompatActivity {
                     tv_email.getText().toString()
             );
 
+
             //TODO GUARDAR LA IMAGEN ONLINE
             System.out.println("DEBUG VOY A SUBIR");
 
             uploadImage(imageStoragePath);
-
 
             startActivity(getIntent());
             finish();
@@ -260,6 +262,7 @@ public class Anadir extends AppCompatActivity {
 
     private void uploadImage(String nombre){
         //Mostrar el diálogo de progreso
+
         final ProgressDialog loading = ProgressDialog.show(this,"Subiendo...","Espere por favor...",false,false);
 
         System.out.println("DEBUG ejecutrando " + UPLOAD_URL);
@@ -386,6 +389,7 @@ public class Anadir extends AppCompatActivity {
 
 
     public void clickImagen(View v) {
+
 
     }
 

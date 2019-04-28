@@ -30,7 +30,11 @@ public class Contacto implements Serializable {
     }
 
     public String getFoto() {
-        return foto;
+        if (this.foto.length()==0) {
+            return "";
+        } else {
+            return foto;
+        }
     }
 
     public void setFoto(String foto) {

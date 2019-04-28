@@ -24,22 +24,24 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
+        ImageView personPhoto;
         TextView tv_nombre;
         TextView tv_apellido;
         TextView tv_domicilio;
         TextView tv_telefono;
         TextView tv_email;
-        ImageView personPhoto;
+
 
         PersonViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
+            personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
             tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
             tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
-            personPhoto = (ImageView)itemView.findViewById(R.id.foto);
+
         }
     }
 
@@ -56,13 +58,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+
+
+        //TODO AQUI PETA AL MOSTRAR UN CONTACTO SIN FOTO
+        /*if (contactos.get(i).getFoto()!=null) {
+            personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
+        }*/
+
         personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
         personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
 
         personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion());
         personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono());
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
-        personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
+
 
 
         // TODO hacer que aparezca el Toast de cada contacto aqui
