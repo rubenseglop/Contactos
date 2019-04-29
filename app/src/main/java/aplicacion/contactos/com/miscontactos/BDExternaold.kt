@@ -11,13 +11,8 @@ import android.net.Uri
 
 
 class BDExterna : AppCompatActivity() {
-    fun insertar(id:String, foto:String, nombre:String,apellidos:String, domicilio:String, telefono:String, email:String) {
+    fun insertar(id:Int, foto:String, nombre:String,apellidos:String, domicilio:String, telefono:String, email:String) {
 
-//val url= 'http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID="2"&FOTO="una"&NOMBRE="RUBEN"&APELLIDOS="DOS"&DOMICILIO="TRES"&TELEFONO="CUATRO"&EMAIL="JAJAJA"'
-
-        /*
-        http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID="2"&FOTO="una"&NOMBRE="RUBEN"&APELLIDOS="DOS"&DOMICILIO="TRES"&TELEFONO="CUATRO"&EMAIL="JAJAJA"
-        **/
 
         val url = "http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=" + id +
                 "&FOTO=" + foto +
@@ -27,11 +22,8 @@ class BDExterna : AppCompatActivity() {
                 "&TELEFONO=" + telefono +
                 "&EMAIL=" + email
 
-        println("DEBUG INSERTAR")
-
-        val uri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(intent)
+        println("DEBUG INSERTO " + url)
+        leerUrl(url)
 
     }
 

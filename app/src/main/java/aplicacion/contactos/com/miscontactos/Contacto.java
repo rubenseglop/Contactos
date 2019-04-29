@@ -21,21 +21,14 @@ public class Contacto implements Serializable {
         this.setCorreo(correo);
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() {  return id; }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getFoto() {
-        if (this.foto.length()==0) {
-            return "";
-        } else {
-            return foto;
-        }
-    }
+    public String getFoto() { return foto; }
+
 
     public void setFoto(String foto) {
         this.foto = foto;

@@ -3,6 +3,7 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,20 +19,44 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+
     BDInterna bdinterna;
-    BDExterna bdexterna;
+    luissancar luissancar;
 
     ArrayList<Contacto> contactos;
-    private WebView webView;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //LUIS EL PT.AMO
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         actualizar();
+        //CopiarArchivo("drawable/perfil.png","/storage/emulated/0/Pictures/Hello Camera/perfil.png");
     }
 
     private void actualizar() {
@@ -95,23 +121,33 @@ public class MainActivity extends AppCompatActivity {
             return true;
 
         }
-        /*if (id == R.id.exportar) {
-            bdexterna.insertar("1", "NUEVA",
-                    "UNO",
-                    "DOS",
-                    "TRES",
-                    "CUATRO",
-                    "CINCO"
+        if (id == R.id.exportar) {
 
-            );
+            luissancar = new luissancar();
+
+            for (Contacto contacto: contactos) {
+                String varId = "9";
+                String varFoto = "e";
+                String varNombre =  contacto.getFoto(); // TODO aqui falla nombre
+                String varApellidos = contacto.getApellidos();
+                String varDireccion = contacto.getDireccion();
+                String varTelefono = contacto.getTelefono();
+                String varCorreo = contacto.getCorreo();
+                if (varId==null || varId.length()==0) { varId =""; }
+                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
+                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
+                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
+                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
+                if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
+                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
+
+                luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo);
+            }
+            luissancar.insertar("5","44","t","r","gfrgf","fggf","fgfg");
+            Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
 
 
-        }*/
-        webView = (WebView) findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=1&FOTO=una&NOMBRE=RUBEN&APELLIDOS=DOS&DOMICILIO=TRES&TELEFONO=CUATRO&EMAIL=JAJAJA\"");
-
-
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -125,6 +161,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void CopiarArchivo(String sourceFile, String destinationFile) {
+
+        try{
+
+            File inFile = new File(sourceFile);
+            File outFile = new File(destinationFile);
+
+            if (!outFile.exists()){
+                FileInputStream in = new FileInputStream(inFile);
+                FileOutputStream out =new FileOutputStream(outFile);
+
+                byte[] buffer = new byte[1024];
+                int c;
+
+                while( (c = in.read(buffer) ) != -1)
+                    out.write(buffer, 0, c);
+
+                out.flush();
+                in.close();
+                out.close();
+            }
+
+        } catch(IOException e) {
+            Log.e("DEBUG", "Hubo un error de entrada/salida!!!");
+        }
+    }
 
     private String leerUrl(String urlString) {
         String response = "tuuuuuuuuu";

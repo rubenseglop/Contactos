@@ -137,7 +137,10 @@ public class Anadir extends AppCompatActivity {
     private void restoreFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
-                imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
+
+                if (savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH).length()!=0) {imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);}
+                else {imageStoragePath = "/storage/emulated/0/Pictures/Hello Camera/perfil.png";}
+
                 if (!TextUtils.isEmpty(imageStoragePath)) {
                     if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
                         previewCapturedImage();
@@ -180,7 +183,6 @@ public class Anadir extends AppCompatActivity {
                 }).check();
     }
 
-
     /**
      * Capturing Camera Image will launch camera app requested image capture
      */
@@ -204,7 +206,6 @@ public class Anadir extends AppCompatActivity {
         startActivityForResult(intent, 100);
     }
 
-
     /**
      * Saving stored image path to saved instance state
      */
@@ -216,7 +217,6 @@ public class Anadir extends AppCompatActivity {
         // changes
         outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
     }
-
     /**
      * Restoring image path from saved instance state
      */
@@ -225,9 +225,8 @@ public class Anadir extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         // get the file url
-        imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
+         imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
-
 
     // no tocar
     public void clickPulsar(View v){
@@ -238,7 +237,13 @@ public class Anadir extends AppCompatActivity {
         }
         //guardar
         if (error==false) {
-            System.out.println("GRABANDO");
+
+
+            if(imageStoragePath == null) { imageStoragePath = "/storage/emulated/0/Pictures/Hello Camera/perfil.png";}
+            System.out.println("DEBUG GRABANDO" + imageStoragePath);
+
+
+
             bdInterna = new BDInterna(this);
             bdInterna.insertarContacto(
                     imageStoragePath,
@@ -248,68 +253,69 @@ public class Anadir extends AppCompatActivity {
                     tv_telefono.getText().toString(),
                     tv_email.getText().toString()
             );
-
-
             //TODO GUARDAR LA IMAGEN ONLINE
             System.out.println("DEBUG VOY A SUBIR");
 
             uploadImage(imageStoragePath);
 
+            imageStoragePath=null;
             startActivity(getIntent());
             finish();
         }
     }
 
-    private void uploadImage(String nombre){
+    private void uploadImage(String nombre) {
         //Mostrar el diálogo de progreso
 
-        final ProgressDialog loading = ProgressDialog.show(this,"Subiendo...","Espere por favor...",false,false);
 
-        System.out.println("DEBUG ejecutrando " + UPLOAD_URL);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Descartar el diálogo de progreso
-                        loading.dismiss();
-                        //Mostrando el mensaje de la respuesta
-                        System.out.println("DEBUG HASTA AQUI" );
-                        Toast.makeText(Anadir.this, s , Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Descartar el diálogo de progreso
-                        System.out.println("DEBUG HASTA ALLA");
-                        loading.dismiss();
+            final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
 
-                        //Showing toast
-                        Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Convertir bits a cadena
-                String imagen = getStringImagen(bitmap);
+            System.out.println("DEBUG ejecutrando " + UPLOAD_URL);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            //Descartar el diálogo de progreso
+                            loading.dismiss();
+                            //Mostrando el mensaje de la respuesta
+                            System.out.println("DEBUG HASTA AQUI " + nombre);
+                            Toast.makeText(Anadir.this, s, Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            //Descartar el diálogo de progreso
+                            System.out.println("DEBUG HASTA ALLA");
+                            loading.dismiss();
 
-                //Creación de parámetros
-                Map<String,String> params = new Hashtable<String, String>();
+                            //Showing toast
+                            //Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    //Convertir bits a cadena
+                    String imagen = getStringImagen(bitmap);
 
-                //Agregando de parámetros
-                params.put(KEY_IMAGEN, imagen);
-                params.put(KEY_NOMBRE, nombre);
+                    //Creación de parámetros
+                    Map<String, String> params = new Hashtable<String, String>();
 
-                //Parámetros de retorno
-                return params;
-            }
-        };
+                    //Agregando de parámetros
+                    params.put(KEY_IMAGEN, imagen);
+                    params.put(KEY_NOMBRE, nombre);
 
-        //Creación de una cola de solicitudes
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+                    //Parámetros de retorno
+                    return params;
+                }
+            };
 
-        //Agregar solicitud a la cola
-        requestQueue.add(stringRequest);
+            //Creación de una cola de solicitudes
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+            //Agregar solicitud a la cola
+            requestQueue.add(stringRequest);
+
     }
 
     public String getStringImagen(Bitmap bmp){
