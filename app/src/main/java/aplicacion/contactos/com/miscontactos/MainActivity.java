@@ -125,10 +125,12 @@ public class MainActivity extends AppCompatActivity {
 
             luissancar = new luissancar();
 
+            luissancar.borrartodo();
+
             for (Contacto contacto: contactos) {
-                String varId = "9";
-                String varFoto = "e";
-                String varNombre =  contacto.getFoto(); // TODO aqui falla nombre
+                String varId = Integer.toString(contacto.getId());
+                String varFoto = '"' + contacto.getFoto() + '"';
+                String varNombre =  contacto.getNombre();
                 String varApellidos = contacto.getApellidos();
                 String varDireccion = contacto.getDireccion();
                 String varTelefono = contacto.getTelefono();
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
                 luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo);
             }
-            luissancar.insertar("5","44","t","r","gfrgf","fggf","fgfg");
+
             Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
 
 
