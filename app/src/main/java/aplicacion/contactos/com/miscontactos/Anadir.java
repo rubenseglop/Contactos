@@ -64,7 +64,7 @@ public class Anadir extends AppCompatActivity {
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
     // Gallery directory name to store the images or videos
-    public static final String GALLERY_DIRECTORY_NAME = "Hello Camera";
+    public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera";
 
     // Image and Video file extensions
     public static final String IMAGE_EXTENSION = "jpg";
@@ -139,7 +139,7 @@ public class Anadir extends AppCompatActivity {
             if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
 
                 if (savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH).length()!=0) {imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);}
-                else {imageStoragePath = "/storage/emulated/0/Pictures/Hello Camera/perfil.png";}
+                else {imageStoragePath = "/storage/emulated/0/Pictures/Hello_Camera/perfil.png";}
 
                 if (!TextUtils.isEmpty(imageStoragePath)) {
                     if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
@@ -239,7 +239,7 @@ public class Anadir extends AppCompatActivity {
         if (error==false) {
 
 
-            if(imageStoragePath == null) { imageStoragePath = "/storage/emulated/0/Pictures/Hello Camera/perfil.png";}
+            if(imageStoragePath == null) { imageStoragePath = "/storage/emulated/0/Pictures/Hello_Camera/perfil.png";}
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
 
 

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +30,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,34 +128,75 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.exportar) {
 
-            luissancar = new luissancar();
-
-            luissancar.borrartodo();
-
-            for (Contacto contacto: contactos) {
-                String varId = Integer.toString(contacto.getId());
-                String varFoto = '"' + contacto.getFoto() + '"';
-                String varNombre =  contacto.getNombre();
-                String varApellidos = contacto.getApellidos();
-                String varDireccion = contacto.getDireccion();
-                String varTelefono = contacto.getTelefono();
-                String varCorreo = contacto.getCorreo();
-                if (varId==null || varId.length()==0) { varId =""; }
-                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
-                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
-                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
-                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
-                if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
-                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
-
-                luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo);
-            }
+            actualizarWebService();
 
             Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
 
 
         }
+        if (id == R.id.importar) {
+
+            //luissancar.URLJsonObjeto();
+
+            // get JSONObject from JSON file
+            JSONObject obj = new JSONObject();
+            try {
+                obj = new JSONObject(luissancar.leerUrl("http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("DEBUG cdf" + luissancar.leerUrl("http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php") );
+            // fetch JSONObject named employee
+
+            try {
+                JSONObject employee = obj.getJSONObject("employee");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // get employee name and salary
+
+            /*name = employee.getString("name");
+            salary = employee.getString("salary");
+
+            // set employee name and salary in TextView's
+
+            employeeName.setText("Name: "+name);
+            employeeSalary.setText("Salary: "+salary);*/
+
+
+
+            Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
+
+
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void actualizarWebService() {
+        luissancar = new luissancar();
+
+        luissancar.borrartodo();
+
+        for (Contacto contacto: contactos) {
+            String varId = Integer.toString(contacto.getId());
+            String varFoto = contacto.getFoto();
+            String varNombre =  contacto.getNombre();
+            String varApellidos = contacto.getApellidos();
+            String varDireccion = contacto.getDireccion();
+            String varTelefono = contacto.getTelefono();
+            String varCorreo = contacto.getCorreo();
+            if (varId==null || varId.length()==0) { varId =""; }
+            if (varFoto==null || varFoto.length()==0) { varFoto =""; }
+            if (varNombre==null || varNombre.length()==0) { varNombre =""; }
+            if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
+            if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
+            if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
+            if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
+
+            luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo);
+        }
     }
 
 
@@ -190,11 +236,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String leerUrl(String urlString) {
-        String response = "tuuuuuuuuu";
-
-        return response;
-    }
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
 

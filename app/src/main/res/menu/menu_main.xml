@@ -12,4 +12,9 @@
         android:orderInCategory="100"
         android:title="@string/exportar"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/importar"
+        android:orderInCategory="100"
+        android:title="@string/importar"
+        app:showAsAction="never" />
 </menu>
