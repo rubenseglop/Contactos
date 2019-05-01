@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,12 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,6 +36,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,9 +46,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.gson.internal.bind.TypeAdapters.URL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -136,34 +148,35 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.importar) {
 
-            //luissancar.URLJsonObjeto();
+            String sURL = "https://api.github.com/repositories/21775167";
 
-            // get JSONObject from JSON file
-            JSONObject obj = new JSONObject();
+            // Connect to the URL using java's native library
+            URL url = null;
             try {
-                obj = new JSONObject(luissancar.leerUrl("http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php"));
-            } catch (JSONException e) {
+                url = new URL(sURL);
+                URLConnection request = null;
+                request = url.openConnection();
+                request.connect();
+
+                // Convert to a JSON object to print data
+                JsonParser jp = new JsonParser(); //from gson
+                JsonElement root = null; //Convert the input stream to a json element
+                root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
+                JsonArray jsonArray = root.getAsJsonArray();
+
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    System.out.println("DEBUG " + jsonArray.size());
+                }
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            System.out.println("DEBUG cdf" + luissancar.leerUrl("http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php") );
-            // fetch JSONObject named employee
 
-            try {
-                JSONObject employee = obj.getJSONObject("employee");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // get employee name and salary
-
-            /*name = employee.getString("name");
-            salary = employee.getString("salary");
-
-            // set employee name and salary in TextView's
-
-            employeeName.setText("Name: "+name);
-            employeeSalary.setText("Salary: "+salary);*/
 
 
 
@@ -259,4 +272,3 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
-
