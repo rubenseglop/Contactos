@@ -18,7 +18,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
 
-    // Creacion de tabla para la BDen formato SQL en caso de no tenerla
+    // Creacion de tabla para la BD en formato SQL en caso de no tenerla
     private static final String TABLA_USUARIOS =
             "CREATE TABLE USUARIOS (" +
                     "ID INTEGER PRIMARY KEY autoincrement," +
@@ -93,7 +93,7 @@ public class BDInterna extends SQLiteOpenHelper {
         if (db != null) {
             // Creamos el registro a insertar
             ContentValues valores = new ContentValues();
-            int id = ultimo_id();
+            int id = ultimo_id(); // TODO el ultimo id no chuta
             valores.put("ID", id);
             valores.put("FOTO", foto);
             valores.put("NOMBRE", nombre);
@@ -172,10 +172,12 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
                 null,null);
 
-
-        return c.getCount()+1;
-
-
+        int max=0;
+        c.moveToFirst();
+        while(c.moveToNext()){
+            if (max < c.getInt(0)) {max = c.getInt(0);}
+        }
+        return max+1;
 
     }
     public Cursor todoContacto(String id) {
