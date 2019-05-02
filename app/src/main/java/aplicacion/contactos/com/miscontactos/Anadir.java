@@ -36,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.sql.SQLOutput;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +55,7 @@ public class Anadir extends AppCompatActivity {
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
-
     public static final int MEDIA_TYPE_IMAGE = 1;
-
 
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
@@ -71,19 +68,16 @@ public class Anadir extends AppCompatActivity {
 
     private static String imageStoragePath;
 
-    private String UPLOAD_URL ="http://iesayala.ddns.net/BDSegura/misContactos/upload.php";
+    private String UPLOAD_PHP ="http://iesayala.ddns.net/BDSegura/misContactos/upload.php";
 
     private String KEY_IMAGEN = "foto";
     private String KEY_NOMBRE = "nombre";
     private Bitmap bitmap;
 
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +97,10 @@ public class Anadir extends AppCompatActivity {
         fotoperfil = findViewById(R.id.fotoperfil);
 
 
-        // Checking availability of the camera
+        // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
             Toast.makeText(getApplicationContext(),
-                    "Sorry! Your device doesn't support camera",
+                    "Error! tu dispositivo no incorpora una cámara",
                     Toast.LENGTH_LONG).show();
             // will close the app if the device doesn't have camera
             finish();
@@ -127,10 +121,7 @@ public class Anadir extends AppCompatActivity {
         });
 
         restoreFromBundle(savedInstanceState);
-
     }
-
-
     /**
      * Restoring store image path from saved instance state
      */
@@ -253,8 +244,6 @@ public class Anadir extends AppCompatActivity {
                     tv_telefono.getText().toString(),
                     tv_email.getText().toString()
             );
-            //TODO GUARDAR LA IMAGEN ONLINE
-            System.out.println("DEBUG VOY A SUBIR");
 
             uploadImage(imageStoragePath);
 
@@ -267,11 +256,11 @@ public class Anadir extends AppCompatActivity {
     private void uploadImage(String nombre) {
         //Mostrar el diálogo de progreso
 
-
             final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
 
-            System.out.println("DEBUG ejecutrando " + UPLOAD_URL);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+
+            System.out.println("DEBUG ejecutrando " + UPLOAD_PHP);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_PHP,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String s) {

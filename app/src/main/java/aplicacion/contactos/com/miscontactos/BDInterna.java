@@ -102,6 +102,28 @@ public class BDInterna extends SQLiteOpenHelper {
             valores.put("TELEFONO", telefono);
             valores.put("EMAIL", email);
 
+            //insertamos el registro en la Base de Datos
+            db.insert("USUARIOS", null, valores);
+        }
+
+        db.close();
+    }
+
+
+    // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID)
+    public void insertarContacto(String id, String foto, String nombre, String apellidos, String domicilio, String telefono, String email) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null) {
+            // Creamos el registro a insertar
+            ContentValues valores = new ContentValues();
+            valores.put("ID", id);
+            valores.put("FOTO", foto);
+            valores.put("NOMBRE", nombre);
+            valores.put("APELLIDOS", apellidos);
+            valores.put("DOMICILIO", domicilio);
+            valores.put("TELEFONO", telefono);
+            valores.put("EMAIL", email);
 
             //insertamos el registro en la Base de Datos
             db.insert("USUARIOS", null, valores);
