@@ -21,6 +21,9 @@ class luissancar (){
                 "&DOMICILIO=" + domicilio +
                 "&TELEFONO=" + telefono +
                 "&EMAIL=" + email
+
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20")
         println("DEBUG url " + url)
         leerUrl(url)
     }
