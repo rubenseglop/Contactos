@@ -27,21 +27,22 @@ public class BDInterna extends SQLiteOpenHelper {
                     "FOTO VARCHAR(400)," +
                     "NOMBRE VARCHAR(100)," +
                     "APELLIDOS VARCHAR(100)," +
-                    "DOMICILIO VARCHAR(100)," +
-                    "TELEFONO VARCHAR(20)," +
+                    "GALERIA_ID INTEGER(6)," +
+                    "DOMICILIO_ID INTEGER(6)," +
+                    "TELEFONO_ID INTEGER(6)," +
                     "EMAIL VARCHAR(100)" +
                     ");";
     private static final String TABLA_GALERIA =
             "CREATE TABLE GALERIA (" +
-                    "ID INTEGER PRIMARY KEY," +
+                    "ID INTEGER(6) PRIMARY KEY," +
                     "URL VARCHAR(200));";
     private static final String TABLA_DOMICILIO =
             "CREATE TABLE DOMICILIO(" +
-                    "ID INTEGER PRIMARY KEY," +
+                    "ID INTEGER(6) PRIMARY KEY," +
                     "DIRECCION VARCHAR(200))";
     private static final String TABLA_TELEFONO =
             "CREATE TABLE TELEFONO(" +
-                    "ID INTEGER PRIMARY KEY," +
+                    "ID INTEGER(6) PRIMARY KEY," +
                     "NUMERO VARCHAR(15))";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
@@ -69,8 +70,9 @@ public class BDInterna extends SQLiteOpenHelper {
                 String foto;
                 String nombre;
                 String apellidos;
-                String domicilio;
-                String telefono;
+                int galeria_id;
+                String domicilio_id;
+                String telefono_id;
                 String email;
 
                 do {
@@ -78,11 +80,12 @@ public class BDInterna extends SQLiteOpenHelper {
                     foto = bus.getString(1);
                     nombre = bus.getString(2);
                     apellidos = bus.getString(3);
-                    domicilio = bus.getString(4);
-                    telefono = bus.getString(5);
-                    email = bus.getString(6);
+                    galeria_id = bus.getInt(4);
+                    domicilio_id = bus.getString(5);
+                    telefono_id = bus.getString(6);
+                    email = bus.getString(7);
 
-                    contactos.add(new Contacto(id,foto,nombre,apellidos,domicilio,telefono,email));
+                    contactos.add(new Contacto(id,foto,nombre,apellidos,domicilio_id,telefono_id,email)); //TODO ¡¡aviso aqui no pongo la galeria!!
 
                 } while(bus.moveToNext());
             }
@@ -146,13 +149,14 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Inserta un contactos a la BD
+    // TODO AÑADIR LA GALERIAID Y EL RESTO QUE HE MODIFICADO
     public void insertarContacto(String foto, String nombre, String apellidos, String domicilio, String telefono, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
             // Creamos el registro a insertar
             ContentValues valores = new ContentValues();
-            int id = ultimo_id(); // TODO el ultimo id no chuta
+            int id = ultimo_id("USUARIOS");
             valores.put("ID", id);
             valores.put("FOTO", foto);
             valores.put("NOMBRE", nombre);
@@ -222,7 +226,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
 
     // ultimo id
-    public int ultimo_id() {
+    public int ultimo_id(String usuario) {
 
         SQLiteDatabase db = getReadableDatabase();
 
@@ -231,7 +235,7 @@ public class BDInterna extends SQLiteOpenHelper {
         /*Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
                 null,null);*/
 
-        Cursor c = db.rawQuery("SELECT MAX(ID) FROM USUARIOS", null);
+        Cursor c = db.rawQuery("SELECT MAX(ID) FROM " + usuario, null);
         c.moveToFirst();
         return c.getInt(0)+1;
 

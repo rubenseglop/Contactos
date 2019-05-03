@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
         dialogo1.setTitle("Importante");
-        dialogo1.setMessage("¿ Acepta la ejecución de este programa en modo prueba ?");
+        dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
         dialogo1.setCancelable(false);
         dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
