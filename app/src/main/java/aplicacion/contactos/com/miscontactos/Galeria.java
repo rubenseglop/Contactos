@@ -22,4 +22,3 @@ public class Galeria implements Serializable {
         this.URL = URL;
     }
 }
-

@@ -242,7 +242,8 @@ public class Anadir extends AppCompatActivity {
                     tv_apellido.getText().toString(),
                     tv_domicilio.getText().toString(),
                     tv_telefono.getText().toString(),
-                    tv_email.getText().toString()
+                    tv_email.getText().toString(),
+                    bdInterna.getUniqueID()
             );
 
             uploadImage(imageStoragePath);
@@ -306,6 +307,7 @@ public class Anadir extends AppCompatActivity {
             requestQueue.add(stringRequest);
 
     }
+
     public String getStringImagen(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);

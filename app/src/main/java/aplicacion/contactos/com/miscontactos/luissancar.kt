@@ -12,7 +12,7 @@ class luissancar (){
         this.con = con
     }
 
-    fun insertar(id:String, foto:String, nombre:String,apellidos:String,domicilio:String,telefono:String,email:String){
+    fun insertar(id:String, foto:String, nombre:String,apellidos:String,domicilio:String,telefono:String,email:String,uuid:String){
 
         var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=" + id +
                 "&FOTO=" + foto +
@@ -20,7 +20,8 @@ class luissancar (){
                 "&APELLIDOS=" + apellidos +
                 "&DOMICILIO=" + domicilio +
                 "&TELEFONO=" + telefono +
-                "&EMAIL=" + email
+                "&EMAIL=" + email +
+                "&UUIDUNIQUE=" + uuid
 
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20")
@@ -28,10 +29,10 @@ class luissancar (){
         leerUrl(url)
     }
 
-    fun borrartodo(){
+    fun borrartodo(uuid: String):String{
 
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/eliminatodo.php"
-        leerUrl(url);
+        var url = "http://iesayala.ddns.net/BDSegura/misContactos/eliminatodo.php?UUIDUNIQUE=" + uuid
+        return leerUrl(url);
     }
 
     // http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php
@@ -43,7 +44,7 @@ class luissancar (){
                     .bufferedReader()
                     .use { it.readText() }
         } catch (e: IOException) {
-            "Error with ${e.message}."
+            "Error"
         }
         println("DEBUG response " + response)
         return response

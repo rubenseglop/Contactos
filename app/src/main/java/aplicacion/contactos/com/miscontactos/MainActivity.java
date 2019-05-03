@@ -1,10 +1,12 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         //bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertar
         //bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
+
+        bdinterna.insertarUUID();
         actualizar();
 
     }
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos();
         contactos=bdinterna.contactos;
+        //bdinterna.insertarUUID();
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -88,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rv);
+
     }
 
     @Override
@@ -115,13 +122,12 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.exportar) {
 
             exportarWebService();
-            Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
+
 
         }
         if (id == R.id.importar) {
 
             importarWebService();
-            Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
 
         }
         return super.onOptionsItemSelected(item);
@@ -129,8 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void importarWebService() {
 
-
-        String sURL = "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php";
+        String sURL = "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID();
 
         // Connect to the URL using java's native library
         URL url = null;
@@ -147,61 +152,90 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Hubo un problema con el servidor", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
         }
     }
 
     private void exportarWebService() {
 
-        luissancar.borrartodo();
+        if(luissancar.borrartodo(bdinterna.getUniqueID())=="Error") {
+            Toast.makeText(MainActivity.this, "Hubo un error en la conexión", Toast.LENGTH_LONG).show();
+        } else {
+            for (Contacto contacto: contactos) {
+                String varId = Integer.toString(contacto.getId());
+                String varFoto = contacto.getFoto();
+                String varNombre =  contacto.getNombre();
+                String varApellidos = contacto.getApellidos();
+                String varDireccion = contacto.getDireccion();
+                String varTelefono = contacto.getTelefono();
+                String varCorreo = contacto.getCorreo();
+                String varUUID = bdinterna.getUniqueID();
 
-        for (Contacto contacto: contactos) {
-            String varId = Integer.toString(contacto.getId());
-            String varFoto = contacto.getFoto();
-            String varNombre =  contacto.getNombre();
-            String varApellidos = contacto.getApellidos();
-            String varDireccion = contacto.getDireccion();
-            String varTelefono = contacto.getTelefono();
-            String varCorreo = contacto.getCorreo();
+                if (varId==null || varId.length()==0) { varId =""; }
+                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
+                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
+                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
+                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
+                if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
+                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
-            if (varId==null || varId.length()==0) { varId =""; }
-            if (varFoto==null || varFoto.length()==0) { varFoto =""; }
-            if (varNombre==null || varNombre.length()==0) { varNombre =""; }
-            if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
-            if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
-            if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
-            if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
-
-            luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo);
+                luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo,varUUID);
+                Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
 
     public void StringObjeto(String jsonString) {
-        try {
-            JSONArray jArray = new JSONArray(jsonString);
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
-                // add to list
 
-                bdinterna.insertarContacto(
-                        json_data.getString("ID"),
-                        json_data.getString("FOTO"),
-                        json_data.getString("NOMBRE"),
-                        json_data.getString("APELLIDOS"),
-                        json_data.getString("DOMICILIO"),
-                        json_data.getString("TELEFONO"),
-                        json_data.getString("EMAIL")
-                );
-                System.out.println("DEBUG " + json_data.getString("FOTO"));
+        // muestra un dialogo con aceptar o cancelar
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+        dialogo1.setTitle("Importante");
+        dialogo1.setMessage("¿ Acepta la ejecución de este programa en modo prueba ?");
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+
+                // en el caso de aceptar
+                try {
+                    JSONArray jArray = new JSONArray(jsonString);
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.getJSONObject(i);
+                        // add to list
+                        bdinterna.insertarContacto(
+                                json_data.getString("ID"),
+                                json_data.getString("FOTO"),
+                                json_data.getString("NOMBRE"),
+                                json_data.getString("APELLIDOS"),
+                                json_data.getString("DOMICILIO"),
+                                json_data.getString("TELEFONO"),
+                                json_data.getString("EMAIL"),
+                                json_data.getString("UUIDUNIQUE")
+                        );
+                        System.out.println("DEBUG " + json_data.getString("FOTO"));
+                        Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("DEBUG catch "+ e.getMessage());
+                    Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+                }
+                actualizar();
+
+
+
             }
-
-        } catch (Exception e) {
-            System.out.println("DEBUG catch "+ e.getMessage());
-
-        }
-        actualizar();
+        });
+        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                // en el caso de cancelar (no hago nada)
+            }
+        });
+        dialogo1.show();
+        // fin muestra dialogo aceptar o cancelar
 
 
     }

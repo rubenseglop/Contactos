@@ -7,18 +7,20 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.io.Serializable;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.IntSummaryStatistics;
+import java.util.UUID;
+
+
 
 public class BDInterna extends SQLiteOpenHelper {
 
+    private static String uniqueID = UUID.randomUUID().toString(); // creo un identificador unico
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
 
-    // Creacion de tabla para la BD en formato SQL en caso de no tenerla
+    // Creación de tabla para la BD en formato SQL en caso de no tenerla
+    private static final String UNIQUE_UUID =
+            "CREATE TABLE UNIQUE_UUID(ID VARCHAR(30));";
     private static final String TABLA_USUARIOS =
             "CREATE TABLE USUARIOS (" +
                     "ID INTEGER PRIMARY KEY autoincrement," +
@@ -29,6 +31,18 @@ public class BDInterna extends SQLiteOpenHelper {
                     "TELEFONO VARCHAR(20)," +
                     "EMAIL VARCHAR(100)" +
                     ");";
+    private static final String TABLA_GALERIA =
+            "CREATE TABLE GALERIA (" +
+                    "ID INTEGER PRIMARY KEY," +
+                    "URL VARCHAR(200));";
+    private static final String TABLA_DOMICILIO =
+            "CREATE TABLE DOMICILIO(" +
+                    "ID INTEGER PRIMARY KEY," +
+                    "DIRECCION VARCHAR(200))";
+    private static final String TABLA_TELEFONO =
+            "CREATE TABLE TELEFONO(" +
+                    "ID INTEGER PRIMARY KEY," +
+                    "NUMERO VARCHAR(15))";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
 
@@ -77,7 +91,15 @@ public class BDInterna extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        System.out.println("DEBUG LA ABUELA FUMA PORROS");
+
+        db.execSQL(TABLA_GALERIA);
+        db.execSQL(TABLA_DOMICILIO);
+        db.execSQL(TABLA_TELEFONO);
         db.execSQL(TABLA_USUARIOS);
+        db.execSQL(UNIQUE_UUID);
+        //insertarUUID(); // aqui lo petamos
+
     }
 
     @Override
@@ -86,8 +108,45 @@ public class BDInterna extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Inserta el identificador unico a la BD
+    public void insertarUUID() {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT ID FROM UNIQUE_UUID", null);
+
+        System.out.println("DEBUG UUID");
+        String id = "";
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+                id = c.getString(0);
+                if (id != null) { uniqueID = id;}
+            } while(c.moveToNext());
+        }
+
+
+        if (id.length() == 0) {
+
+            if (db != null) {
+                // Creamos el registro a insertar
+                ContentValues valores = new ContentValues();
+                valores.put("ID", uniqueID);
+
+                //insertamos el registro en la Base de Datos
+                db.insert("UNIQUE_UUID", null, valores);
+            }
+
+
+        }
+        db.close();
+    }
+    public String getUniqueID(){
+        return uniqueID;
+    }
+
     // Inserta un contactos a la BD
-    public void insertarContacto(String foto, String nombre, String apellidos, String domicilio, String telefono, String email) {
+    public void insertarContacto(String foto, String nombre, String apellidos, String domicilio, String telefono, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
@@ -105,12 +164,13 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("USUARIOS", null, valores);
         }
+
         db.close();
     }
 
 
     // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID)
-    public void insertarContacto(String id, String foto, String nombre, String apellidos, String domicilio, String telefono, String email) {
+    public void insertarContacto(String id, String foto, String nombre, String apellidos, String domicilio, String telefono, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
@@ -168,15 +228,12 @@ public class BDInterna extends SQLiteOpenHelper {
 
         String[] valores_recuperar = {"ID"};
 
-        Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
-                null,null);
+        /*Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
+                null,null);*/
 
-        int max=0;
+        Cursor c = db.rawQuery("SELECT MAX(ID) FROM USUARIOS", null);
         c.moveToFirst();
-        while(c.moveToNext()){
-            if (max < c.getInt(0)) {max = c.getInt(0);}
-        }
-        return max+1;
+        return c.getInt(0)+1;
 
     }
     public Cursor todoContacto(String id) {
@@ -190,8 +247,6 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor c = db.query("USUARIOS", valores_recuperar, "*", null, null,
                 "NOMBRE ASC",null);
         return c;
-
-
 
     }
 
@@ -208,9 +263,6 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor c = db.query("USUARIOS", valores_recuperar, "ID=?", args, null, null,
                 "NOMBRE ASC",null);
         return c;
-
-
-
     }
 
     // Devuelve un cursor con todos los atributos elegidos de la BD para ponerlos en la Lista
@@ -269,5 +321,4 @@ public class BDInterna extends SQLiteOpenHelper {
 
         return datosId[id];
     }
-
 }
