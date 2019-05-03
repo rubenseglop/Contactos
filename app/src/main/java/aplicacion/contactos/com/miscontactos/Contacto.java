@@ -20,7 +20,6 @@ public class Contacto implements Serializable {
         this.setTelefono(telefono);
         this.setCorreo(correo);
     }
-
     public int getId() {  return id; }
 
     public void setId(int id) {

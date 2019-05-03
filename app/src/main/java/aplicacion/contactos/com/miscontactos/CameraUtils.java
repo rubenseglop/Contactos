@@ -116,7 +116,6 @@ public class CameraUtils {
         } else {
             return null;
         }
-
         return mediaFile;
     }
 

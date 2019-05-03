@@ -41,7 +41,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
             tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
-
         }
     }
 

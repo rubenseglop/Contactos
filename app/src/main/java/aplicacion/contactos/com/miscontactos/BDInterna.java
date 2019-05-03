@@ -105,7 +105,6 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("USUARIOS", null, valores);
         }
-
         db.close();
     }
 

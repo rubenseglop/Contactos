@@ -306,7 +306,6 @@ public class Anadir extends AppCompatActivity {
             requestQueue.add(stringRequest);
 
     }
-
     public String getStringImagen(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);

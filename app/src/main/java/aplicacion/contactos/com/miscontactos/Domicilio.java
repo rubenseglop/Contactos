@@ -17,7 +17,6 @@ public class Domicilio implements Serializable {
     public String getDireccion() {
         return direccion;
     }
-
     public void setDireccion(String URL) {
         this.direccion = direccion;
     }

@@ -7,7 +7,6 @@ public class Telefono implements Serializable {
     private int id;
     private String numero;
 
-
     public int getId() {
         return id;
     }

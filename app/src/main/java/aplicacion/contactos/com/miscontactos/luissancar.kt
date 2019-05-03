@@ -46,7 +46,6 @@ class luissancar (){
             "Error with ${e.message}."
         }
         println("DEBUG response " + response)
-
         return response
     }
 }
