@@ -12,21 +12,47 @@ class luissancar (){
         this.con = con
     }
 
-    fun insertar(id:String, foto:String, nombre:String,apellidos:String,domicilio:String,telefono:String,email:String,uuid:String){
-
+    fun insertarContacto(id:String, foto:String, nombre:String, apellidos:String, galeria:Int, domicilio:Int, telefono:Int, email:String, uuid:String):String{
         var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=" + id +
                 "&FOTO=" + foto +
                 "&NOMBRE=" + nombre +
                 "&APELLIDOS=" + apellidos +
-                "&DOMICILIO=" + domicilio +
-                "&TELEFONO=" + telefono +
+                "&GALERIAID=" + galeria +
+                "&DOMICILIOID=" + domicilio +
+                "&TELEFONOID=" + telefono +
                 "&EMAIL=" + email +
                 "&UUIDUNIQUE=" + uuid
-
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20")
-        println("DEBUG url " + url)
-        leerUrl(url)
+        println("DEBUG Contacto " + url)
+        return leerUrl(url)
+    }
+    fun insertarGaleria(id:Int, url:String, uuid:String):String{
+        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertargaleria.php/?ID=" + id +
+                "&URL=" + url +
+                "&UUIDUNIQUE=" + uuid
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20")
+        println("DEBUG Galeria " + url)
+        return leerUrl(url)
+    }
+    fun insertarDomicilio(id:Int, direccion:String, uuid:String):String{
+        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertardomicilio.php/?ID=" + id +
+                "&DIRECCION=" + direccion +
+                "&UUIDUNIQUE=" + uuid
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20")
+        println("DEBUG Domicilio " + url)
+        return leerUrl(url)
+    }
+    fun insertarTelefono(id:Int, numero:String, uuid:String):String{
+        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertartelefono.php/?ID=" + id +
+                "&NUMERO=" + numero +
+                "&UUIDUNIQUE=" + uuid
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20")
+        println("DEBUG Telefono " + url)
+        return leerUrl(url)
     }
 
     fun borrartodo(uuid: String):String{

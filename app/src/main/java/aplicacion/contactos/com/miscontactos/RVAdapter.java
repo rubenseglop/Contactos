@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +18,17 @@ import java.util.ArrayList;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     ArrayList<Contacto> contactos;
-    RVAdapter(ArrayList<Contacto> contactos){ this.contactos = contactos;}
+    ArrayList<Galeria> galeria;
+    ArrayList<Domicilio> domicilio;
+    ArrayList<Telefono> telefono;
+
+    RVAdapter(ArrayList<Contacto> contactos, ArrayList<Galeria> galeria, ArrayList<Domicilio> domicilio, ArrayList<Telefono> telefono){
+        this.contactos = contactos;
+        this.galeria = galeria;
+        this.domicilio = domicilio;
+        this.telefono = telefono;
+
+    }
     Context context;
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
@@ -38,7 +47,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
             personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
             tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
-            tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
+            tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio); //todo aqui debo implementar un listado de elementos
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
 
@@ -68,8 +77,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
         personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
 
-        personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion());
-        personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono());
+        personViewHolder.tv_domicilio.setText(domicilio.get(contactos.get(i).getDireccion_id()-1).getDireccion());
+        //personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion_id());
+
+        personViewHolder.tv_telefono.setText(telefono.get(contactos.get(i).getTelefono_id()-1).getNumero());
+        //personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono_id());
+
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
 
 

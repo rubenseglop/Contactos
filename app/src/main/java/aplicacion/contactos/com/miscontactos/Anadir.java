@@ -236,15 +236,27 @@ public class Anadir extends AppCompatActivity {
 
 
             bdInterna = new BDInterna(this);
+
+            //buscamos los ultimos id
+            int last_galeria_id = bdInterna.ultimo_id("GALERIA");
+            int last_domicilio_id = bdInterna.ultimo_id("DOMICILIO");
+            int last_telefono_id = bdInterna.ultimo_id("TELEFONO");
+
+            //inserto contacto con las ultimas id
             bdInterna.insertarContacto(
                     imageStoragePath,
                     tv_nombre.getText().toString(),
                     tv_apellido.getText().toString(),
-                    tv_domicilio.getText().toString(),
-                    tv_telefono.getText().toString(),
+                    last_galeria_id,
+                    last_domicilio_id,
+                    last_telefono_id,
                     tv_email.getText().toString(),
                     bdInterna.getUniqueID()
             );
+            bdInterna.insertarGaleria(last_galeria_id,null); //todo implementar la galeria de fotos
+            bdInterna.insertarDomicilio(last_domicilio_id,tv_domicilio.getText().toString());
+            bdInterna.insertarTelefono(last_telefono_id, tv_telefono.getText().toString());
+
 
             uploadImage(imageStoragePath);
 

@@ -6,6 +6,11 @@ public class Domicilio implements Serializable {
     int id;
     String direccion;
 
+    public Domicilio(int id, String direccion){
+        this.setId(id);
+        this.setDireccion(direccion);
+    }
+
     public int getId() {
         return id;
     }
@@ -18,7 +23,7 @@ public class Domicilio implements Serializable {
         return direccion;
     }
 
-    public void setDireccion(String URL) {
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 }

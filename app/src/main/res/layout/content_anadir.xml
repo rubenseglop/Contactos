@@ -114,7 +114,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cajapellido" />
 
     <TextView
-        android:id="@+id/telefono"
+        android:id="@+id/telefono_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -133,7 +133,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/telefono"
+        app:layout_constraintStart_toEndOf="@+id/telefono_id"
         app:layout_constraintTop_toBottomOf="@+id/id_domicilio" />
 
     <TextView
@@ -144,7 +144,7 @@
         android:layout_marginTop="32dp"
         android:text="Email "
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/telefono" />
+        app:layout_constraintTop_toBottomOf="@+id/telefono_id" />
 
     <EditText
         android:id="@+id/id_email"

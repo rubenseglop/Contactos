@@ -1,23 +1,26 @@
 package aplicacion.contactos.com.miscontactos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Contacto implements Serializable {
     private int id;
     private String foto;
     private String nombre;
     private String apellidos;
-    private String direccion;
-    private String telefono;
+    private int galeria_id;
+    private int direccion_id;
+    private int telefono_id;
     private String correo;
 
-    public Contacto(int id, String foto, String nombre, String apellidos, String direccion, String telefono, String correo){
+    public Contacto(int id, String foto, String nombre, String apellidos, int galeria_id, int direccion_id, int telefono_id, String correo){
         this.setId(id);
         this.setFoto(foto);
         this.setNombre(nombre);
         this.setApellidos(apellidos);
-        this.setDireccion(direccion);
-        this.setTelefono(telefono);
+        this.setGaleria_id(galeria_id);
+        this.setDireccion_id(direccion_id);
+        this.setTelefono_id(telefono_id);
         this.setCorreo(correo);
     }
 
@@ -50,20 +53,28 @@ public class Contacto implements Serializable {
         this.apellidos = apellidos;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public int getGaleria_id() {
+        return galeria_id;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setGaleria_id(int galeria_id) {
+        this.galeria_id = galeria_id;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public int getDireccion_id() {
+        return direccion_id;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setDireccion_id(int direccion_id) {
+        this.direccion_id = direccion_id;
+    }
+
+    public int getTelefono_id() {
+        return telefono_id;
+    }
+
+    public void setTelefono_id(int telefono_id) {
+        this.telefono_id = telefono_id;
     }
 
     public String getCorreo() {

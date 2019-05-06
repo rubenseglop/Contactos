@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     luissancar luissancar;
 
     ArrayList<Contacto> contactos;
+    ArrayList<Galeria> galerias;
+    ArrayList<Domicilio> domicilios;
+    ArrayList<Telefono> telefonos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,26 +71,28 @@ public class MainActivity extends AppCompatActivity {
         //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
         luissancar = new luissancar();
-        //bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertar
+        //bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertarContacto
         //bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
 
 
         bdinterna.insertarUUID();
         actualizar();
-
     }
 
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos();
         contactos=bdinterna.contactos;
+        galerias=bdinterna.galerias;
+        domicilios=bdinterna.domicilios;
+        telefonos=bdinterna.telefonos;
         //bdinterna.insertarUUID();
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(contactos);
+        RVAdapter adapter = new RVAdapter(contactos,galerias,domicilios,telefonos);
         rv.setAdapter(adapter);
 
         //esto es parte del Swype
@@ -135,21 +139,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void importarWebService() {
 
-        String sURL = "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID();
+        WebSerTabla("CON", "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+        WebSerTabla("GAL","http://iesayala.ddns.net/BDSegura/misContactos/vergaleria.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+        WebSerTabla("DOM", "http://iesayala.ddns.net/BDSegura/misContactos/verdomicilio.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+        WebSerTabla("TEL", "http://iesayala.ddns.net/BDSegura/misContactos/vertelefono.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+    }
 
+    private void WebSerTabla(String tabla, String sUrl) {
         // Connect to the URL using java's native library
         URL url = null;
         try {
+            String sURL = sUrl;
             url = new URL(sURL);
             URLConnection request = null;
             request = url.openConnection();
             request.connect();
-
             // Convierte el contenido de la URL en un String
             JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
-
-            StringObjeto(root.toString()); // convierto esa String en un ArrayList de Contactos
-
+            StringObjeto(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
             e.printStackTrace();
             Toast.makeText(MainActivity.this, "Hubo un problema con el servidor", Toast.LENGTH_LONG).show();
@@ -160,17 +167,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exportarWebService() {
+        boolean error_conexion = false;
+        String error;
+
+        System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size() + " DOMICILIO " + domicilios.size() + " TELEFONO " + telefonos.size());
+
 
         if(luissancar.borrartodo(bdinterna.getUniqueID())=="Error") {
-            Toast.makeText(MainActivity.this, "Hubo un error en la conexión", Toast.LENGTH_LONG).show();
-        } else {
+            error_conexion = true;
+        }
+        if (error_conexion == false) {
+
+
             for (Contacto contacto: contactos) {
                 String varId = Integer.toString(contacto.getId());
                 String varFoto = contacto.getFoto();
                 String varNombre =  contacto.getNombre();
                 String varApellidos = contacto.getApellidos();
-                String varDireccion = contacto.getDireccion();
-                String varTelefono = contacto.getTelefono();
+                int varGaleria = contacto.getGaleria_id();
+                int varDireccion = contacto.getDireccion_id();
+                int varTelefono = contacto.getTelefono_id();
                 String varCorreo = contacto.getCorreo();
                 String varUUID = bdinterna.getUniqueID();
 
@@ -178,66 +194,158 @@ public class MainActivity extends AppCompatActivity {
                 if (varFoto==null || varFoto.length()==0) { varFoto =""; }
                 if (varNombre==null || varNombre.length()==0) { varNombre =""; }
                 if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
-                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
-                if (varTelefono==null || varTelefono.length()==0) { varTelefono =""; }
                 if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
-                luissancar.insertar(varId,varFoto,varNombre,varApellidos,varDireccion,varTelefono,varCorreo,varUUID);
-                Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
+                error = luissancar.insertarContacto(varId,varFoto,varNombre,varApellidos,varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
+                if (error == "Error"){error_conexion = true; }
             }
+        }
+        if (error_conexion == false) {
+            /*for (Galeria galeria : galerias) {
+                int varId = galeria.getId();
+                String varUrl = galeria.getURL();
+                String varUUID = bdinterna.getUniqueID();
+
+                error = luissancar.insertarGaleria(varId, varUrl, varUUID);
+                if (error == "Error") {
+                    error_conexion = true;
+                }
+            }*/ // todo para luego la galeria
+        }
+        if (error_conexion == false) {
+            for (Domicilio domicilio : domicilios) {
+                int varId = domicilio.getId();
+                String varDireccion = domicilio.getDireccion();
+                String varUUID = bdinterna.getUniqueID();
+
+                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
+
+                error = luissancar.insertarDomicilio(varId, varDireccion, varUUID);
+                if (error == "Error") {
+                    error_conexion = true;
+                }
+            }
+        }
+        if (error_conexion == false) {
+            for (Telefono telefono : telefonos) {
+                int varId = telefono.getId();
+                String varNumero = telefono.getNumero();
+                String varUUID = bdinterna.getUniqueID();
+
+                if (varNumero==null || varNumero.length()==0) { varNumero =""; }
+
+                error = luissancar.insertarTelefono(varId, varNumero, varUUID);
+                if (error == "Error") {
+                    error_conexion = true;
+                }
+            }
+        }
+        if (error_conexion== false) {
+            Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Hubo un error en la conexión", Toast.LENGTH_LONG).show();
         }
     }
 
 
-    public void StringObjeto(String jsonString) {
+    public void StringObjeto(String tabla, String jsonString) {
+        boolean error_conexion = false;
+        if (tabla == "CON") {
+            // muestra un dialogo con aceptar o cancelar
+            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+            dialogo1.setTitle("Importante");
+            dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
+            dialogo1.setCancelable(false);
+            dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
-        // muestra un dialogo con aceptar o cancelar
-        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-        dialogo1.setTitle("Importante");
-        dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
-        dialogo1.setCancelable(false);
-        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogo1, int id) {
+                public void onClick(DialogInterface dialogo1, int id) {
+                    boolean error_conexion = false;
+                    // en el caso de aceptar
+                    try {
+                        JSONArray jArray = new JSONArray(jsonString);
+                        for (int i = 0; i < jArray.length(); i++) {
+                            JSONObject json_data = jArray.getJSONObject(i);
+                            // add to list
+                            bdinterna.insertarContacto(
+                                    json_data.getString("ID"),
+                                    json_data.getString("FOTO"),
+                                    json_data.getString("NOMBRE"),
+                                    json_data.getString("APELLIDOS"),
+                                    json_data.getString("GALERIAID"),
+                                    json_data.getString("DOMICILIOID"),
+                                    json_data.getString("TELEFONOID"),
+                                    json_data.getString("EMAIL"),
+                                    json_data.getString("UUIDUNIQUE")
+                            );
+                            System.out.println("DEBUG " + json_data.getString("FOTO"));
 
-                // en el caso de aceptar
-                try {
-                    JSONArray jArray = new JSONArray(jsonString);
-                    for (int i = 0; i < jArray.length(); i++) {
-                        JSONObject json_data = jArray.getJSONObject(i);
-                        // add to list
-                        bdinterna.insertarContacto(
-                                json_data.getString("ID"),
-                                json_data.getString("FOTO"),
-                                json_data.getString("NOMBRE"),
-                                json_data.getString("APELLIDOS"),
-                                json_data.getString("DOMICILIO"),
-                                json_data.getString("TELEFONO"),
-                                json_data.getString("EMAIL"),
-                                json_data.getString("UUIDUNIQUE")
-                        );
-                        System.out.println("DEBUG " + json_data.getString("FOTO"));
-                        Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("DEBUG catch " + e.getMessage());
+                        error_conexion = true;
                     }
-
-                } catch (Exception e) {
-                    System.out.println("DEBUG catch "+ e.getMessage());
-                    Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
                 }
-                actualizar();
-
-
-
+            });
+            dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogo1, int id) {
+                    // en el caso de cancelar (no hago nada)
+                }
+            });
+            dialogo1.show();
+            // fin muestra dialogo aceptar o cancelar
+        } else if (error_conexion == false && tabla == "GAL") {
+            try {
+                JSONArray jArray = new JSONArray(jsonString);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    // add to list
+                    bdinterna.insertarGaleria(
+                            json_data.getInt("ID"),
+                            json_data.getString("URL")
+                    );
+                }
+            } catch (Exception e) {
+                System.out.println("DEBUG catch " + e.getMessage());
+                error_conexion = true;
             }
-        });
-        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogo1, int id) {
-                // en el caso de cancelar (no hago nada)
+        } else if (error_conexion == false && tabla == "DOM") {
+            try {
+                JSONArray jArray = new JSONArray(jsonString);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    // add to list
+                    bdinterna.insertarDomicilio(
+                            json_data.getInt("ID"),
+                            json_data.getString("DIRECCION")
+                    );
+                }
+            } catch (Exception e) {
+                System.out.println("DEBUG catch " + e.getMessage());
+                error_conexion = true;
             }
-        });
-        dialogo1.show();
-        // fin muestra dialogo aceptar o cancelar
-
-
+        } else if (error_conexion == false && tabla == "TEL") {
+            try {
+                JSONArray jArray = new JSONArray(jsonString);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    // add to list
+                    bdinterna.insertarTelefono(
+                            json_data.getInt("ID"),
+                            json_data.getString("NUMERO")
+                    );
+                }
+            } catch (Exception e) {
+                System.out.println("DEBUG catch " + e.getMessage());
+                error_conexion = true;
+            }
+        }
+        if (error_conexion==false){
+            Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
+            actualizar();
+        } else {
+            Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+        }
     }
 
 

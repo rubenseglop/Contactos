@@ -7,6 +7,11 @@ public class Telefono implements Serializable {
     private int id;
     private String numero;
 
+    public Telefono(int id, String numero){
+        this.setId(id);
+        this.setNumero(numero);
+    }
+
 
     public int getId() {
         return id;

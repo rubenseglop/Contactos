@@ -17,6 +17,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static String uniqueID = UUID.randomUUID().toString(); // creo un identificador unico
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
+    private int [] datosId; // Array con el número de tuplas (de contactos, de galeria, domicilio, etc...)
 
     // Creación de tabla para la BD en formato SQL en caso de no tenerla
     private static final String UNIQUE_UUID =
@@ -46,6 +47,9 @@ public class BDInterna extends SQLiteOpenHelper {
                     "NUMERO VARCHAR(15))";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
+    ArrayList<Galeria> galerias = new ArrayList<>();
+    ArrayList<Domicilio> domicilios = new ArrayList<>();
+    ArrayList<Telefono> telefonos = new ArrayList<>();
 
     // Constructor de la clase
     public BDInterna(Context context) {
@@ -57,36 +61,75 @@ public class BDInterna extends SQLiteOpenHelper {
 
     public void actualizaContactos() {
         Cursor bus;
+
+        //limpio todos los ArrayLists
         contactos.clear();
-        int [] datosId = recuperaIds();
+        galerias.clear();
+        domicilios.clear();
+        telefonos.clear();
 
-        for (int i = 0; i < numerodeFilas(); i++) {
-
+        datosId = recuperaIds("USUARIOS", "nombre ASC");  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        for (int i = 0; i < numerodeFilas("USUARIOS"); i++) {
             bus = busquedaContacto(Integer.toString(datosId[i]));
-
             if (bus.moveToFirst()) {
                 //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-
                 String foto;
                 String nombre;
                 String apellidos;
                 int galeria_id;
-                String domicilio_id;
-                String telefono_id;
+                int domicilio_id;
+                int telefono_id;
                 String email;
-
                 do {
                     int id = bus.getInt(0);
                     foto = bus.getString(1);
                     nombre = bus.getString(2);
                     apellidos = bus.getString(3);
                     galeria_id = bus.getInt(4);
-                    domicilio_id = bus.getString(5);
-                    telefono_id = bus.getString(6);
+                    domicilio_id = bus.getInt(5);
+                    telefono_id = bus.getInt(6);
                     email = bus.getString(7);
+                    contactos.add(new Contacto(id,foto,nombre,apellidos, galeria_id ,domicilio_id,telefono_id,email));
+                } while(bus.moveToNext());
+            }
+        }
 
-                    contactos.add(new Contacto(id,foto,nombre,apellidos,domicilio_id,telefono_id,email)); //TODO ¡¡aviso aqui no pongo la galeria!!
-
+        datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        for (int i = 0; i < numerodeFilas("GALERIA"); i++) {
+            bus = busquedaGaleria(Integer.toString(datosId[i]));
+            if (bus.moveToFirst()) {
+                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                String url;
+                do {
+                    int id = bus.getInt(0);
+                    url = bus.getString(1);
+                    galerias.add(new Galeria(id,url));
+                } while(bus.moveToNext());
+            }
+        }
+        datosId = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        for (int i = 0; i < numerodeFilas("DOMICILIO"); i++) {
+            bus = busquedaDomicilio(Integer.toString(datosId[i]));
+            if (bus.moveToFirst()) {
+                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                String direccion;
+                do {
+                    int id = bus.getInt(0);
+                    direccion = bus.getString(1);
+                    domicilios.add(new Domicilio(id,direccion));
+                } while(bus.moveToNext());
+            }
+        }
+        datosId = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        for (int i = 0; i < numerodeFilas("TELEFONO"); i++) {
+            bus = busquedaTelefono(Integer.toString(datosId[i]));
+            if (bus.moveToFirst()) {
+                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                String numero;
+                do {
+                    int id = bus.getInt(0);
+                    numero = bus.getString(1);
+                    telefonos.add(new Telefono(id,numero));
                 } while(bus.moveToNext());
             }
         }
@@ -94,7 +137,6 @@ public class BDInterna extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        System.out.println("DEBUG LA ABUELA FUMA PORROS");
 
         db.execSQL(TABLA_GALERIA);
         db.execSQL(TABLA_DOMICILIO);
@@ -132,7 +174,7 @@ public class BDInterna extends SQLiteOpenHelper {
         if (id.length() == 0) {
 
             if (db != null) {
-                // Creamos el registro a insertar
+                // Creamos el registro a insertarContacto
                 ContentValues valores = new ContentValues();
                 valores.put("ID", uniqueID);
 
@@ -150,19 +192,42 @@ public class BDInterna extends SQLiteOpenHelper {
 
     // Inserta un contactos a la BD
     // TODO AÑADIR LA GALERIAID Y EL RESTO QUE HE MODIFICADO
-    public void insertarContacto(String foto, String nombre, String apellidos, String domicilio, String telefono, String email, String uuid) {
+    public void insertarContacto(String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
-            // Creamos el registro a insertar
+            // Creamos el registro a insertarContacto
             ContentValues valores = new ContentValues();
             int id = ultimo_id("USUARIOS");
             valores.put("ID", id);
             valores.put("FOTO", foto);
             valores.put("NOMBRE", nombre);
             valores.put("APELLIDOS", apellidos);
-            valores.put("DOMICILIO", domicilio);
-            valores.put("TELEFONO", telefono);
+            valores.put("GALERIA_ID", galeria_id);
+            valores.put("DOMICILIO_ID", domicilio_id);
+            valores.put("TELEFONO_ID", telefono_id);
+            valores.put("EMAIL", email);
+
+            //insertamos el registro en la Base de Datos
+            db.insert("USUARIOS", null, valores);
+        }
+
+        db.close();
+    }
+    // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID para la BDExterna)
+    public void insertarContacto(String id, String foto, String nombre, String apellidos, String galeria_id, String domicilio_id, String telefono_id, String email, String uuid) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null) {
+            // Creamos el registro a insertarContacto
+            ContentValues valores = new ContentValues();
+            valores.put("ID", id);
+            valores.put("FOTO", foto);
+            valores.put("NOMBRE", nombre);
+            valores.put("APELLIDOS", apellidos);
+            valores.put("GALERIA_ID", galeria_id);
+            valores.put("DOMICILIO_ID", domicilio_id);
+            valores.put("TELEFONO_ID", telefono_id);
             valores.put("EMAIL", email);
 
             //insertamos el registro en la Base de Datos
@@ -172,24 +237,48 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
-
-    // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID)
-    public void insertarContacto(String id, String foto, String nombre, String apellidos, String domicilio, String telefono, String email, String uuid) {
+    public void insertarGaleria(int id, String url) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
-            // Creamos el registro a insertar
+            // Creamos el registro a insertarContacto
             ContentValues valores = new ContentValues();
             valores.put("ID", id);
-            valores.put("FOTO", foto);
-            valores.put("NOMBRE", nombre);
-            valores.put("APELLIDOS", apellidos);
-            valores.put("DOMICILIO", domicilio);
-            valores.put("TELEFONO", telefono);
-            valores.put("EMAIL", email);
+            valores.put("URL", url);
 
             //insertamos el registro en la Base de Datos
-            db.insert("USUARIOS", null, valores);
+            db.insert("GALERIA", null, valores);
+        }
+
+        db.close();
+    }
+
+    public void insertarDomicilio(int id, String domicilio) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null) {
+            // Creamos el registro a insertarContacto
+            ContentValues valores = new ContentValues();
+            valores.put("ID", id);
+            valores.put("DIRECCION", domicilio);
+
+            //insertamos el registro en la Base de Datos
+            db.insert("DOMICILIO", null, valores);
+        }
+
+        db.close();
+    }
+    public void insertarTelefono(int id, String telefono) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null) {
+            // Creamos el registro a insertarContacto
+            ContentValues valores = new ContentValues();
+            valores.put("ID", id);
+            valores.put("NUMERO", telefono);
+
+            //insertamos el registro en la Base de Datos
+            db.insert("TELEFONO", null, valores);
         }
 
         db.close();
@@ -213,7 +302,7 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Borra un contacto de la BD dado un id
-    public void borraContacto(int id) {
+    public void borraContacto(int id) { //TODO ARREGLAR EL ON DELETE CASCADE INTERNO
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -226,7 +315,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
 
     // ultimo id
-    public int ultimo_id(String usuario) {
+    public int ultimo_id(String tabla) {
 
         SQLiteDatabase db = getReadableDatabase();
 
@@ -235,7 +324,7 @@ public class BDInterna extends SQLiteOpenHelper {
         /*Cursor c = db.query("USUARIOS", valores_recuperar, null, null, null, null,
                 null,null);*/
 
-        Cursor c = db.rawQuery("SELECT MAX(ID) FROM " + usuario, null);
+        Cursor c = db.rawQuery("SELECT MAX(ID) FROM " + tabla, null);
         c.moveToFirst();
         return c.getInt(0)+1;
 
@@ -244,7 +333,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
+        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO_ID", "TELEFONO_ID","EMAIL"};
 
         String[] args = new String[] {id};
 
@@ -257,15 +346,35 @@ public class BDInterna extends SQLiteOpenHelper {
 
     // Devuelve datos de un Contacto dado un nombre, los devuelve de forma ordenada por nombre
     public Cursor busquedaContacto(String id) {
-
         SQLiteDatabase db = getReadableDatabase();
-
-        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
-
+        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "GALERIA_ID", "DOMICILIO_ID", "TELEFONO_ID", "EMAIL"};
         String[] args = new String[] {id};
-
         Cursor c = db.query("USUARIOS", valores_recuperar, "ID=?", args, null, null,
                 "NOMBRE ASC",null);
+        return c;
+    }
+    public Cursor busquedaGaleria(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] valores_recuperar = {"ID", "URL"};
+        String[] args = new String[] {id};
+        Cursor c = db.query("GALERIA", valores_recuperar, "ID=?", args, null, null,
+                null,null);
+        return c;
+    }
+    public Cursor busquedaDomicilio(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] valores_recuperar = {"ID", "DIRECCION"};
+        String[] args = new String[] {id};
+        Cursor c = db.query("DOMICILIO", valores_recuperar, "ID=?", args, null, null,
+                null,null);
+        return c;
+    }
+    public Cursor busquedaTelefono(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] valores_recuperar = {"ID", "NUMERO"};
+        String[] args = new String[] {id};
+        Cursor c = db.query("TELEFONO", valores_recuperar, "ID=?", args, null, null,
+                null,null);
         return c;
     }
 
@@ -274,7 +383,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
 
-        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "DOMICILIO", "TELEFONO","EMAIL"};
+        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "GALERIA_ID", "DOMICILIO_ID", "TELEFONO_ID", "EMAIL"};
 
         // Ordena al recuperarlos
         Cursor c = db.query("USUARIOS", valores_recuperar,null,null,null,null,"nombre ASC",null);
@@ -284,14 +393,15 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Devuelve el numero de filas de la tabla
-    public int numerodeFilas(){
-        int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), "USUARIOS");
+    public int numerodeFilas(String tabla){
+        int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), tabla);
+        System.out.println("DEBUG FILAS " +tabla+" " + dato);
 
         return dato;
     }
 
     // Guarda en un array de IDs todos los ID de la tabla
-    public int [] recuperaIds(){
+    public int [] recuperaIds(String tabla, String orderby){
         int [] datosId;
         int i;
 
@@ -299,7 +409,8 @@ public class BDInterna extends SQLiteOpenHelper {
         String[] valores_recuperar = {"ID"};
 
         // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
-        Cursor cursor = db.query("USUARIOS",valores_recuperar,null,null,null,null,"nombre ASC",null);
+        Cursor cursor = db.query(tabla , valores_recuperar,null,null,null,null, orderby ,null);
+        orderby = null;
 
         if (cursor.getCount()>0){
             datosId= new int[cursor.getCount()];
@@ -321,7 +432,7 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     public int devuelvoIDborrado(int id){
-        int [] datosId = recuperaIds();
+        int [] datosId = recuperaIds("USUARIOS", "nombre ASC");
 
         return datosId[id];
     }
