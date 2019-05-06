@@ -35,16 +35,19 @@ public class BDInterna extends SQLiteOpenHelper {
                     ");";
     private static final String TABLA_GALERIA =
             "CREATE TABLE GALERIA (" +
-                    "ID INTEGER(6) PRIMARY KEY," +
-                    "URL VARCHAR(200));";
+                    "ID INTEGER(6)," +
+                    "URL VARCHAR(200)," +
+                    "FOREIGN KEY (ID) REFERENCES USUARIO(GALERIA_ID) ON DELETE CASCADE);";
     private static final String TABLA_DOMICILIO =
             "CREATE TABLE DOMICILIO(" +
-                    "ID INTEGER(6) PRIMARY KEY," +
-                    "DIRECCION VARCHAR(200))";
+                    "ID INTEGER(6)," +
+                    "DIRECCION VARCHAR(200),"+
+                    "FOREIGN KEY (ID) REFERENCES USUARIO(DOMICILIO_ID) ON DELETE CASCADE);";
     private static final String TABLA_TELEFONO =
             "CREATE TABLE TELEFONO(" +
-                    "ID INTEGER(6) PRIMARY KEY," +
-                    "NUMERO VARCHAR(15))";
+                    "ID INTEGER(6)," +
+                    "NUMERO VARCHAR(15)," +
+                    "FOREIGN KEY (ID) REFERENCES USUARIO(TELEFONO_ID) ON DELETE CASCADE);";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
     ArrayList<Galeria> galerias = new ArrayList<>();
@@ -143,6 +146,7 @@ public class BDInterna extends SQLiteOpenHelper {
         db.execSQL(TABLA_TELEFONO);
         db.execSQL(TABLA_USUARIOS);
         db.execSQL(UNIQUE_UUID);
+
         //insertarUUID(); // aqui lo petamos
 
     }
@@ -302,11 +306,15 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Borra un contacto de la BD dado un id
-    public void borraContacto(int id) { //TODO ARREGLAR EL ON DELETE CASCADE INTERNO
+    public void borraContacto(int id) {
 
         SQLiteDatabase db = getWritableDatabase();
 
+        db.delete("GALERIA", "ID=" + id, null);
+        db.delete("DOMICILIO", "ID=" + id, null);
+        db.delete("TELEFONO", "ID=" + id, null);
         db.delete("USUARIOS", "ID=" + id, null);
+
 
         db.close();
         actualizaContactos();
