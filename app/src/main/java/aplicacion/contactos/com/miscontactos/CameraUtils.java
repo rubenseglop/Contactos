@@ -119,7 +119,4 @@ public class CameraUtils {
 
         return mediaFile;
     }
-
-    //TODO devolver la foto;
-
 }

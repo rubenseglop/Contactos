@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="aplicacion.contactos.com.miscontactos.MainActivity">
     <item
-        android:id="@+id/action_anadir"
+        android:id="@+id/action_compartir"
         android:orderInCategory="100"
-        android:title="@string/action_anadir"
+        android:title="@string/action_compartir"
         app:showAsAction="never" />
     <item
         android:id="@+id/exportar"

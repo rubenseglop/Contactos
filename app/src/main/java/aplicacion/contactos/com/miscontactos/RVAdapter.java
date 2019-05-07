@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -70,17 +72,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
 
         //TODO AQUI PETA AL MOSTRAR UN CONTACTO SIN FOTO
-        /*if (contactos.get(i).getFoto()!=null) {
+
+            //personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
+
+        System.out.println("DEBUG ADAPTADOR " + recogerImagen(contactos.get(i).getFoto()));
             personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
-        }*/
+
 
         personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
         personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
 
-        personViewHolder.tv_domicilio.setText(domicilio.get(contactos.get(i).getDireccion_id()-1).getDireccion());
+        //personViewHolder.tv_domicilio.setText(domicilio.get(contactos.get(i).getDireccion_id()).getDireccion());
         //personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion_id());
 
-        personViewHolder.tv_telefono.setText(telefono.get(contactos.get(i).getTelefono_id()-1).getNumero());
+        //personViewHolder.tv_telefono.setText(telefono.get(contactos.get(i).getTelefono_id()).getNumero());
         //personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono_id());
 
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
@@ -97,10 +102,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     // Dado un string de ruta devuelve un bitmap con la imagen
     private Bitmap recogerImagen(String c){
-        File ruta = Environment.getExternalStorageDirectory();
-        File file = new File(ruta.getAbsolutePath(), c);
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-
+        Bitmap bitmap = BitmapFactory.decodeFile(c);
         return  bitmap;
     }
+
 }

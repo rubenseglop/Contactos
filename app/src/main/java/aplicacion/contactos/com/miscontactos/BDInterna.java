@@ -37,6 +37,7 @@ public class BDInterna extends SQLiteOpenHelper {
             "CREATE TABLE GALERIA (" +
                     "ID INTEGER(6)," +
                     "URL VARCHAR(200)," +
+                    "COMPARTIDO VARCHAR(50)," +
                     "FOREIGN KEY (ID) REFERENCES USUARIO(GALERIA_ID) ON DELETE CASCADE);";
     private static final String TABLA_DOMICILIO =
             "CREATE TABLE DOMICILIO(" +
@@ -85,14 +86,18 @@ public class BDInterna extends SQLiteOpenHelper {
                 String email;
                 do {
                     int id = bus.getInt(0);
-                    foto = bus.getString(1);
+                    foto = bus.getString(1);  // Esta es la foto interna
                     nombre = bus.getString(2);
                     apellidos = bus.getString(3);
                     galeria_id = bus.getInt(4);
                     domicilio_id = bus.getInt(5);
                     telefono_id = bus.getInt(6);
                     email = bus.getString(7);
+
+
                     contactos.add(new Contacto(id,foto,nombre,apellidos, galeria_id ,domicilio_id,telefono_id,email));
+
+
                 } while(bus.moveToNext());
             }
         }

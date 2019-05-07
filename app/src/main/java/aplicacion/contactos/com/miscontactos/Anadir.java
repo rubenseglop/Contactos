@@ -70,8 +70,10 @@ public class Anadir extends AppCompatActivity {
 
     private String UPLOAD_PHP ="http://iesayala.ddns.net/BDSegura/misContactos/upload.php";
 
-    private String KEY_IMAGEN = "foto";
-    private String KEY_NOMBRE = "nombre";
+
+    private String KEY_UUID = "UUID";
+    private String KEY_IMAGEN = "FOTO";
+    private String KEY_PATH = "PATH";
     private Bitmap bitmap;
 
     @Override
@@ -130,7 +132,7 @@ public class Anadir extends AppCompatActivity {
             if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
 
                 if (savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH).length()!=0) {imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);}
-                else {imageStoragePath = "/storage/emulated/0/Pictures/Hello_Camera/perfil.png";}
+                else {imageStoragePath = "http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png";}
 
                 if (!TextUtils.isEmpty(imageStoragePath)) {
                     if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
@@ -230,7 +232,7 @@ public class Anadir extends AppCompatActivity {
         if (error==false) {
 
 
-            if(imageStoragePath == null) { imageStoragePath = "/storage/emulated/0/Pictures/Hello_Camera/perfil.png";}
+            if(imageStoragePath == null) { imageStoragePath = "http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png";}
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
 
 
@@ -242,9 +244,11 @@ public class Anadir extends AppCompatActivity {
             int last_domicilio_id = bdInterna.ultimo_id("DOMICILIO");
             int last_telefono_id = bdInterna.ultimo_id("TELEFONO");
 
+
+
             //inserto contacto con las ultimas id
             bdInterna.insertarContacto(
-                    imageStoragePath,
+                    imageStoragePath,  // todo cambiar aqui por la url web
                     tv_nombre.getText().toString(),
                     tv_apellido.getText().toString(),
                     last_galeria_id,
@@ -269,55 +273,54 @@ public class Anadir extends AppCompatActivity {
     private void uploadImage(String nombre) {
         //Mostrar el diálogo de progreso
 
-            final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
 
+        System.out.println("DEBUG ejecutrando " + UPLOAD_PHP);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_PHP,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Descartar el diálogo de progreso
+                        loading.dismiss();
+                        //Mostrando el mensaje de la respuesta
+                        System.out.println("DEBUG HASTA AQUI " + nombre);
+                        Toast.makeText(Anadir.this, s, Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Descartar el diálogo de progreso
+                        System.out.println("DEBUG HASTA ALLA");
+                        loading.dismiss();
 
-            System.out.println("DEBUG ejecutrando " + UPLOAD_PHP);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_PHP,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String s) {
-                            //Descartar el diálogo de progreso
-                            loading.dismiss();
-                            //Mostrando el mensaje de la respuesta
-                            System.out.println("DEBUG HASTA AQUI " + nombre);
-                            Toast.makeText(Anadir.this, s, Toast.LENGTH_LONG).show();
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            //Descartar el diálogo de progreso
-                            System.out.println("DEBUG HASTA ALLA");
-                            loading.dismiss();
+                        //Showing toast
+                        //Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Convertir bits a cadena
+                String imagen = getStringImagen(bitmap);
 
-                            //Showing toast
-                            //Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    //Convertir bits a cadena
-                    String imagen = getStringImagen(bitmap);
+                //Creación de parámetros
+                Map<String, String> params = new Hashtable<String, String>();
 
-                    //Creación de parámetros
-                    Map<String, String> params = new Hashtable<String, String>();
+                //Agregando de parámetros
+                params.put(KEY_UUID, bdInterna.getUniqueID());
+                params.put(KEY_IMAGEN, imagen);
+                params.put(KEY_PATH, nombre);
 
-                    //Agregando de parámetros
-                    params.put(KEY_IMAGEN, imagen);
-                    params.put(KEY_NOMBRE, nombre);
+                //Parámetros de retorno
+                return params;
+            }
+        };
 
-                    //Parámetros de retorno
-                    return params;
-                }
-            };
+        //Creación de una cola de solicitudes
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-            //Creación de una cola de solicitudes
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-            //Agregar solicitud a la cola
-            requestQueue.add(stringRequest);
-
+        //Agregar solicitud a la cola
+        requestQueue.add(stringRequest);
     }
 
     public String getStringImagen(Bitmap bmp){

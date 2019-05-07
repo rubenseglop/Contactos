@@ -2,9 +2,13 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Domicilio> domicilios;
     ArrayList<Telefono> telefonos;
 
+    boolean error_conexion = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         bdinterna.insertarUUID();
+
+        //copiar la foto del perfil en blanco
         actualizar();
+    }
+    public String getURLForResource (int resourceId) {
+        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
     }
 
     private void actualizar() {
@@ -116,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_anadir) {
-            Intent i = new Intent(this, Anadir.class);
+        if (id == R.id.action_compartir) {
+            Intent i = new Intent(this, Compartir.class);
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
@@ -139,10 +151,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void importarWebService() {
 
-        WebSerTabla("CON", "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-        WebSerTabla("GAL","http://iesayala.ddns.net/BDSegura/misContactos/vergaleria.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-        WebSerTabla("DOM", "http://iesayala.ddns.net/BDSegura/misContactos/verdomicilio.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-        WebSerTabla("TEL", "http://iesayala.ddns.net/BDSegura/misContactos/vertelefono.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+
+
+        // muestra un dialogo con aceptar o cancelar
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+        dialogo1.setTitle("Importante");
+        dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogo1, int id) {
+                error_conexion = false;
+                // en el caso de aceptar
+
+
+                WebSerTabla("CON", "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+                WebSerTabla("GAL","http://iesayala.ddns.net/BDSegura/misContactos/vergaleria.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+                WebSerTabla("DOM", "http://iesayala.ddns.net/BDSegura/misContactos/verdomicilio.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+                WebSerTabla("TEL", "http://iesayala.ddns.net/BDSegura/misContactos/vertelefono.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+
+            }
+        });
+        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                // en el caso de cancelar (no hago nada)
+            }
+        });
+        dialogo1.show();
+        // fin muestra dialogo aceptar o cancelar
+
     }
 
     private void WebSerTabla(String tabla, String sUrl) {
@@ -167,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exportarWebService() {
-        boolean error_conexion = false;
+        error_conexion = false;
         String error;
 
         System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size() + " DOMICILIO " + domicilios.size() + " TELEFONO " + telefonos.size());
@@ -249,51 +286,37 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void StringObjeto(String tabla, String jsonString) {
-        boolean error_conexion = false;
+
         if (tabla == "CON") {
-            // muestra un dialogo con aceptar o cancelar
-            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-            dialogo1.setTitle("Importante");
-            dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
-            dialogo1.setCancelable(false);
-            dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
-                public void onClick(DialogInterface dialogo1, int id) {
-                    boolean error_conexion = false;
-                    // en el caso de aceptar
-                    try {
-                        JSONArray jArray = new JSONArray(jsonString);
-                        for (int i = 0; i < jArray.length(); i++) {
-                            JSONObject json_data = jArray.getJSONObject(i);
-                            // add to list
-                            bdinterna.insertarContacto(
-                                    json_data.getString("ID"),
-                                    json_data.getString("FOTO"),
-                                    json_data.getString("NOMBRE"),
-                                    json_data.getString("APELLIDOS"),
-                                    json_data.getString("GALERIAID"),
-                                    json_data.getString("DOMICILIOID"),
-                                    json_data.getString("TELEFONOID"),
-                                    json_data.getString("EMAIL"),
-                                    json_data.getString("UUIDUNIQUE")
-                            );
-                            System.out.println("DEBUG " + json_data.getString("FOTO"));
+            try {
+                JSONArray jArray = new JSONArray(jsonString);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    // add to list
+                    bdinterna.insertarContacto(
+                            json_data.getString("ID"),
+                            json_data.getString("FOTO"),
+                            json_data.getString("NOMBRE"),
+                            json_data.getString("APELLIDOS"),
+                            json_data.getString("GALERIAID"),
+                            json_data.getString("DOMICILIOID"),
+                            json_data.getString("TELEFONOID"),
+                            json_data.getString("EMAIL"),
+                            json_data.getString("UUIDUNIQUE")
+                    );
+                    System.out.println("DEBUG " + json_data.getString("FOTO"));
 
-                        }
-
-                    } catch (Exception e) {
-                        System.out.println("DEBUG catch " + e.getMessage());
-                        error_conexion = true;
-                    }
                 }
-            });
-            dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogo1, int id) {
-                    // en el caso de cancelar (no hago nada)
-                }
-            });
-            dialogo1.show();
-            // fin muestra dialogo aceptar o cancelar
+
+            } catch (Exception e) {
+                System.out.println("DEBUG catch " + e.getMessage());
+                error_conexion = true;
+            }
+
+
+
+
         } else if (error_conexion == false && tabla == "GAL") {
             try {
                 JSONArray jArray = new JSONArray(jsonString);
@@ -334,6 +357,8 @@ public class MainActivity extends AppCompatActivity {
                             json_data.getInt("ID"),
                             json_data.getString("NUMERO")
                     );
+
+
                 }
             } catch (Exception e) {
                 System.out.println("DEBUG catch " + e.getMessage());
