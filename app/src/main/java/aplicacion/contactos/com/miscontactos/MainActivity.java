@@ -165,10 +165,10 @@ public class MainActivity extends AppCompatActivity {
                 // en el caso de aceptar
 
 
-                WebSerTabla("CON", "http://iesayala.ddns.net/BDSegura/misContactos/vercontactos.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-                WebSerTabla("GAL","http://iesayala.ddns.net/BDSegura/misContactos/vergaleria.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-                WebSerTabla("DOM", "http://iesayala.ddns.net/BDSegura/misContactos/verdomicilio.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
-                WebSerTabla("TEL", "http://iesayala.ddns.net/BDSegura/misContactos/vertelefono.php/?UUIDUNIQUE=" + bdinterna.getUniqueID());
+                WebSerTabla("CON", BDExternaLinks.vercontactos + bdinterna.getUniqueID());
+                WebSerTabla("GAL",BDExternaLinks.vergaleria + bdinterna.getUniqueID());
+                WebSerTabla("DOM", BDExternaLinks.verdomicilio + bdinterna.getUniqueID());
+                WebSerTabla("TEL", BDExternaLinks.vertelefono + bdinterna.getUniqueID());
 
             }
         });

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -68,8 +69,7 @@ public class Anadir extends AppCompatActivity {
 
     private static String imageStoragePath;
 
-    private String UPLOAD_PHP ="http://iesayala.ddns.net/BDSegura/misContactos/upload.php";
-
+    private String UPLOAD_PHP = BDExternaLinks.upload_php;
 
     private String KEY_UUID = "UUID";
     private String KEY_IMAGEN = "FOTO";
@@ -132,7 +132,7 @@ public class Anadir extends AppCompatActivity {
             if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
 
                 if (savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH).length()!=0) {imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);}
-                else {imageStoragePath = "http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png";}
+                else {imageStoragePath = BDExternaLinks.imageStoragePath;}
 
                 if (!TextUtils.isEmpty(imageStoragePath)) {
                     if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
@@ -232,7 +232,7 @@ public class Anadir extends AppCompatActivity {
         if (error==false) {
 
 
-            if(imageStoragePath == null) { imageStoragePath = "http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png";}
+            if(imageStoragePath == null) { imageStoragePath = BDExternaLinks.imageStoragePath;}
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
 
 
@@ -283,7 +283,7 @@ public class Anadir extends AppCompatActivity {
                         //Descartar el diálogo de progreso
                         loading.dismiss();
                         //Mostrando el mensaje de la respuesta
-                        System.out.println("DEBUG HASTA AQUI " + nombre);
+                        System.out.println("DEBUG HASTA AQUI BIEN " + nombre);
                         Toast.makeText(Anadir.this, s, Toast.LENGTH_LONG).show();
                     }
                 },
@@ -291,7 +291,7 @@ public class Anadir extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         //Descartar el diálogo de progreso
-                        System.out.println("DEBUG HASTA ALLA");
+                        System.out.println("DEBUG HASTA ALLA ERROR");
                         loading.dismiss();
 
                         //Showing toast
@@ -303,12 +303,13 @@ public class Anadir extends AppCompatActivity {
                 //Convertir bits a cadena
                 String imagen = getStringImagen(bitmap);
 
+
                 //Creación de parámetros
                 Map<String, String> params = new Hashtable<String, String>();
 
                 //Agregando de parámetros
                 params.put(KEY_UUID, bdInterna.getUniqueID());
-                params.put(KEY_IMAGEN, imagen);
+                params.put(KEY_IMAGEN, imagen);  //todo revisar en caso de fallo de imagen vacia
                 params.put(KEY_PATH, nombre);
 
                 //Parámetros de retorno
@@ -397,10 +398,7 @@ public class Anadir extends AppCompatActivity {
                 }).show();
     }
 
-
-
     public void clickImagen(View v) {
-
 
     }
 

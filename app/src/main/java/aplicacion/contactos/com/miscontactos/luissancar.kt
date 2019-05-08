@@ -13,7 +13,7 @@ class luissancar (){
     }
 
     fun insertarContacto(id:String, foto:String, nombre:String, apellidos:String, galeria:Int, domicilio:Int, telefono:Int, email:String, uuid:String):String{
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertarcontacto.php/?ID=" + id +
+        var url = BDExternaLinks.insertarcontacto + id +
                 "&FOTO=" + foto +
                 "&NOMBRE=" + nombre +
                 "&APELLIDOS=" + apellidos +
@@ -28,7 +28,7 @@ class luissancar (){
         return leerUrl(url)
     }
     fun insertarGaleria(id:Int, url:String, uuid:String):String{
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertargaleria.php/?ID=" + id +
+        var url = BDExternaLinks.insertargaleria + id +
                 "&URL=" + url +
                 "&UUIDUNIQUE=" + uuid
         // Solución a los espacios (reemplazar por su valor hex)
@@ -37,7 +37,7 @@ class luissancar (){
         return leerUrl(url)
     }
     fun insertarDomicilio(id:Int, direccion:String, uuid:String):String{
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertardomicilio.php/?ID=" + id +
+        var url = BDExternaLinks.insertardomicilio + id +
                 "&DIRECCION=" + direccion +
                 "&UUIDUNIQUE=" + uuid
         // Solución a los espacios (reemplazar por su valor hex)
@@ -46,7 +46,7 @@ class luissancar (){
         return leerUrl(url)
     }
     fun insertarTelefono(id:Int, numero:String, uuid:String):String{
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/insertartelefono.php/?ID=" + id +
+        var url = BDExternaLinks.insertartelefono + id +
                 "&NUMERO=" + numero +
                 "&UUIDUNIQUE=" + uuid
         // Solución a los espacios (reemplazar por su valor hex)
@@ -57,7 +57,7 @@ class luissancar (){
 
     fun borrartodo(uuid: String):String{
 
-        var url = "http://iesayala.ddns.net/BDSegura/misContactos/eliminatodo.php?UUIDUNIQUE=" + uuid
+        var url = BDExternaLinks.eliminatodo + uuid
         return leerUrl(url);
     }
 

@@ -17,4 +17,5 @@
     <string name="permission_denied">Permission denied</string>
     <string name="imageview_description">The imageview that contains the emojified picture</string>
     <string name="importar">Importar</string>
+    <string name="pic">Fotos</string>
 </resources>
