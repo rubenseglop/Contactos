@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.gson.JsonParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,6 +27,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
+import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
+import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
+import in.myinnos.awesomeimagepicker.models.Image;
 
 
 public class Compartir extends AppCompatActivity {
@@ -98,12 +104,30 @@ public class Compartir extends AppCompatActivity {
             System.out.println("DEBUG catch " + e.getMessage());
             Toast.makeText(Compartir.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
         }
-
-
     }
     public void clickPulsar(View v) {
-        System.out.println("DEBUG HAS DADO ACEPTAR");
 
+        // https://github.com/myinnos/AwesomeImagePicker
+        Intent intent = new Intent(this, AlbumSelectActivity.class);
+        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT,15); // set limit for image selection
+        startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            //The array list has the image paths of the selected images
+            ArrayList<Image> images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+
+            for (int i = 0; i < images.size(); i++) {
+                Uri uri = Uri.fromFile(new File(images.get(i).path));
+                // start play with image uri
+                System.out.println("DEBUG URI " + uri.getPath());
+
+            }
+        }
     }
 }
 
