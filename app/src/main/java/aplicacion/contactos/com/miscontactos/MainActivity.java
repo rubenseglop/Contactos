@@ -42,7 +42,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     BDInterna bdinterna;
-    luissancar luissancar;
+    BDExterna bdexterna;
 
     ArrayList<Contacto> contactos;
     ArrayList<Galeria> galerias;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //LUIS EL PT.AMO
+        // Establecer la politica de permisos necesarios para leer JSON (mas adelante usado para la BDExterna)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -75,22 +75,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Instancio la clase BDInterna para crear la BD y tener los métodos para manejarla
+        //Instancio la clase BDInterna e BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
-        luissancar = new luissancar();
-        //bdinterna.insertarContacto("es mi url de foto","ruben","segura","jardines","5454545", "a@b.c"); //para insertarContacto
-        //bdinterna.insertarContacto("antonio","gutierrez","arena","6767676", "b@e.d");
-
+        bdexterna = new BDExterna();
 
         bdinterna.insertarUUID();
 
-        //copiar la foto del perfil en blanco
         actualizar();
     }
     public String getURLForResource (int resourceId) {
         return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
     }
 
+    /**
+     * Método actualizar que lee de la BDInterna y actualiza los POJOS de contactos, galerias
+     * domicilios y telefonos
+     */
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos();
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         galerias=bdinterna.galerias;
         domicilios=bdinterna.domicilios;
         telefonos=bdinterna.telefonos;
-        //bdinterna.insertarUUID();
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rv);
-
     }
 
     @Override
@@ -133,25 +131,19 @@ public class MainActivity extends AppCompatActivity {
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
-
         }
+
         if (id == R.id.exportar) {
-
             exportarWebService();
-
-
         }
+
         if (id == R.id.importar) {
-
             importarWebService();
-
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void importarWebService() {
-
-
 
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
@@ -162,11 +154,10 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(DialogInterface dialogo1, int id) {
                 error_conexion = false;
-                // en el caso de aceptar
-
+                // en el caso de aceptar el dialog
 
                 WebSerTabla("CON", BDExternaLinks.vercontactos + bdinterna.getUniqueID());
-                WebSerTabla("GAL",BDExternaLinks.vergaleria + bdinterna.getUniqueID());
+                WebSerTabla("GAL", BDExternaLinks.vergaleria + bdinterna.getUniqueID());
                 WebSerTabla("DOM", BDExternaLinks.verdomicilio + bdinterna.getUniqueID());
                 WebSerTabla("TEL", BDExternaLinks.vertelefono + bdinterna.getUniqueID());
 
@@ -177,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 // en el caso de cancelar (no hago nada)
             }
         });
-        dialogo1.show();
-        // fin muestra dialogo aceptar o cancelar
-
+        dialogo1.show();// fin muestra dialog aceptar o cancelar
     }
 
     private void WebSerTabla(String tabla, String sUrl) {
@@ -210,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size() + " DOMICILIO " + domicilios.size() + " TELEFONO " + telefonos.size());
 
 
-        if(luissancar.borrartodo(bdinterna.getUniqueID())=="Error") {
+        if(bdexterna.borrartodo(bdinterna.getUniqueID())=="Error") {
             error_conexion = true;
         }
         if (error_conexion == false) {
@@ -233,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
                 if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
-                error = luissancar.insertarContacto(varId,varFoto,varNombre,varApellidos,varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
+                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
                 if (error == "Error"){error_conexion = true; }
             }
         }
@@ -241,13 +230,13 @@ public class MainActivity extends AppCompatActivity {
             /*for (Galeria galeria : galerias) {
                 int varId = galeria.getId();
                 String varUrl = galeria.getURL();
-                String varUUID = bdinterna.getUniqueID();
+                String varUUID = bdInterna.getUniqueID();
 
                 error = luissancar.insertarGaleria(varId, varUrl, varUUID);
                 if (error == "Error") {
                     error_conexion = true;
                 }
-            }*/ // todo para luego la galeria
+            }*/
         }
         if (error_conexion == false) {
             for (Domicilio domicilio : domicilios) {
@@ -257,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
 
-                error = luissancar.insertarDomicilio(varId, varDireccion, varUUID);
+                error = bdexterna.insertarDomicilio(varId, varDireccion, varUUID);
                 if (error == "Error") {
                     error_conexion = true;
                 }
@@ -271,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (varNumero==null || varNumero.length()==0) { varNumero =""; }
 
-                error = luissancar.insertarTelefono(varId, varNumero, varUUID);
+                error = bdexterna.insertarTelefono(varId, varNumero, varUUID);
                 if (error == "Error") {
                     error_conexion = true;
                 }
@@ -306,16 +295,11 @@ public class MainActivity extends AppCompatActivity {
                             json_data.getString("UUIDUNIQUE")
                     );
                     System.out.println("DEBUG " + json_data.getString("FOTO"));
-
                 }
-
             } catch (Exception e) {
                 System.out.println("DEBUG catch " + e.getMessage());
                 error_conexion = true;
             }
-
-
-
 
         } else if (error_conexion == false && tabla == "GAL") {
             try {

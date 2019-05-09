@@ -41,7 +41,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-
 public class Anadir extends AppCompatActivity {
 
     Button bt_aceptar;
@@ -71,9 +70,6 @@ public class Anadir extends AppCompatActivity {
 
     private String UPLOAD_PHP = BDExternaLinks.upload_php;
 
-    private String KEY_UUID = "UUID";
-    private String KEY_IMAGEN = "FOTO";
-    private String KEY_PATH = "PATH";
     private Bitmap bitmap;
 
     @Override
@@ -189,11 +185,7 @@ public class Anadir extends AppCompatActivity {
 
         Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
 
-        //TODO imprimir la foto en fotoperfil; (es con la URI)
-
-
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
 
         // start the image capture Intent
         startActivityForResult(intent, 100);
@@ -221,8 +213,16 @@ public class Anadir extends AppCompatActivity {
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
 
-    // no tocar
-    public void clickPulsar(View v){
+    /**
+     * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
+     * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
+     * en cada una de las tablas.
+     * Finaliza subiendo la posible foto
+     * @param v
+     */
+    public void clickAnadir(View v){
+
+        System.out.println("DEBUG VIEN");
         boolean error = false;
         if (tv_nombre.getText().length()==0) {
             Toast.makeText(this, "Debes rellenar mínimo el nombre", Toast.LENGTH_SHORT).show();
@@ -230,22 +230,13 @@ public class Anadir extends AppCompatActivity {
         }
         //guardar
         if (error==false) {
-
-
             if(imageStoragePath == null) { imageStoragePath = BDExternaLinks.imageStoragePath;}
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
-
-
-
             bdInterna = new BDInterna(this);
-
             //buscamos los ultimos id
             int last_galeria_id = bdInterna.ultimo_id("GALERIA");
             int last_domicilio_id = bdInterna.ultimo_id("DOMICILIO");
             int last_telefono_id = bdInterna.ultimo_id("TELEFONO");
-
-
-
             //inserto contacto con las ultimas id
             bdInterna.insertarContacto(
                     imageStoragePath,  // todo cambiar aqui por la url web
@@ -261,9 +252,7 @@ public class Anadir extends AppCompatActivity {
             bdInterna.insertarDomicilio(last_domicilio_id,tv_domicilio.getText().toString());
             bdInterna.insertarTelefono(last_telefono_id, tv_telefono.getText().toString());
 
-
             uploadImage(imageStoragePath);
-
             imageStoragePath=null;
             startActivity(getIntent());
             finish();
@@ -293,7 +282,6 @@ public class Anadir extends AppCompatActivity {
                         //Descartar el diálogo de progreso
                         System.out.println("DEBUG HASTA ALLA ERROR");
                         loading.dismiss();
-
                         //Showing toast
                         //Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
                     }
@@ -302,24 +290,18 @@ public class Anadir extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //Convertir bits a cadena
                 String imagen = getStringImagen(bitmap);
-
-
                 //Creación de parámetros
                 Map<String, String> params = new Hashtable<String, String>();
-
-                //Agregando de parámetros
-                params.put(KEY_UUID, bdInterna.getUniqueID());
-                params.put(KEY_IMAGEN, imagen);  //todo revisar en caso de fallo de imagen vacia
-                params.put(KEY_PATH, nombre);
-
+                //Agregando de parámetros al PHP de Upload.php
+                params.put("UUID", bdInterna.getUniqueID());
+                params.put("FOTO", imagen);  //todo revisar en caso de fallo de imagen vacia
+                params.put("PATH", nombre);
                 //Parámetros de retorno
                 return params;
             }
         };
-
         //Creación de una cola de solicitudes
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         //Agregar solicitud a la cola
         requestQueue.add(stringRequest);
     }
@@ -337,11 +319,9 @@ public class Anadir extends AppCompatActivity {
         return new BigInteger(130, random).toString(32);
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (resultCode == RESULT_OK) {
             // Refreshing the gallery
             CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
-
             // successfully captured the image
             // display it in image view
             previewCapturedImage();
@@ -364,19 +344,13 @@ public class Anadir extends AppCompatActivity {
      */
     private void previewCapturedImage() {
         try {
-
             fotoperfil.setVisibility(View.VISIBLE);
-
             bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
-
             fotoperfil.setImageBitmap(bitmap);
-
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
-
-    /**
 
     /**
      * Alert dialog to navigate to app settings
@@ -393,17 +367,9 @@ public class Anadir extends AppCompatActivity {
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
                     }
                 }).show();
     }
-
-    public void clickImagen(View v) {
-
-    }
-
-
-
 }
 
 

@@ -1,9 +1,11 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -41,12 +42,8 @@ public class Compartir extends AppCompatActivity {
     String UUID;
     ArrayList<Contacto> contactos;
 
-    BDInterna bdinterna;
-    luissancar luissancar;
-
-    Button bt_aceptar;
-
-
+    BDInterna bdInterna;
+    BDExterna bdExterna;
 
     @Override
     protected void onDestroy() {
@@ -60,12 +57,10 @@ public class Compartir extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        bdinterna = new BDInterna(this);
+        bdInterna = new BDInterna(this);
 
-        bdinterna.actualizaContactos();
-        UUID = bdinterna.getUniqueID();
-
-        bt_aceptar = bt_aceptar = (Button)findViewById(R.id.action_compartir);
+        bdInterna.actualizaContactos();
+        UUID = bdInterna.getUniqueID();
 
         //saco todos los UUID
         URL url = null;
@@ -107,6 +102,34 @@ public class Compartir extends AppCompatActivity {
     }
     public void clickPulsar(View v) {
 
+        // muestra un dialogo con aceptar o cancelar
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+        dialogo1.setTitle("Importante");
+        dialogo1.setMessage("¿ Vas a compartir éstas fotos ?");
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogo1, int id) {
+
+                // todo aqui para compartir
+
+
+                bdInterna.getUniqueID();
+
+            }
+        });
+        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                // en el caso de cancelar (no hago nada)
+            }
+        });
+        dialogo1.show();
+        // fin muestra dialogo aceptar o cancelar
+
+
+    }
+
+    public void clickGaleria(View v) {
         // https://github.com/myinnos/AwesomeImagePicker
         Intent intent = new Intent(this, AlbumSelectActivity.class);
         intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT,15); // set limit for image selection
