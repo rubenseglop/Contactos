@@ -20,6 +20,7 @@ public class BDExternaLinks {
     static String insertartelefono = LINKS + "insertartelefono.php/?ID=";
     static String eliminatodo = LINKS + "eliminatodo.php?UUIDUNIQUE=";
     static String verUUID = LINKS + "verUUID.php";
+    static String uploadgaleria = LINKS + "GALERIA/uploadgaleria.php";
 
 
 }

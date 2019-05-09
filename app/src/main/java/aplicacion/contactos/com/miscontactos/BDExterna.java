@@ -1,10 +1,22 @@
 package aplicacion.contactos.com.miscontactos;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.sql.DriverManager.println;
 
@@ -99,4 +111,66 @@ public class BDExterna {
 
         return inputLine;
     }
+
+    public String insertarFoto(String uuid, String image, String archivo){
+        String url = BDExternaLinks.uploadgaleria +
+                "?UUID=" + uuid +
+                "&IMAGEN=" + image +
+                "&ARCHIVO=" + archivo;
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20");
+
+        System.out.println("DEBUG URI " +   url);
+        return leerUrl(url);
+    }
+
+
+    public String insertarFoto2(String uuid, String image, String archivo) {
+
+        try {
+            /*
+             * Creamos el objeto de HttpClient que nos permitira conectarnos
+             * mediante peticiones http.
+             */
+            HttpClient httpclient = new DefaultHttpClient();
+
+            /*
+             * El objeto HttpPost permite que enviemos una peticion de tipo POST
+             * a una URL especificada
+             */
+            HttpPost httppost = new HttpPost(BDExternaLinks.insertargaleria);
+
+            // Una lista de parametros,
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            // Se agregan parametros.
+            params.add(new BasicNameValuePair("UUID", uuid));
+            params.add(new BasicNameValuePair("IMAGEN", image));
+            params.add(new BasicNameValuePair("ARCHIVO", archivo));
+
+            /*
+             * Una vez añadidos los parametros actualizamos la entidad de
+             * httppost, esto quiere decir en pocas palabras anexamos los
+             * parametros al objeto para que al enviarse al servidor envien los
+             * datos que hemos añadido
+             */
+            httppost.setEntity(new UrlEncodedFormEntity(params));
+
+            // Eejecutamos enviando la informacion al Server.
+            HttpResponse resp = httpclient.execute(httppost);
+
+            // Obtenemos una respuesta.
+            HttpEntity ent = resp.getEntity();
+
+            String text = EntityUtils.toString(ent);
+            // Envia la respuesta del Server.
+            return text;
+
+        } catch (Exception e) {
+            // Devuelve el mensaje de error, en caso que lo haya.
+            return e.getMessage();
+        }
+
+    }
+
 }
