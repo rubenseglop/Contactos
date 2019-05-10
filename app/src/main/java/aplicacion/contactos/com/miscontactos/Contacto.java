@@ -12,6 +12,7 @@ public class Contacto implements Serializable {
     private int direccion_id;
     private int telefono_id;
     private String correo;
+    private ArrayList<Domicilio> domicilios;
 
     public Contacto(int id, String foto, String nombre, String apellidos, int galeria_id, int direccion_id, int telefono_id, String correo){
         this.setId(id);
@@ -83,5 +84,10 @@ public class Contacto implements Serializable {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+
+    public ArrayList<Domicilio> getDomicilios() { return domicilios; }
+
+    public void setDomicilios(ArrayList<Domicilio> domicilios) { this.domicilios = domicilios; }
 
 }

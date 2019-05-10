@@ -20,15 +20,15 @@ import java.util.ArrayList;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
     ArrayList<Contacto> contactos;
-    ArrayList<Galeria> galeria;
-    ArrayList<Domicilio> domicilio;
-    ArrayList<Telefono> telefono;
+    //ArrayList<Galeria> galeria;
+    //ArrayList<Domicilio> domicilio;
+    //ArrayList<Telefono> telefono;
 
     RVAdapter(ArrayList<Contacto> contactos, ArrayList<Galeria> galeria, ArrayList<Domicilio> domicilio, ArrayList<Telefono> telefono){
         this.contactos = contactos;
-        this.galeria = galeria;
-        this.domicilio = domicilio;
-        this.telefono = telefono;
+        //this.galeria = galeria;
+        //this.domicilio = domicilio;
+        //this.telefono = telefono;
 
     }
     Context context;

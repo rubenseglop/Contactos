@@ -5,12 +5,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -37,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,16 @@ public class Anadir extends AppCompatActivity {
     BDInterna bdInterna;
     Button bt_imagen;
     ImageView fotoperfil;
+
+    static ArrayList<String> domarray = new ArrayList<String>();
+
+    /*
+    Declarar instancias globales
+    */
+    private RecyclerView recyclerdomicilio;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager lManager;
+
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
@@ -94,6 +106,20 @@ public class Anadir extends AppCompatActivity {
         bt_imagen = (Button) findViewById(R.id.imagen);
         fotoperfil = findViewById(R.id.fotoperfil);
 
+
+        domarray.add("");
+
+        // Obtener el Recycler
+        recyclerdomicilio = (RecyclerView) findViewById(R.id.recicladordomicilio);
+        recyclerdomicilio.setHasFixedSize(true);
+
+        // Usar un administrador para LinearLayout
+        lManager = new LinearLayoutManager(this);
+        recyclerdomicilio.setLayoutManager(lManager);
+
+        // Crear un nuevo adaptador
+        adapter = new DMAdapter(domarray);
+        recyclerdomicilio.setAdapter(adapter);
 
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -222,7 +248,7 @@ public class Anadir extends AppCompatActivity {
      */
     public void clickAnadir(View v){
 
-        System.out.println("DEBUG VIEN");
+        System.out.println("DEBUG BIEN");
         boolean error = false;
         if (tv_nombre.getText().length()==0) {
             Toast.makeText(this, "Debes rellenar mínimo el nombre", Toast.LENGTH_SHORT).show();
@@ -249,7 +275,28 @@ public class Anadir extends AppCompatActivity {
                     bdInterna.getUniqueID()
             );
             bdInterna.insertarGaleria(last_galeria_id,null); //todo implementar la galeria de fotos
-            bdInterna.insertarDomicilio(last_domicilio_id,tv_domicilio.getText().toString());
+
+
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+
+
+                System.out.println("i: " + i + " DEBUG GUARDANDO DOMICILIO " + ((DMAdapter) adapter).getItems().get(0));
+
+
+
+
+
+
+
+
+
+
+
+
+                //bdInterna.insertarDomicilio(last_domicilio_id,Long.parseLong(adapter.getItemId(i)));
+
+            }
+            //bdInterna.insertarDomicilio(last_domicilio_id,tv_domicilio.getText().toString());
             bdInterna.insertarTelefono(last_telefono_id, tv_telefono.getText().toString());
 
             uploadImage(imageStoragePath);
