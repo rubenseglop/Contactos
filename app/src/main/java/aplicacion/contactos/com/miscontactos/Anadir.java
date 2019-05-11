@@ -54,16 +54,22 @@ public class Anadir extends AppCompatActivity {
     BDInterna bdInterna;
     Button bt_imagen;
     ImageView fotoperfil;
+    Button masdomicilio;
+    Button mastelefono;
 
-    static ArrayList<String> domarray = new ArrayList<String>();
+    ArrayList<String> StringDomicilio = new ArrayList<String>();
+    ArrayList<String> StringTelefono = new ArrayList<String>();
+
 
     /*
     Declarar instancias globales
     */
     private RecyclerView recyclerdomicilio;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager lManager;
-
+    private RecyclerView recyclertelefono;
+    private static RecyclerView.Adapter adapterdomi;
+    private static RecyclerView.Adapter adaptertelf;
+    private RecyclerView.LayoutManager lManagerDom;
+    private RecyclerView.LayoutManager lManagerTelf;
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
@@ -105,21 +111,30 @@ public class Anadir extends AppCompatActivity {
         tv_email = (TextView)findViewById(R.id.id_email);
         bt_imagen = (Button) findViewById(R.id.imagen);
         fotoperfil = findViewById(R.id.fotoperfil);
+        masdomicilio = findViewById(R.id.masdomicilio);
+        mastelefono = findViewById(R.id.mastelefono);
 
 
-        domarray.add("");
-
-        // Obtener el Recycler
+        // Obtener el Recycler para el adatapdor DMAdapter
         recyclerdomicilio = (RecyclerView) findViewById(R.id.recicladordomicilio);
         recyclerdomicilio.setHasFixedSize(true);
-
         // Usar un administrador para LinearLayout
-        lManager = new LinearLayoutManager(this);
-        recyclerdomicilio.setLayoutManager(lManager);
-
+        lManagerDom = new LinearLayoutManager(this);
+        recyclerdomicilio.setLayoutManager(lManagerDom);
         // Crear un nuevo adaptador
-        adapter = new DMAdapter(domarray);
-        recyclerdomicilio.setAdapter(adapter);
+        adapterdomi = new DMAdapter(StringDomicilio);
+        recyclerdomicilio.setAdapter(adapterdomi);
+
+        // Obtener el Recycler para el adatapdor TFAdapter
+        recyclertelefono = (RecyclerView) findViewById(R.id.recicladortelefono);
+        recyclertelefono.setHasFixedSize(true);
+        // Usar un administrador para LinearLayout
+        lManagerTelf = new LinearLayoutManager(this);
+        recyclertelefono.setLayoutManager(lManagerTelf);
+        // Crear un nuevo adaptador
+        adaptertelf = new TFAdapter(StringTelefono);
+        recyclertelefono.setAdapter(adaptertelf);
+
 
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -141,6 +156,33 @@ public class Anadir extends AppCompatActivity {
                 } else {
                     requestCameraPermission(MEDIA_TYPE_IMAGE);
                 }
+            }
+        });
+
+        masdomicilio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapterdomi.getItemCount()<=2) {
+                    StringDomicilio.add("");
+                    actualizarAdaptador();
+                }
+                else
+                    Toast.makeText(Anadir.this, "Maximo limite es 3",
+                            Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        mastelefono.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adaptertelf.getItemCount()<=2) {
+                    StringTelefono.add("");
+                    actualizarAdaptador();
+                }
+                else
+                    Toast.makeText(Anadir.this, "Maximo limite es 3",
+                            Toast.LENGTH_LONG).show();
             }
         });
 
@@ -239,6 +281,15 @@ public class Anadir extends AppCompatActivity {
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
 
+    public static void actualizarAdaptador(){
+        adapterdomi.notifyDataSetChanged();
+        adaptertelf.notifyDataSetChanged();
+
+    }
+
+
+
+
     /**
      * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
@@ -263,7 +314,10 @@ public class Anadir extends AppCompatActivity {
             int last_galeria_id = bdInterna.ultimo_id("GALERIA");
             int last_domicilio_id = bdInterna.ultimo_id("DOMICILIO");
             int last_telefono_id = bdInterna.ultimo_id("TELEFONO");
+
+
             //inserto contacto con las ultimas id
+
             bdInterna.insertarContacto(
                     imageStoragePath,  // todo cambiar aqui por la url web
                     tv_nombre.getText().toString(),
@@ -277,27 +331,14 @@ public class Anadir extends AppCompatActivity {
             bdInterna.insertarGaleria(last_galeria_id,null); //todo implementar la galeria de fotos
 
 
-            for (int i = 0; i < adapter.getItemCount(); i++) {
-
-
-                System.out.println("i: " + i + " DEBUG GUARDANDO DOMICILIO " + ((DMAdapter) adapter).getItems().get(0));
-
-
-
-
-
-
-
-
-
-
-
-
-                //bdInterna.insertarDomicilio(last_domicilio_id,Long.parseLong(adapter.getItemId(i)));
-
+            for (int i = 0; i < adapterdomi.getItemCount(); i++) {
+                System.out.println("i: " + i + " DEBUG GUARDANDO DOMICILIO " + DMAdapter.mDatasetDOM.get(i));
+                bdInterna.insertarDomicilio(last_domicilio_id,DMAdapter.mDatasetDOM.get(i));
             }
-            //bdInterna.insertarDomicilio(last_domicilio_id,tv_domicilio.getText().toString());
-            bdInterna.insertarTelefono(last_telefono_id, tv_telefono.getText().toString());
+            for (int i = 0; i < adaptertelf.getItemCount(); i++) {
+                System.out.println("i: " + i + " DEBUG GUARDANDO TELEFONO " + TFAdapter.mDatasetTEL.get(i));
+                bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
+            }
 
             uploadImage(imageStoragePath);
             imageStoragePath=null;

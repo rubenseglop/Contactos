@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -96,14 +97,14 @@ public class MainActivity extends AppCompatActivity {
         bdinterna.actualizaContactos();
         contactos=bdinterna.contactos;
         galerias=bdinterna.galerias;
-        domicilios=bdinterna.domicilios;
-        telefonos=bdinterna.telefonos;
+        //domicilios=bdinterna.domicilios;
+        //telefonos=bdinterna.telefonos;
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(contactos,galerias,domicilios,telefonos);
+        RVAdapter adapter = new RVAdapter(contactos,galerias);
         rv.setAdapter(adapter);
 
         //esto es parte del Swype
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds StringDomicilio to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -155,12 +156,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogo1, int id) {
                 error_conexion = false;
                 // en el caso de aceptar el dialog
-
-                WebSerTabla("CON", BDExternaLinks.vercontactos + bdinterna.getUniqueID());
-                WebSerTabla("GAL", BDExternaLinks.vergaleria + bdinterna.getUniqueID());
-                WebSerTabla("DOM", BDExternaLinks.verdomicilio + bdinterna.getUniqueID());
-                WebSerTabla("TEL", BDExternaLinks.vertelefono + bdinterna.getUniqueID());
-
+                String UUID = bdinterna.getUniqueID();
+                WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                WebSerTabla("GAL", BDExternaLinks.vergaleria + UUID);
+                WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
             }
         });
         dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -171,6 +171,11 @@ public class MainActivity extends AppCompatActivity {
         dialogo1.show();// fin muestra dialog aceptar o cancelar
     }
 
+    /**
+     * Método que lee el contenido web (interpretado por el PHP a un JSON) y posteriormente llamo al método StringObjeto con dicho contenido web
+     * @param tabla Tabla que va a ser leida
+     * @param sUrl Direccion URL en la que está ubicada el .php
+     */
     private void WebSerTabla(String tabla, String sUrl) {
         // Connect to the URL using java's native library
         URL url = null;
@@ -195,9 +200,7 @@ public class MainActivity extends AppCompatActivity {
     private void exportarWebService() {
         error_conexion = false;
         String error;
-
-        System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size() + " DOMICILIO " + domicilios.size() + " TELEFONO " + telefonos.size());
-
+        System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size());
 
         if(bdexterna.borrartodo(bdinterna.getUniqueID())=="Error") {
             error_conexion = true;
@@ -215,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
                 int varTelefono = contacto.getTelefono_id();
                 String varCorreo = contacto.getCorreo();
                 String varUUID = bdinterna.getUniqueID();
+                domicilios = contacto.getDomicilios();
+                telefonos = contacto.getTelefonos();
 
                 if (varId==null || varId.length()==0) { varId =""; }
                 if (varFoto==null || varFoto.length()==0) { varFoto =""; }
@@ -243,9 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 int varId = domicilio.getId();
                 String varDireccion = domicilio.getDireccion();
                 String varUUID = bdinterna.getUniqueID();
-
                 if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
-
                 error = bdexterna.insertarDomicilio(varId, varDireccion, varUUID);
                 if (error == "Error") {
                     error_conexion = true;
@@ -274,10 +277,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Método que convierte un String en formato JSON a valores en la tabla que especifico. Posteriormente es insertado en la BDInterna
+     * @param tabla Es la tabla que va a ser leida (la arrastro del método WebSerTabla)
+     * @param jsonString Es el String que le paso de WebSerTabla con el String JSON a convertir
+     */
     public void StringObjeto(String tabla, String jsonString) {
 
         if (tabla == "CON") {
-
             try {
                 JSONArray jArray = new JSONArray(jsonString);
                 for (int i = 0; i < jArray.length(); i++) {

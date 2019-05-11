@@ -24,7 +24,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     //ArrayList<Domicilio> domicilio;
     //ArrayList<Telefono> telefono;
 
-    RVAdapter(ArrayList<Contacto> contactos, ArrayList<Galeria> galeria, ArrayList<Domicilio> domicilio, ArrayList<Telefono> telefono){
+    RVAdapter(ArrayList<Contacto> contactos, ArrayList<Galeria> galeria){
         this.contactos = contactos;
         //this.galeria = galeria;
         //this.domicilio = domicilio;
@@ -81,6 +81,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
 
         personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
         personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
+        personViewHolder.tv_domicilio.setText(contactos.get(i).getDomicilios().get(0).getDireccion().toString());
+        //personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero().toString());
+        personViewHolder.tv_telefono.setText("Hola");
+
+
+
 
         //personViewHolder.tv_domicilio.setText(domicilio.get(contactos.get(i).getDireccion_id()).getDireccion());
         //personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion_id());

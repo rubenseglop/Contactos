@@ -8,9 +8,6 @@
     tools:context=".Anadir"
     tools:showIn="@layout/activity_anadir">
 
-
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,13 +48,12 @@
                     android:ems="10"
                     android:inputType="textPersonName" />
 
-                <Button
-                    android:id="@+id/imagen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:onClick="clickAnadir"
-                    android:text="Imagen" />
+                <ImageView
+                    android:id="@+id/fotoperfil"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/perfil" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -94,11 +90,13 @@
                     app:layout_constraintStart_toEndOf="@+id/apellidos"
                     app:layout_constraintTop_toBottomOf="@+id/cajanombre" />
 
-                <ImageView
-                    android:id="@+id/fotoperfil"
-                    android:layout_width="59dp"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/perfil" />
+                <Button
+                    android:id="@+id/imagen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:onClick="clickAnadir"
+                    android:text="Imagen" />
 
             </LinearLayout>
 
@@ -115,13 +113,35 @@
                 app:layout_constraintTop_toBottomOf="@+id/cajapellido">
 
 
-                <android.support.v7.widget.RecyclerView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
+                <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/recicladordomicilio"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="3dp"
                     android:scrollbars="vertical" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cajadomicilioadd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cajadomicilio">
+
+                <Button
+                    android:id="@+id/masdomicilio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Agregar domicilio" />
+
 
             </LinearLayout>
 
@@ -136,26 +156,39 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cajadomicilio">
+                app:layout_constraintTop_toBottomOf="@+id/cajapellido">
 
-                <TextView
-                    android:id="@+id/telefono_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Teléfono" />
 
-                <EditText
-                    android:id="@+id/id_telefono"
+                <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/recicladortelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dp"
+                    android:scrollbars="vertical" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cajatelefonoadd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cajatelefono">
+
+                <Button
+                    android:id="@+id/mastelefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    android:layout_weight="1"
+                    android:text="Agregar telefono" />
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -176,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
-                    android:text="Email "/>
+                    android:text="Email " />
 
                 <EditText
                     android:id="@+id/id_email"
@@ -187,10 +220,9 @@
                     android:layout_marginEnd="8dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </LinearLayout>
-
 
 
             <LinearLayout
@@ -223,7 +255,6 @@
 
         </TableLayout>
     </ScrollView>
-
 
 
 </android.support.constraint.ConstraintLayout>
