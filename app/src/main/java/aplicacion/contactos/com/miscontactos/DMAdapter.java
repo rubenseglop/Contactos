@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,10 +46,8 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         holder.menosDomicilio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Aquí va todo lo que necesites que haga cuando le des click en el ítem 1
                 mDatasetDOM.remove(position);
                 Anadir.actualizarAdaptador();
-
             }
         });
 
@@ -68,14 +63,14 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public Button menosDomicilio;
+        public ImageView menosDomicilio;
         public EditText mEditText;
         public MyCustomEditTextListener myCustomEditTextListener;
 
         public ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
 
-this.menosDomicilio = v.findViewById(R.id.menosdomicilio);
+            this.menosDomicilio = v.findViewById(R.id.imageViewmenos);
             this.mEditText = (EditText) v.findViewById(R.id.id_rvdomicilio);
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.mEditText.addTextChangedListener(myCustomEditTextListener);

@@ -45,7 +45,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
             personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
             tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
-            tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio); //todo aqui debo implementar un listado de elementos
+            tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
 

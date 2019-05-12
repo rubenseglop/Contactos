@@ -287,9 +287,6 @@ public class Anadir extends AppCompatActivity {
 
     }
 
-
-
-
     /**
      * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
@@ -299,7 +296,6 @@ public class Anadir extends AppCompatActivity {
      */
     public void clickAnadir(View v){
 
-        System.out.println("DEBUG BIEN");
         boolean error = false;
         if (tv_nombre.getText().length()==0) {
             Toast.makeText(this, "Debes rellenar mínimo el nombre", Toast.LENGTH_SHORT).show();
@@ -458,6 +454,8 @@ public class Anadir extends AppCompatActivity {
                     }
                 }).show();
     }
+
+
 }
 
 

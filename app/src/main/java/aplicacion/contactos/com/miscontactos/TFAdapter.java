@@ -47,21 +47,16 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
         holder.menosTelefono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Aquí va todo lo que necesites que haga cuando le des click en el ítem 1
                 mDatasetTEL.remove(position);
                 Anadir.actualizarAdaptador();
             }
         });
-
-
-
     }
 
     @Override
     public int getItemCount() {
         return mDatasetTEL.size();
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case

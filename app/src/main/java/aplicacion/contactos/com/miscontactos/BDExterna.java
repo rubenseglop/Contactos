@@ -46,7 +46,6 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG Contacto " + url);
         return leerUrl(url);
     }
 
@@ -73,7 +72,6 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG EXPORTAR " + url);
         return leerUrl(url);
     }
     public String insertarTelefono(int id, String numero, String uuid){
@@ -82,7 +80,6 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG Telefono " + url);
         return leerUrl(url);
     }
 
@@ -99,9 +96,7 @@ public class BDExterna {
             URL url = new URL(pagina.toString());
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((inputLine = in.readLine()) != null)
-                System.out.println("DEBUG URL++ " + inputLine);
             inputLine += inputLine;
-
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();

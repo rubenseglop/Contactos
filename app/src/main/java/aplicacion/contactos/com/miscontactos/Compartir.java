@@ -1,28 +1,26 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
 
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
@@ -98,13 +95,16 @@ public class Compartir extends AppCompatActivity {
                 JSONObject json_data = jArray.getJSONObject(i);
                 // add to list
                 json_data.getString("UUIDUNIQUE");
-                if (!json_data.getString("UUIDUNIQUE").equals(UUID)) {uuidSpinner.add(json_data.getString("UUIDUNIQUE"));}
+                if (!json_data.getString("UUIDUNIQUE").equals(UUID)) {
+                    uuidSpinner.add(json_data.getString("UUIDUNIQUE"));
+                }
             }
         } catch (Exception e) {
             System.out.println("DEBUG catch " + e.getMessage());
             Toast.makeText(Compartir.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
         }
     }
+
     public void clickPulsar(View v) {
 
         // muestra un dialogo con aceptar o cancelar
@@ -137,7 +137,7 @@ public class Compartir extends AppCompatActivity {
     public void clickGaleria(View v) {
         // https://github.com/myinnos/AwesomeImagePicker
         Intent intent = new Intent(this, AlbumSelectActivity.class);
-        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT,15); // set limit for image selection
+        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
         startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
     }
 
@@ -148,29 +148,61 @@ public class Compartir extends AppCompatActivity {
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected images
             ArrayList<Image> images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+            ArrayList<Uri> arrayUri = new ArrayList<>();
 
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
                 // start play with image uri
                 System.out.println("DEBUG URI " + uri.getPath());
+                arrayUri.add(uri);
 
-
-                Uri u = Uri.parse(uri.getPath()); File f = new File("" + u); f.getName();
-
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath(),bmOptions);
-                String imagen = getStringImagen(bitmap);
-                bdExterna.insertarFoto2(bdInterna.getUniqueID(),imagen,f.getName());
             }
+
+
+//                Uri u = Uri.parse(uri.getPath()); File f = new File("" + u); f.getName();
+//
+//                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//                Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath(),bmOptions);
+//                String imagen = getStringImagen(bitmap);
+//                bdExterna.insertarFoto2(bdInterna.getUniqueID(),imagen,f.getName());
+
+
+            Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
+
+
+            //if you need
+            //intentShareFile.putExtra(Intent.EXTRA_SUBJECT,"Sharing File Subject);
+            //intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File Description");
+
+
+            intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
+            intentShareFile.setType("text/plain");
+            startActivity(intentShareFile);
+
+
         }
     }
 
-    public String getStringImagen(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
 }

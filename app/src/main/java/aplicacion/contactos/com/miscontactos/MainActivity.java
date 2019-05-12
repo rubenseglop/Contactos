@@ -2,13 +2,10 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -302,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                             json_data.getString("EMAIL"),
                             json_data.getString("UUIDUNIQUE")
                     );
-                    System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (Exception e) {
                 Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
@@ -389,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch(IOException e) {
-            Log.e("DEBUG", "Hubo un error de entrada/salida!!!");
+            Toast.makeText(MainActivity.this, "Hubo un error de entrada/salida!!!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -405,7 +400,6 @@ public class MainActivity extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
             Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
             //Remove swiped item from list and notify the RecyclerView
-            //int position = viewHolder.getAdapterPosition();
 
             int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
 
@@ -415,3 +409,4 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
+
