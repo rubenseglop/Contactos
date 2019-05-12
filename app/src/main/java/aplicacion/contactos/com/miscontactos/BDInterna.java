@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -65,25 +66,23 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor cContactos;
         //limpio todos los ArrayLists
         contactos.clear();
-        int nFilasContactos = numerodeFilas("USUARIOS");
-        int nFilasDomicilio = numerodeFilas("DOMICILIO");
-        int nFilasTelefono = numerodeFilas("TELEFONO");
 
         datosId = recuperaIds("USUARIOS", "nombre ASC");  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
-        for (int i = 0; i < nFilasContactos; i++) {
-            cContactos = busquedaContacto(Integer.toString(datosId[i]));
-            if (cContactos.moveToFirst()) {
-                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                String foto;
-                String nombre;
-                String apellidos;
-                int galeria_id;
-                int domicilio_id;
-                int telefono_id;
-                String email;
+        int id;
 
+
+        //Leo todos los contactos
+        for (int i = 0; i < datosId.length; i++) {
+            cContactos = busquedaContacto(Integer.toString(datosId[i]));
+            cContactos.moveToNext();
+            ArrayList<Domicilio> tempoDom = new ArrayList<>();
+            ArrayList<Telefono> tempoTel = new ArrayList<>();
+
+                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                String foto, nombre, apellidos, email;
+                int galeria_id, domicilio_id, telefono_id;
                 do {
-                    int id = cContactos.getInt(0);
+                    id = cContactos.getInt(0);
                     foto = cContactos.getString(1);  // Esta es la foto interna
                     nombre = cContactos.getString(2);
                     apellidos = cContactos.getString(3);
@@ -91,53 +90,58 @@ public class BDInterna extends SQLiteOpenHelper {
                     domicilio_id = cContactos.getInt(5);
                     telefono_id = cContactos.getInt(6);
                     email = cContactos.getString(7);
-                    ArrayList<Domicilio> tempoDom = new ArrayList<>();
-                    ArrayList<Telefono> tempoTel = new ArrayList<>();
 
-                    int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
-                    for (int j = 0; i < nFilasDomicilio; i++) {
-                        cContactos = busquedaDomicilio(Integer.toString(datosIdDom[j]));
-                        if (cContactos.moveToFirst()) {
-                            //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                            int indice=0;
-                            do {
-                                tempoDom.add(indice,new Domicilio(cContactos.getInt(0),cContactos.getString(1) ));
-                                indice++;
-                            } while(cContactos.moveToNext());
-                        }
+                    //Meto en un ArrayList los domicilios con la ID del contacto
+                    //int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
+
+                    Cursor cContactosD = busquedaDomicilio(Integer.toString(galeria_id));
+                    if (cContactosD.moveToFirst()) {
+                        //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                        int indice = 0;
+
+                        do{
+                            tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
+                            System.out.println("DEBUG CONTAC " + i + "DOM " + cContactosD.getString(1));
+                            indice++;
+                        }while (cContactosD.moveToNext());
+                        System.out.println("DEBUG CONTAC DOMIC " + tempoDom.size() + " "+ tempoDom);
                     }
 
-                    int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Telefono y guardo los ID's en un array (datosIdTel)
-                    for (int k = 0; i < nFilasTelefono; i++) {
-                        cContactos = busquedaTelefono(Integer.toString(datosIdTel[k]));
-                        if (cContactos.moveToFirst()) {
-                            //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                            int indice=0;
-                            do {
-                                tempoTel.add(indice,new Telefono(cContactos.getInt(0),cContactos.getString(1) ));
-                                indice++;
-                            } while(cContactos.moveToNext());
-                        }
-                    }
-                    contactos.add(new Contacto(id,foto,nombre,apellidos, galeria_id ,domicilio_id,telefono_id,email,tempoDom,tempoTel));
+                    //Meto en un ArrayList los telefono con la ID del contacto
+                    int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
 
-                } while(cContactos.moveToNext());
-            }
+                    Cursor cContactosT = busquedaTelefono(Integer.toString(telefono_id));
+                    if (cContactosT.moveToFirst()) {
+                        //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                        int indice = 0;
+
+                        do {
+                            tempoTel.add(indice, new Telefono(cContactosT.getInt(0), cContactosT.getString(1)));
+                            System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
+                            indice++;
+                        }while (cContactosT.moveToNext());
+                        System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
+                    }
+                } while (cContactos.moveToNext());
+                //Leidas todas las tablas, relacionamos las ID's (FOREING KEY)
+
+                contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
+
         }
 
-        datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        /*datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         for (int i = 0; i < numerodeFilas("GALERIA"); i++) {
             cContactos = busquedaGaleria(Integer.toString(datosId[i]));
             if (cContactos.moveToFirst()) {
                 //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                 String url;
                 do {
-                    int id = cContactos.getInt(0);
+                    id = cContactos.getInt(0);
                     url = cContactos.getString(1);
-                    galerias.add(new Galeria(id,url));
-                } while(cContactos.moveToNext());
+                    galerias.add(new Galeria(id, url));
+                } while (cContactos.moveToNext());
             }
-        }
+        }*/
 
     }
 
@@ -305,15 +309,21 @@ public class BDInterna extends SQLiteOpenHelper {
 
     // Borra un contacto de la BD dado un id
     public void borraContacto(int id) {
-
         SQLiteDatabase db = getWritableDatabase();
-
         db.delete("GALERIA", "ID=" + id, null);
         db.delete("DOMICILIO", "ID=" + id, null);
         db.delete("TELEFONO", "ID=" + id, null);
         db.delete("USUARIOS", "ID=" + id, null);
+        db.close();
+        actualizaContactos();
+    }
 
-
+    public void borrarTodo() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("GALERIA", null, null);
+        db.delete("DOMICILIO", null, null);
+        db.delete("TELEFONO", null, null);
+        db.delete("USUARIOS", null, null);
         db.close();
         actualizaContactos();
     }
@@ -413,7 +423,7 @@ public class BDInterna extends SQLiteOpenHelper {
         String[] valores_recuperar = {"ID"};
         Cursor cursor;
         // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
-        if (tabla=="USUARIOS") {
+
             cursor = db.query(tabla, valores_recuperar, null, null, null, null, orderby, null);
             orderby = null;
             if (cursor.getCount() > 0) {
@@ -426,35 +436,10 @@ public class BDInterna extends SQLiteOpenHelper {
                     cursor.moveToNext();
                 }
             } else datosId = new int[0];
-        }
-        if (tabla=="DOMICILIO"){ //todo SEGUIR POR AQUI
-            cursor = db.rawQuery(" SELECT * FROM DOMICILIO WHERE ID='usu1' ", null);
-            orderby = null;
-            if (cursor.getCount() > 0) {
-                datosId = new int[cursor.getCount()];
-                i = 0;
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    datosId[i] = cursor.getInt(0);
-                    i++;
-                    cursor.moveToNext();
-                }
-            } else datosId = new int[0];
-
-        }
-
-
-
         cursor.close();
         return datosId;
 
     }
-
-
-
-
-
-
 
 
     public ArrayList<Contacto> devuelveContactos(){

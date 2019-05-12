@@ -3,7 +3,6 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
 import java.util.ArrayList;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
@@ -70,36 +66,19 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
 
-
         //TODO AQUI PETA AL MOSTRAR UN CONTACTO SIN FOTO
-
-            //personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
-
         System.out.println("DEBUG ADAPTADOR " + recogerImagen(contactos.get(i).getFoto()));
-            personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
+        personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
 
-
-        personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
-        personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
-        personViewHolder.tv_domicilio.setText(contactos.get(i).getDomicilios().get(0).getDireccion().toString());
-        //personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero().toString());
-        personViewHolder.tv_telefono.setText("Hola");
-
-
-
-
-        //personViewHolder.tv_domicilio.setText(domicilio.get(contactos.get(i).getDireccion_id()).getDireccion());
-        //personViewHolder.tv_domicilio.setText(contactos.get(i).getDireccion_id());
-
-        //personViewHolder.tv_telefono.setText(telefono.get(contactos.get(i).getTelefono_id()).getNumero());
-        //personViewHolder.tv_telefono.setText(contactos.get(i).getTelefono_id());
-
+        try {
+            personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
+            personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
+            personViewHolder.tv_domicilio.setText(contactos.get(i).getDomicilios().get(0).getDireccion());
+            personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
+        } catch (Exception e) {
+            System.out.println("Problema detectado: " + e.getMessage());
+        }
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
-
-
-
-        // TODO hacer que aparezca el Toast de cada contacto aqui
-
     }
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

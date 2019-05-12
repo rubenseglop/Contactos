@@ -6,6 +6,8 @@ public class BDExternaLinks {
     static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //1 IESAyala
     // static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //2 Miarroba
 
+
+    static String conexion = LINKS + "conexion.php";
     static String vercontactos = LINKS + "vercontactos.php/?UUIDUNIQUE=";
     static String vergaleria = LINKS + "vergaleria.php/?UUIDUNIQUE=";
     static String verdomicilio = LINKS + "verdomicilio.php/?UUIDUNIQUE=";
@@ -21,6 +23,5 @@ public class BDExternaLinks {
     static String eliminatodo = LINKS + "eliminatodo.php?UUIDUNIQUE=";
     static String verUUID = LINKS + "verUUID.php";
     static String uploadgaleria = LINKS + "GALERIA/uploadgaleria.php";
-
 
 }

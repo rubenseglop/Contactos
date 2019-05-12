@@ -24,8 +24,8 @@ public class Contacto implements Serializable {
         this.setDireccion_id(direccion_id);
         this.setTelefono_id(telefono_id);
         this.setCorreo(correo);
-        this.setDomicilios(domicilios);
-        this.setTelefonos(telefonos);
+        this.domicilios = domicilios;
+        this.telefonos = telefonos;
     }
 
     public int getId() {  return id; }
@@ -74,6 +74,7 @@ public class Contacto implements Serializable {
     }
 
     public ArrayList<Domicilio> getDomicilios() { return domicilios; }
+
     public void setDomicilios(ArrayList<Domicilio> domicilios) { this.domicilios = domicilios; }
     public ArrayList<Telefono> getTelefonos() { return telefonos; }
     public void setTelefonos(ArrayList<Telefono> telefonos) {  this.telefonos = telefonos;   }

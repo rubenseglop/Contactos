@@ -73,7 +73,7 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        println("DEBUG Domicilio " + url);
+        System.out.println("DEBUG EXPORTAR " + url);
         return leerUrl(url);
     }
     public String insertarTelefono(int id, String numero, String uuid){
@@ -82,7 +82,7 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        println("DEBUG Telefono " + url);
+        System.out.println("DEBUG Telefono " + url);
         return leerUrl(url);
     }
 
@@ -106,8 +106,7 @@ public class BDExterna {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();        }
 
         return inputLine;
     }

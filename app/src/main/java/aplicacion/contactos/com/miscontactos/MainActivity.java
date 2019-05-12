@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Galeria> galerias;
     ArrayList<Domicilio> domicilios;
     ArrayList<Telefono> telefonos;
-
     boolean error_conexion = false;
 
 
@@ -76,12 +75,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Instancio la clase BDInterna e BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
+        //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
         bdexterna = new BDExterna();
-
-        bdinterna.insertarUUID();
-
+        bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
     }
     public String getURLForResource (int resourceId) {
@@ -97,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
         bdinterna.actualizaContactos();
         contactos=bdinterna.contactos;
         galerias=bdinterna.galerias;
-        //domicilios=bdinterna.domicilios;
-        //telefonos=bdinterna.telefonos;
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -125,19 +120,15 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_compartir) {
             Intent i = new Intent(this, Compartir.class);
             //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
         }
-
         if (id == R.id.exportar) {
             exportarWebService();
         }
-
         if (id == R.id.importar) {
             importarWebService();
         }
@@ -149,18 +140,25 @@ public class MainActivity extends AppCompatActivity {
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
         dialogo1.setTitle("Importante");
-        dialogo1.setMessage("¿ Vas a importar todos los contactos almacenados en el servidor ?");
+        dialogo1.setMessage("¿Vas a restaurar todos los contactos almacenados en el servidor? Esto eliminará tu base de datos actual");
         dialogo1.setCancelable(false);
         dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialogo1, int id) {
                 error_conexion = false;
                 // en el caso de aceptar el dialog
-                String UUID = bdinterna.getUniqueID();
-                WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
-                WebSerTabla("GAL", BDExternaLinks.vergaleria + UUID);
-                WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
-                WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
+
+                if (bdexterna.leerUrl(BDExternaLinks.conexion)!=null) { //comprobar conexion
+                    bdinterna.borrarTodo();
+                    String UUID = bdinterna.getUniqueID();
+                    WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                    WebSerTabla("GAL", BDExternaLinks.vergaleria + UUID);
+                    WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                    WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
+                } else {
+                    Toast.makeText(MainActivity.this, "Se ha cancelado el proceso por un problema de conexión", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
         dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -200,14 +198,11 @@ public class MainActivity extends AppCompatActivity {
     private void exportarWebService() {
         error_conexion = false;
         String error;
-        System.out.println("DEBUG RESPUESTA CONTACTOS " + contactos.size() + " GALERIAS " + galerias.size());
-
-        if(bdexterna.borrartodo(bdinterna.getUniqueID())=="Error") {
+        error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
+        if(error_conexion) {
             error_conexion = true;
         }
-        if (error_conexion == false) {
-
-
+        if (!error_conexion) {
             for (Contacto contacto: contactos) {
                 String varId = Integer.toString(contacto.getId());
                 String varFoto = contacto.getFoto();
@@ -228,7 +223,36 @@ public class MainActivity extends AppCompatActivity {
                 if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
                 error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
-                if (error == "Error"){error_conexion = true; }
+
+                if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
+
+                if (error_conexion == false) {
+                    for (Domicilio domicilio : domicilios) {
+
+                        int varIdDOM = domicilio.getId();
+                        String varDireccionDOM = domicilio.getDireccion();
+                        if (varDireccionDOM==null || varDireccionDOM.length()==0) { varDireccionDOM=""; }
+
+                        error = bdexterna.insertarDomicilio(varIdDOM,varDireccionDOM,varUUID);
+                        if (error.equals("ERROR") || error.isEmpty()) {
+                            error_conexion = true;
+                        }
+                    }
+                }
+
+                if (error_conexion == false) {
+                    for (Telefono telefono : telefonos) {
+                        int varIdTel = telefono.getId();
+                        String varNumeroTel = telefono.getNumero();
+
+                        if (varNumeroTel==null || varNumeroTel.length()==0) { varNumeroTel =""; }
+
+                        error = bdexterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
+                        if (error.equals("ERROR") || error.isEmpty()) {
+                            error_conexion = true;
+                        }
+                    }
+                }
             }
         }
         if (error_conexion == false) {
@@ -243,33 +267,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }*/
         }
-        if (error_conexion == false) {
-            for (Domicilio domicilio : domicilios) {
-                int varId = domicilio.getId();
-                String varDireccion = domicilio.getDireccion();
-                String varUUID = bdinterna.getUniqueID();
-                if (varDireccion==null || varDireccion.length()==0) { varDireccion =""; }
-                error = bdexterna.insertarDomicilio(varId, varDireccion, varUUID);
-                if (error == "Error") {
-                    error_conexion = true;
-                }
-            }
-        }
-        if (error_conexion == false) {
-            for (Telefono telefono : telefonos) {
-                int varId = telefono.getId();
-                String varNumero = telefono.getNumero();
-                String varUUID = bdinterna.getUniqueID();
 
-                if (varNumero==null || varNumero.length()==0) { varNumero =""; }
 
-                error = bdexterna.insertarTelefono(varId, varNumero, varUUID);
-                if (error == "Error") {
-                    error_conexion = true;
-                }
-            }
-        }
-        if (error_conexion== false) {
+
+        if (error_conexion == false) {
             Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(MainActivity.this, "Hubo un error en la conexión", Toast.LENGTH_LONG).show();
@@ -301,10 +302,10 @@ public class MainActivity extends AppCompatActivity {
                             json_data.getString("EMAIL"),
                             json_data.getString("UUIDUNIQUE")
                     );
-                    System.out.println("DEBUG " + json_data.getString("FOTO"));
+                    System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (Exception e) {
-                System.out.println("DEBUG catch " + e.getMessage());
+                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
 
@@ -320,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
             } catch (Exception e) {
-                System.out.println("DEBUG catch " + e.getMessage());
+                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "DOM") {
@@ -335,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
             } catch (Exception e) {
-                System.out.println("DEBUG catch " + e.getMessage());
+                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "TEL") {
@@ -352,13 +353,13 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             } catch (Exception e) {
-                System.out.println("DEBUG catch " + e.getMessage());
+                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         }
         if (error_conexion==false){
             Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
-            actualizar();
+            if (tabla=="TEL")actualizar();
         } else {
             Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
         }
