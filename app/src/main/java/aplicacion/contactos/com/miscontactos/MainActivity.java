@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -135,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-        dialogo1.setTitle("Importante");
-        dialogo1.setMessage("¿Vas a restaurar todos los contactos almacenados en el servidor? Esto eliminará tu base de datos actual");
+        dialogo1.setTitle(R.string.importante);
+        dialogo1.setMessage(R.string.mensaje_restaurar);
         dialogo1.setCancelable(false);
         dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
                     WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                 } else {
-                    Toast.makeText(MainActivity.this, "Se ha cancelado el proceso por un problema de conexión", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -184,10 +183,10 @@ public class MainActivity extends AppCompatActivity {
             StringObjeto(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(MainActivity.this, "Hubo un problema con el servidor", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.errorserver, Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -218,7 +217,8 @@ public class MainActivity extends AppCompatActivity {
                 if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
                 if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
-                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
+                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,
+                        varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
 
                 if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
 
@@ -267,9 +267,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (error_conexion == false) {
-            Toast.makeText(MainActivity.this, "Contactos exportados", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(MainActivity.this, "Hubo un error en la conexión", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -298,9 +298,10 @@ public class MainActivity extends AppCompatActivity {
                             json_data.getString("EMAIL"),
                             json_data.getString("UUIDUNIQUE")
                     );
+                    System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
 
@@ -316,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "DOM") {
@@ -331,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "TEL") {
@@ -348,15 +349,15 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "No se pudo realizar el metodo StringObjeto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         }
         if (error_conexion==false){
-            Toast.makeText(MainActivity.this, "Contactos importados", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.contactos_import, Toast.LENGTH_LONG).show();
             if (tabla=="TEL")actualizar();
         } else {
-            Toast.makeText(MainActivity.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -384,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch(IOException e) {
-            Toast.makeText(MainActivity.this, "Hubo un error de entrada/salida!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_io, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -392,14 +393,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            Toast.makeText(MainActivity.this, "on Move", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.moveswype, Toast.LENGTH_SHORT).show();
             return false;
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
             //Remove swiped item from list and notify the RecyclerView
+            //int position = viewHolder.getAdapterPosition();
 
             int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
 
@@ -409,4 +411,3 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 }
-

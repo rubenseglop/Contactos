@@ -2,5 +2,10 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#DC115B</color>
+    <color name="colorUno">#6E7C8D</color>
+    <color name="colorTuplas">#C7CACD</color>
+    <color name="colorFuente">#568FDB</color>
+    <color name="colorFondoCuadros">#FFFFFF</color>
+    <color name="colorBotones">#008577</color>
 </resources>

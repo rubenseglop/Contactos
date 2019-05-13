@@ -1,67 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorFondoCuadros"
     android:padding="5dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorFondoCuadros">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorFondoCuadros"
             android:padding="2dp">
 
             <ImageView
                 android:id="@+id/foto"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="4dp"
-                android:layout_marginRight="16dp" />
+                android:layout_width="57dp"
+                android:layout_height="89dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="131"
+                tools:layout_conversion_wrapWidth="131" />
 
             <TextView
                 android:id="@+id/id_nombre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/foto"
-                android:textSize="24sp" />
+                android:layout_marginStart="16dp"
+                android:elegantTextHeight="false"
+                android:textColor="@color/colorFuente"
+                android:textSize="@dimen/texto_nombre"
+                app:layout_constraintLeft_toRightOf="@+id/foto"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="50"
+                tools:layout_conversion_wrapWidth="0" />
 
             <TextView
                 android:id="@+id/id_apellido"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/id_nombre"
-                android:layout_toRightOf="@+id/foto"
-                android:textSize="15sp" />
+                android:layout_marginStart="16dp"
+                android:textColor="@color/colorFuente"
+                android:textSize="@dimen/texto_normal"
+                app:layout_constraintLeft_toRightOf="@+id/foto"
+                app:layout_constraintTop_toBottomOf="@+id/id_nombre"
+                tools:layout_conversion_wrapHeight="36"
+                tools:layout_conversion_wrapWidth="0" />
 
             <TextView
                 android:id="@+id/id_domicilio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/id_apellido"
-                android:layout_toRightOf="@+id/foto" />
+                android:layout_marginStart="16dp"
+                android:textColor="@color/colorFuente"
+                android:textSize="@dimen/texto_normal"
+                app:layout_constraintLeft_toRightOf="@+id/foto"
+                app:layout_constraintTop_toBottomOf="@+id/id_apellido"
+                tools:layout_conversion_wrapHeight="36"
+                tools:layout_conversion_wrapWidth="0" />
 
             <TextView
                 android:id="@+id/id_telefono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/id_domicilio"
-                android:layout_toRightOf="@+id/foto" />
+                android:layout_marginStart="16dp"
+                android:textColor="@color/colorFuente"
+                android:textSize="@dimen/texto_normal"
+                app:layout_constraintLeft_toRightOf="@+id/foto"
+                app:layout_constraintTop_toBottomOf="@+id/id_domicilio"
+                tools:layout_conversion_wrapHeight="36"
+                tools:layout_conversion_wrapWidth="0" />
 
             <TextView
                 android:id="@+id/id_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/id_telefono"
-                android:layout_toRightOf="@+id/foto" />
+                android:layout_marginStart="16dp"
+                android:textColor="@color/colorFuente"
+                android:textSize="@dimen/texto_normal"
+                app:layout_constraintLeft_toRightOf="@+id/foto"
+                app:layout_constraintTop_toBottomOf="@+id/id_telefono"
+                tools:layout_conversion_wrapHeight="36"
+                tools:layout_conversion_wrapWidth="0" />
 
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 

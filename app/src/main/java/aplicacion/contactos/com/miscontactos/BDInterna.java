@@ -101,8 +101,10 @@ public class BDInterna extends SQLiteOpenHelper {
 
                         do{
                             tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
+                            System.out.println("DEBUG CONTAC " + i + "DOM " + cContactosD.getString(1));
                             indice++;
                         }while (cContactosD.moveToNext());
+                        System.out.println("DEBUG CONTAC DOMIC " + tempoDom.size() + " "+ tempoDom);
                     }
 
                     //Meto en un ArrayList los telefono con la ID del contacto
@@ -115,8 +117,10 @@ public class BDInterna extends SQLiteOpenHelper {
 
                         do {
                             tempoTel.add(indice, new Telefono(cContactosT.getInt(0), cContactosT.getString(1)));
+                            System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
                             indice++;
                         }while (cContactosT.moveToNext());
+                        System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
                     }
                 } while (cContactos.moveToNext());
                 //Leidas todas las tablas, relacionamos las ID's (FOREING KEY)
@@ -402,6 +406,7 @@ public class BDInterna extends SQLiteOpenHelper {
     // Devuelve el numero de filas de la tabla
     public int numerodeFilas(String tabla){
         int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), tabla);
+        System.out.println("DEBUG FILAS " +tabla+" " + dato);
         return dato;
     }
 

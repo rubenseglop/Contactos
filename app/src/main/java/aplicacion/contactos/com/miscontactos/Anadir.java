@@ -139,7 +139,7 @@ public class Anadir extends AppCompatActivity {
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
             Toast.makeText(getApplicationContext(),
-                    "Error! tu dispositivo no incorpora una cámara",
+                    R.string.error_camara,
                     Toast.LENGTH_LONG).show();
             // will close the app if the device doesn't have camera
             finish();
@@ -162,12 +162,13 @@ public class Anadir extends AppCompatActivity {
         masdomicilio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(adapterdomi.getItemCount()<=2) {
                     StringDomicilio.add("");
                     actualizarAdaptador();
                 }
                 else
-                    Toast.makeText(Anadir.this, "Maximo limite es 3",
+                    Toast.makeText(Anadir.this, R.string.limite3,
                             Toast.LENGTH_LONG).show();
             }
         });
@@ -181,7 +182,7 @@ public class Anadir extends AppCompatActivity {
                     actualizarAdaptador();
                 }
                 else
-                    Toast.makeText(Anadir.this, "Maximo limite es 3",
+                    Toast.makeText(Anadir.this, R.string.limite3,
                             Toast.LENGTH_LONG).show();
             }
         });
@@ -287,6 +288,9 @@ public class Anadir extends AppCompatActivity {
 
     }
 
+
+
+
     /**
      * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
@@ -298,7 +302,7 @@ public class Anadir extends AppCompatActivity {
 
         boolean error = false;
         if (tv_nombre.getText().length()==0) {
-            Toast.makeText(this, "Debes rellenar mínimo el nombre", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.minimo_nombre, Toast.LENGTH_SHORT).show();
             error = true;
         }
         //guardar
@@ -328,11 +332,9 @@ public class Anadir extends AppCompatActivity {
 
 
             for (int i = 0; i < adapterdomi.getItemCount(); i++) {
-                System.out.println("i: " + i + " DEBUG GUARDANDO DOMICILIO " + DMAdapter.mDatasetDOM.get(i));
                 bdInterna.insertarDomicilio(last_domicilio_id,DMAdapter.mDatasetDOM.get(i));
             }
             for (int i = 0; i < adaptertelf.getItemCount(); i++) {
-                System.out.println("i: " + i + " DEBUG GUARDANDO TELEFONO " + TFAdapter.mDatasetTEL.get(i));
                 bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
             }
 
@@ -346,7 +348,8 @@ public class Anadir extends AppCompatActivity {
     private void uploadImage(String nombre) {
         //Mostrar el diálogo de progreso
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
+        //TODO Revisar estos errores de dialogo
+        final ProgressDialog loading = ProgressDialog.show(this, Integer.toString(R.string.subiendo), Integer.toString(R.string.mensaje_subida), false, false);
 
         System.out.println("DEBUG ejecutrando " + UPLOAD_PHP);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_PHP,
@@ -442,20 +445,18 @@ public class Anadir extends AppCompatActivity {
      */
     private void showPermissionsAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permissions required!")
-                .setMessage("Camera needs few permissions to work properly. Grant them in settings.")
-                .setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.permisos_camara)
+                .setMessage(R.string.mensaje_error_camara)
+                .setPositiveButton(R.string.ir_config, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         CameraUtils.openSettings(Anadir.this);
                     }
                 })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 }).show();
     }
-
-
 }
 
 

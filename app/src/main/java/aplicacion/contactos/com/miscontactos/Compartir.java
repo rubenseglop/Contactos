@@ -77,10 +77,10 @@ public class Compartir extends AppCompatActivity {
             StringObjeto(root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(Compartir.this, "Hubo un problema con el servidor", Toast.LENGTH_LONG).show();
+            Toast.makeText(Compartir.this, R.string.errorserver, Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(Compartir.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+            Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
 
         spinner = (Spinner) findViewById(R.id.spinner);
@@ -101,7 +101,7 @@ public class Compartir extends AppCompatActivity {
             }
         } catch (Exception e) {
             System.out.println("DEBUG catch " + e.getMessage());
-            Toast.makeText(Compartir.this, "Hubo un problema con la conexión", Toast.LENGTH_LONG).show();
+            Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -109,10 +109,10 @@ public class Compartir extends AppCompatActivity {
 
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-        dialogo1.setTitle("Importante");
-        dialogo1.setMessage("¿ Vas a compartir éstas fotos ?");
+        dialogo1.setTitle(R.string.importante);
+        dialogo1.setMessage(R.string.compartir_foto);
         dialogo1.setCancelable(false);
-        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+        dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialogo1, int id) {
 
@@ -123,7 +123,7 @@ public class Compartir extends AppCompatActivity {
 
             }
         });
-        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+        dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
                 // en el caso de cancelar (no hago nada)
             }

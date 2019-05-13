@@ -10,11 +10,11 @@
     <item
         android:id="@+id/exportar"
         android:orderInCategory="100"
-        android:title="@string/action_exportar"
+        android:title="@string/copiaseg"
         app:showAsAction="never" />
     <item
         android:id="@+id/importar"
         android:orderInCategory="100"
-        android:title="@string/action_importar"
+        android:title="@string/recupeseg"
         app:showAsAction="never" />
 </menu>
