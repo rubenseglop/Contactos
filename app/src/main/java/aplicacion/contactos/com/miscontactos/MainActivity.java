@@ -2,7 +2,6 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -16,16 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
     }
-    public String getURLForResource (int resourceId) {
-        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
-    }
 
     /**
      * Método actualizar que lee de la BDInterna y actualiza los POJOS de contactos, galerias
@@ -94,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(contactos,galerias);
+        RVAdapter adapter = new RVAdapter(contactos);
         rv.setAdapter(adapter);
 
         //esto es parte del Swype
@@ -263,9 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }*/
         }
-
-
-
         if (error_conexion == false) {
             Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
         } else {
@@ -353,39 +339,11 @@ public class MainActivity extends AppCompatActivity {
                 error_conexion = true;
             }
         }
-        if (error_conexion==false){
+        if (error_conexion == false) {
             Toast.makeText(MainActivity.this, R.string.contactos_import, Toast.LENGTH_LONG).show();
-            if (tabla=="TEL")actualizar();
+            if (tabla == "TEL") actualizar();
         } else {
             Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    private void CopiarArchivo(String sourceFile, String destinationFile) {
-
-        try{
-
-            File inFile = new File(sourceFile);
-            File outFile = new File(destinationFile);
-
-            if (!outFile.exists()){
-                FileInputStream in = new FileInputStream(inFile);
-                FileOutputStream out =new FileOutputStream(outFile);
-
-                byte[] buffer = new byte[1024];
-                int c;
-
-                while( (c = in.read(buffer) ) != -1)
-                    out.write(buffer, 0, c);
-
-                out.flush();
-                in.close();
-                out.close();
-            }
-
-        } catch(IOException e) {
-            Toast.makeText(this, R.string.error_io, Toast.LENGTH_SHORT).show();
         }
     }
 

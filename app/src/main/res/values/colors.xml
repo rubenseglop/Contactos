@@ -5,7 +5,7 @@
     <color name="colorAccent">#DC115B</color>
     <color name="colorUno">#6E7C8D</color>
     <color name="colorTuplas">#C7CACD</color>
-    <color name="colorFuente">#568FDB</color>
-    <color name="colorFondoCuadros">#FFFFFF</color>
-    <color name="colorBotones">#008577</color>
+    <color name="colorFuente1">#568FDB</color>
+    <color name="colorFondoCuadros1">#FFFFFF</color>
+    <color name="colorBotones1">#008577</color>
 </resources>

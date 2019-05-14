@@ -26,7 +26,7 @@
  
  $sql = "INSERT INTO FOTOS (UUID,URL,PATH) VALUES ('$uuid', '$actualurl','$path')";
  
- if(mysqli_query($conexion,$sql)){
+ if(mysqli_query($conexion,$sql) || $path!="http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png"){
  file_put_contents($url,base64_decode($imagen));
  echo "Subio imagen Correctamente";
  }

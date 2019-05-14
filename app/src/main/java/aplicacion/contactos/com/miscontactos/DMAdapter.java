@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -69,11 +70,13 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         public EditText mEditText;
         public MyCustomEditTextListener myCustomEditTextListener;
 
+        @SuppressLint("ResourceAsColor")
         public ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
 
             this.menosDomicilio = v.findViewById(R.id.menosDomicilio);
             this.mEditText = (EditText) v.findViewById(R.id.id_rvdomicilio);
+            this.mEditText.setTextColor(ColoresApp.colorTexto);
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.mEditText.addTextChangedListener(myCustomEditTextListener);
         }

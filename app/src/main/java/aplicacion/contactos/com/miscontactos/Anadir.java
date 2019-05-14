@@ -1,10 +1,14 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -95,6 +99,7 @@ public class Anadir extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +118,6 @@ public class Anadir extends AppCompatActivity {
         fotoperfil = findViewById(R.id.fotoperfil);
         masdomicilio = findViewById(R.id.masdomicilio);
         mastelefono = findViewById(R.id.mastelefono);
-
 
         // Obtener el Recycler para el adatapdor DMAdapter
         recyclerdomicilio = (RecyclerView) findViewById(R.id.recicladordomicilio);
@@ -288,9 +292,6 @@ public class Anadir extends AppCompatActivity {
 
     }
 
-
-
-
     /**
      * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
@@ -319,7 +320,7 @@ public class Anadir extends AppCompatActivity {
             //inserto contacto con las ultimas id
 
             bdInterna.insertarContacto(
-                    imageStoragePath,  // todo cambiar aqui por la url web
+                    imageStoragePath,  // todo CREAR UN TRIGGER EN MYSQL QUE CONVIERTA EL IMAGE PATH POR SU URL
                     tv_nombre.getText().toString(),
                     tv_apellido.getText().toString(),
                     last_galeria_id,
@@ -337,14 +338,19 @@ public class Anadir extends AppCompatActivity {
             for (int i = 0; i < adaptertelf.getItemCount(); i++) {
                 bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
             }
-
             uploadImage(imageStoragePath);
+
             imageStoragePath=null;
             startActivity(getIntent());
             finish();
         }
     }
 
+    /**
+     * Método que sube por WebService un bitmap
+     * Debe comprobar que existe nueva foto para subir o no (en el PHP).
+     * @param nombre String con la Uri
+     */
     private void uploadImage(String nombre) {
         //Mostrar el diálogo de progreso
 
@@ -376,14 +382,23 @@ public class Anadir extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //Convertir bits a cadena
-                String imagen = getStringImagen(bitmap);
+                String imagen=null;
+
+                if (bitmap!=null){
+                    imagen = getStringImagen(bitmap);
+                } else {
+                    imagen = getStringImagen(drawableToBitmap(fotoperfil.getDrawable()));
+                }
+
                 //Creación de parámetros
                 Map<String, String> params = new Hashtable<String, String>();
                 //Agregando de parámetros al PHP de Upload.php
                 params.put("UUID", bdInterna.getUniqueID());
-                params.put("FOTO", imagen);  //todo revisar en caso de fallo de imagen vacia
+                params.put("FOTO", imagen);
                 params.put("PATH", nombre);
                 //Parámetros de retorno
+
+                System.out.println("DEBUG FOTO " + bdInterna.getUniqueID() + " " + imagen.isEmpty() + " " + nombre);
                 return params;
             }
         };
@@ -394,17 +409,44 @@ public class Anadir extends AppCompatActivity {
     }
 
     public String getStringImagen(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageBytes = baos.toByteArray();
+            String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            return encodedImage;
     }
 
     public String nextSessionId() {
         SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
     }
+
+    /**
+     * Método que convierte un recurso Drawable en un Bitmap
+     * @param drawable
+     * @return Devuelve un Bitmap de la foto
+     */
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             // Refreshing the gallery
@@ -427,7 +469,7 @@ public class Anadir extends AppCompatActivity {
     }
 
     /**
-     * Display image from gallery
+     * Muestra la imagen de la galeria
      */
     private void previewCapturedImage() {
         try {

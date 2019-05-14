@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorFondoCuadros"
+    android:background="@color/colorFondoCuadros1"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Anadir"
     tools:showIn="@layout/activity_anadir">
@@ -13,14 +13,14 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorFondoCuadros"
+        android:background="@color/colorFondoCuadros1"
         android:fillViewport="true">
 
         <TableLayout
             android:id="@+id/tableLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorFondoCuadros"
+            android:background="@color/colorFondoCuadros1"
             android:backgroundTintMode="add"
             android:stretchColumns="1">
 
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -41,10 +41,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorFondoCuadros"
+                    android:background="@color/colorFondoCuadros1"
                     android:text="@string/nombre"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorFuente"
+                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="@+id/id_nombre"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -69,8 +69,7 @@
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/imagen"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/perfil" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/id_apellidos"
@@ -90,7 +89,7 @@
                     android:layout_width="88dp"
                     android:layout_height="21dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorBotones"
+                    android:background="@color/colorBotones1"
                     android:onClick="clickAnadir"
                     android:text="Foto"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -102,9 +101,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:background="@color/colorFondoCuadros"
+                    android:background="@color/colorFondoCuadros1"
                     android:text="@string/apellidos"
-                    android:textColor="@color/colorFuente"
+                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="@+id/id_apellidos"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -144,7 +143,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajadomicilio">
@@ -153,7 +152,7 @@
                     android:id="@+id/masdomicilio"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorBotones"
+                    android:background="@color/colorBotones1"
                     android:text="@string/add_domicilio"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +170,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajapellido">
@@ -181,7 +180,7 @@
                     android:id="@+id/recicladortelefono"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorFondoCuadros"
+                    android:background="@color/colorFondoCuadros1"
                     android:padding="3dp"
                     android:scrollbars="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -199,7 +198,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajatelefono">
@@ -212,7 +211,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorBotones"
+                    android:background="@color/colorBotones1"
                     android:text="@string/add_telefono"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -229,7 +228,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajatelefono">
@@ -241,10 +240,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorFondoCuadros"
+                    android:background="@color/colorFondoCuadros1"
                     android:text="Email "
                     android:textAllCaps="false"
-                    android:textColor="@color/colorFuente"
+                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -272,7 +271,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros"
+                android:background="@color/colorFondoCuadros1"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

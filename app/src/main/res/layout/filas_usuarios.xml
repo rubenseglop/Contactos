@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorFondoCuadros"
+    android:background="@color/colorFondoCuadros1"
     android:padding="5dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorFondoCuadros">
+        android:background="@color/colorFondoCuadros1">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorFondoCuadros"
+            android:background="@color/colorFondoCuadros1"
             android:padding="2dp">
 
             <ImageView
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:elegantTextHeight="false"
-                android:textColor="@color/colorFuente"
+                android:textColor="@color/colorFuente1"
                 android:textSize="@dimen/texto_nombre"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:textColor="@color/colorFuente"
+                android:textColor="@color/colorFuente1"
                 android:textSize="@dimen/texto_normal"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_nombre"
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:textColor="@color/colorFuente"
+                android:textColor="@color/colorFuente1"
                 android:textSize="@dimen/texto_normal"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_apellido"
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:textColor="@color/colorFuente"
+                android:textColor="@color/colorFuente1"
                 android:textSize="@dimen/texto_normal"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_domicilio"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:textColor="@color/colorFuente"
+                android:textColor="@color/colorFuente1"
                 android:textSize="@dimen/texto_normal"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_telefono"
