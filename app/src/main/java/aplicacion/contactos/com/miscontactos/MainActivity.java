@@ -19,10 +19,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<Domicilio> domicilios;
     ArrayList<Telefono> telefonos;
     boolean error_conexion = false;
+    String orderby;
+    String ordertype;
+
 
 
     @Override
@@ -77,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
         bdexterna = new BDExterna();
+        orderby ="NOMBRE";
+        ordertype="ASC";
         bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
     }
@@ -87,9 +95,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
-        bdinterna.actualizaContactos("NOMBRE","ASC");
-        contactos=bdinterna.contactos;
-        galerias=bdinterna.galerias;
+        bdinterna.actualizaContactos(orderby, ordertype);
+        contactos = bdinterna.contactos;
+        galerias = bdinterna.galerias;
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -387,19 +395,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        if (id == R.id.nav_nombre) {
+            orderby = "NOMBRE";
+        } else if (id == R.id.nav_apellido) {
+            orderby = "APELLIDOS";
+        } else if (id == R.id.nav_domicilio) {
+            orderby = "DOMICILIO";
+        } else if (id == R.id.nav_telefono) {
+            orderby = "TELEFONO";
 
         }
+        actualizar();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

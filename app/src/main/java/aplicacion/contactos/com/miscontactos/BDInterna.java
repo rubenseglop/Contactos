@@ -67,15 +67,13 @@ public class BDInterna extends SQLiteOpenHelper {
      * @param orderby Columna de la tabla USUARIOS a ordenar
      * @param order Debes indicar si es ASC o DESC
      */
-    public void actualizaContactos(String orderby, String order) {
+    public void actualizaContactos(String tabla, String orderby, String order) {
         Cursor cContactos;
         //limpio todos los ArrayLists
         contactos.clear();
 
-        datosId = recuperaIds("USUARIOS", orderby +" ASC");  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        datosId = recuperaIds("USUARIOS", orderby + " " + order);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         int id;
-
-
         //Leo todos los contactos
         for (int i = 0; i < datosId.length; i++) {
             cContactos = busquedaContacto(Integer.toString(datosId[i]));
@@ -103,17 +101,14 @@ public class BDInterna extends SQLiteOpenHelper {
                 if (cContactosD.moveToFirst()) {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                     int indice = 0;
-
                     do{
                         tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
-                        System.out.println("DEBUG CONTAC " + i + "DOM " + cContactosD.getString(1));
                         indice++;
                     }while (cContactosD.moveToNext());
-                    System.out.println("DEBUG CONTAC DOMIC " + tempoDom.size() + " "+ tempoDom);
                 }
 
                 //Meto en un ArrayList los telefono con la ID del contacto
-                int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
+                //int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
 
                 Cursor cContactosT = busquedaTelefono(Integer.toString(telefono_id));
                 if (cContactosT.moveToFirst()) {
@@ -128,10 +123,9 @@ public class BDInterna extends SQLiteOpenHelper {
                     System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
                 }
             } while (cContactos.moveToNext());
-            //Leidas todas las tablas, relacionamos las ID's (FOREING KEY)
+            //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
 
             contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
-
         }
 
         /*datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
