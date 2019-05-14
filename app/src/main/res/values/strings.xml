@@ -1,10 +1,20 @@
 <resources>
+
     <string name="app_name">Mis Contactos</string>
     <string name="action_settings">Configuración</string>
     <string name="title_activity_anadir">Añadir</string>
     <string name="exportar">Exportar</string>
     <string name="action_anadir">Añadir</string>
     <string name="action_compartir">Compartir</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Galeria</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Herramientas</string>
+    <string name="menu_share">Compartir</string>
+    <string name="menu_send">Enviar</string>
 
     <string name="delete_success">Imagen fue borrada!</string>
     <string name="error">Error buscando la foto</string>
@@ -49,4 +59,6 @@
     <string name="permission_denied">Permiso denegado</string>
     <string name="saved_message">Foto guardada en %1$s</string>
     <string name="start_camera">Inicio Cámara</string>
+    <string name="navigation_drawer_close">"Abrir navigation "</string>
+    <string name="navigation_drawer_open">Cerar navigation</string>
 </resources>

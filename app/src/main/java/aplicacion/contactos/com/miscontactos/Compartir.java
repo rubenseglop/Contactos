@@ -61,7 +61,7 @@ public class Compartir extends AppCompatActivity {
         bdInterna = new BDInterna(this);
         bdExterna = new BDExterna();
 
-        bdInterna.actualizaContactos();
+        bdInterna.actualizaContactos("NOMBRE","ASC");
         UUID = bdInterna.getUniqueID();
 
         //saco todos los UUID

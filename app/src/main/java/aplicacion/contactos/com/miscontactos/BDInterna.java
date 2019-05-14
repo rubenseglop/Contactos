@@ -37,7 +37,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final String TABLA_GALERIA =
             "CREATE TABLE GALERIA (" +
                     "ID INTEGER(6)," +
-                    "URL VARCHAR(200)," +
+                    "URL MEDIUMBLOB," +
                     "COMPARTIDO VARCHAR(50)," +
                     "FOREIGN KEY (ID) REFERENCES USUARIO(GALERIA_ID) ON DELETE CASCADE);";
     private static final String TABLA_DOMICILIO =
@@ -62,12 +62,17 @@ public class BDInterna extends SQLiteOpenHelper {
         //actualizaContactos();
     }
 
-    public void actualizaContactos() {
+    /**
+     * Lee todos los contactos de la BDInterna
+     * @param orderby Columna de la tabla USUARIOS a ordenar
+     * @param order Debes indicar si es ASC o DESC
+     */
+    public void actualizaContactos(String orderby, String order) {
         Cursor cContactos;
         //limpio todos los ArrayLists
         contactos.clear();
 
-        datosId = recuperaIds("USUARIOS", "nombre ASC");  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        datosId = recuperaIds("USUARIOS", orderby +" ASC");  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         int id;
 
 
@@ -78,54 +83,54 @@ public class BDInterna extends SQLiteOpenHelper {
             ArrayList<Domicilio> tempoDom = new ArrayList<>();
             ArrayList<Telefono> tempoTel = new ArrayList<>();
 
-                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                String foto, nombre, apellidos, email;
-                int galeria_id, domicilio_id, telefono_id;
-                do {
-                    id = cContactos.getInt(0);
-                    foto = cContactos.getString(1);  // Esta es la foto interna
-                    nombre = cContactos.getString(2);
-                    apellidos = cContactos.getString(3);
-                    galeria_id = cContactos.getInt(4);
-                    domicilio_id = cContactos.getInt(5);
-                    telefono_id = cContactos.getInt(6);
-                    email = cContactos.getString(7);
+            //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+            String foto, nombre, apellidos, email;
+            int galeria_id, domicilio_id, telefono_id;
+            do {
+                id = cContactos.getInt(0);
+                foto = cContactos.getString(1);  // Esta es la foto interna
+                nombre = cContactos.getString(2);
+                apellidos = cContactos.getString(3);
+                galeria_id = cContactos.getInt(4);
+                domicilio_id = cContactos.getInt(5);
+                telefono_id = cContactos.getInt(6);
+                email = cContactos.getString(7);
 
-                    //Meto en un ArrayList los domicilios con la ID del contacto
-                    //int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
+                //Meto en un ArrayList los domicilios con la ID del contacto
+                //int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
 
-                    Cursor cContactosD = busquedaDomicilio(Integer.toString(galeria_id));
-                    if (cContactosD.moveToFirst()) {
-                        //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                        int indice = 0;
+                Cursor cContactosD = busquedaDomicilio(Integer.toString(galeria_id));
+                if (cContactosD.moveToFirst()) {
+                    //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                    int indice = 0;
 
-                        do{
-                            tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
-                            System.out.println("DEBUG CONTAC " + i + "DOM " + cContactosD.getString(1));
-                            indice++;
-                        }while (cContactosD.moveToNext());
-                        System.out.println("DEBUG CONTAC DOMIC " + tempoDom.size() + " "+ tempoDom);
-                    }
+                    do{
+                        tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
+                        System.out.println("DEBUG CONTAC " + i + "DOM " + cContactosD.getString(1));
+                        indice++;
+                    }while (cContactosD.moveToNext());
+                    System.out.println("DEBUG CONTAC DOMIC " + tempoDom.size() + " "+ tempoDom);
+                }
 
-                    //Meto en un ArrayList los telefono con la ID del contacto
-                    int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
+                //Meto en un ArrayList los telefono con la ID del contacto
+                int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
 
-                    Cursor cContactosT = busquedaTelefono(Integer.toString(telefono_id));
-                    if (cContactosT.moveToFirst()) {
-                        //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                        int indice = 0;
+                Cursor cContactosT = busquedaTelefono(Integer.toString(telefono_id));
+                if (cContactosT.moveToFirst()) {
+                    //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                    int indice = 0;
 
-                        do {
-                            tempoTel.add(indice, new Telefono(cContactosT.getInt(0), cContactosT.getString(1)));
-                            System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
-                            indice++;
-                        }while (cContactosT.moveToNext());
-                        System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
-                    }
-                } while (cContactos.moveToNext());
-                //Leidas todas las tablas, relacionamos las ID's (FOREING KEY)
+                    do {
+                        tempoTel.add(indice, new Telefono(cContactosT.getInt(0), cContactosT.getString(1)));
+                        System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
+                        indice++;
+                    }while (cContactosT.moveToNext());
+                    System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
+                }
+            } while (cContactos.moveToNext());
+            //Leidas todas las tablas, relacionamos las ID's (FOREING KEY)
 
-                contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
+            contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
 
         }
 
@@ -315,7 +320,6 @@ public class BDInterna extends SQLiteOpenHelper {
         db.delete("TELEFONO", "ID=" + id, null);
         db.delete("USUARIOS", "ID=" + id, null);
         db.close();
-        actualizaContactos();
     }
 
     public void borrarTodo() {
@@ -325,7 +329,6 @@ public class BDInterna extends SQLiteOpenHelper {
         db.delete("TELEFONO", null, null);
         db.delete("USUARIOS", null, null);
         db.close();
-        actualizaContactos();
     }
 
 
@@ -424,18 +427,18 @@ public class BDInterna extends SQLiteOpenHelper {
         Cursor cursor;
         // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
 
-            cursor = db.query(tabla, valores_recuperar, null, null, null, null, orderby, null);
-            orderby = null;
-            if (cursor.getCount() > 0) {
-                datosId = new int[cursor.getCount()];
-                i = 0;
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    datosId[i] = cursor.getInt(0);
-                    i++;
-                    cursor.moveToNext();
-                }
-            } else datosId = new int[0];
+        cursor = db.query(tabla, valores_recuperar, null, null, null, null, orderby, null);
+        orderby = null;
+        if (cursor.getCount() > 0) {
+            datosId = new int[cursor.getCount()];
+            i = 0;
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                datosId[i] = cursor.getInt(0);
+                i++;
+                cursor.moveToNext();
+            }
+        } else datosId = new int[0];
         cursor.close();
         return datosId;
 
