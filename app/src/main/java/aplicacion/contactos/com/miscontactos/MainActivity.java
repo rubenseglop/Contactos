@@ -33,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos(orderby, ordertype);
-        contactos = bdinterna.contactos;
+        contactos = bdinterna.devuelveContactos();
         galerias = bdinterna.galerias;
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);

@@ -99,7 +99,6 @@ public class Anadir extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -289,9 +288,7 @@ public class Anadir extends AppCompatActivity {
     public static void actualizarAdaptador(){
         adapterdomi.notifyDataSetChanged();
         adaptertelf.notifyDataSetChanged();
-
     }
-
     /**
      * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
@@ -312,13 +309,11 @@ public class Anadir extends AppCompatActivity {
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
             bdInterna = new BDInterna(this);
             //buscamos los ultimos id
-            int last_galeria_id = bdInterna.ultimo_id("GALERIA");
-            int last_domicilio_id = bdInterna.ultimo_id("DOMICILIO");
-            int last_telefono_id = bdInterna.ultimo_id("TELEFONO");
-
+            int last_galeria_id = bdInterna.ultimo_id("USUARIOS");
+            int last_domicilio_id = bdInterna.ultimo_id("USUARIOS");
+            int last_telefono_id = bdInterna.ultimo_id("USUARIOS");
 
             //inserto contacto con las ultimas id
-
             bdInterna.insertarContacto(
                     imageStoragePath,  // todo CREAR UN TRIGGER EN MYSQL QUE CONVIERTA EL IMAGE PATH POR SU URL
                     tv_nombre.getText().toString(),

@@ -7,11 +7,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
-
-
 
 public class BDInterna extends SQLiteOpenHelper {
 
@@ -19,6 +19,7 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
     private int [] datosId; // Array con el número de tuplas (de contactos, de galeria, domicilio, etc...)
+    List<Contacto> list = new ArrayList();
 
     // Creación de tabla para la BD en formato SQL en caso de no tenerla
     private static final String UNIQUE_UUID =
@@ -52,14 +53,12 @@ public class BDInterna extends SQLiteOpenHelper {
                     "FOREIGN KEY (ID) REFERENCES USUARIO(TELEFONO_ID) ON DELETE CASCADE);";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
+    ArrayList<Contacto> des_contactos = new ArrayList<>();
     ArrayList<Galeria> galerias = new ArrayList<>();
 
     // Constructor de la clase
     public BDInterna(Context context) {
         super(context, NOMBRE_BASEDATOS, null, VERSION_BASEDATOS);
-
-        // Recorro todos los contactos de mi SQLite y los guardo en un ArrayList de Contacto
-        //actualizaContactos();
     }
 
     /**
@@ -67,14 +66,14 @@ public class BDInterna extends SQLiteOpenHelper {
      * @param orderby Columna de la tabla USUARIOS a ordenar
      * @param order Debes indicar si es ASC o DESC
      */
-    public void actualizaContactos(String tabla, String orderby, String order) {
+    public void actualizaContactos(String orderby, String order) {
         Cursor cContactos;
         //limpio todos los ArrayLists
         contactos.clear();
 
-        datosId = recuperaIds("USUARIOS", orderby + " " + order);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        datosId = recuperaIds("USUARIOS", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         int id;
-        //Leo todos los contactos
+        //Leo todos los contactos leyendo desde la ID de datosID
         for (int i = 0; i < datosId.length; i++) {
             cContactos = busquedaContacto(Integer.toString(datosId[i]));
             cContactos.moveToNext();
@@ -125,9 +124,8 @@ public class BDInterna extends SQLiteOpenHelper {
             } while (cContactos.moveToNext());
             //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
 
-            contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
+            des_contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
         }
-
         /*datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         for (int i = 0; i < numerodeFilas("GALERIA"); i++) {
             cContactos = busquedaGaleria(Integer.toString(datosId[i]));
@@ -142,6 +140,24 @@ public class BDInterna extends SQLiteOpenHelper {
             }
         }*/
 
+        //Ordenar des_contactos
+        Contacto a,b,aux;
+        for (int i = 1; i < des_contactos.size(); i++) {
+            a = des_contactos.get(i-1);
+            b = des_contactos.get(i);
+
+            System.out.println("1 DEBUG ORDER " + a.getApellidos() + " - " + b.getApellidos());
+            if (a.getApellidos().compareTo(b.getApellidos())>0){
+                aux = a;
+                a = b;
+                b = aux;
+
+
+                System.out.println("2 DEBUG ORDER " + a.getApellidos() + " - " + b.getApellidos());
+
+            }
+        }
+        contactos = des_contactos;
     }
 
     @Override
@@ -419,9 +435,14 @@ public class BDInterna extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String[] valores_recuperar = {"ID"};
         Cursor cursor;
-        // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
 
-        cursor = db.query(tabla, valores_recuperar, null, null, null, null, orderby, null);
+        // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
+        /*cursor = db.rawQuery("SELECT * FROM USUARIOS U " +
+                "JOIN GALERIA G ON G.ID = U.GALERIA_ID " +
+                "JOIN DOMICILIO D ON D.ID = U.DOMICILIO_ID " +
+                "JOIN TELEFONO T ON T.ID = U.TELEFONO_ID " +
+                "ORDER BY DIRECCION", null);*/
+        cursor = db.query(tabla, valores_recuperar, null,null, null, null, orderby, null);
         orderby = null;
         if (cursor.getCount() > 0) {
             datosId = new int[cursor.getCount()];
@@ -438,8 +459,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
     }
 
-
-    public ArrayList<Contacto> devuelveContactos(){
+    public ArrayList<Contacto> devuelveContactos() {
         return contactos;
     }
 
@@ -447,4 +467,6 @@ public class BDInterna extends SQLiteOpenHelper {
         int [] datosId = recuperaIds("USUARIOS", "nombre ASC");
         return datosId[id];
     }
+
+
 }

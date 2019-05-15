@@ -70,7 +70,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         } else {
             personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
         }
-
         try {
             personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
             personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
