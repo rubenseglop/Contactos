@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,7 +54,6 @@ public class BDInterna extends SQLiteOpenHelper {
                     "FOREIGN KEY (ID) REFERENCES USUARIO(TELEFONO_ID) ON DELETE CASCADE);";
 
     ArrayList<Contacto> contactos = new ArrayList<>();
-    ArrayList<Contacto> des_contactos = new ArrayList<>();
     ArrayList<Galeria> galerias = new ArrayList<>();
 
     // Constructor de la clase
@@ -101,7 +101,9 @@ public class BDInterna extends SQLiteOpenHelper {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                     int indice = 0;
                     do{
-                        tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), cContactosD.getString(1)));
+                        String result = cContactosD.getString(1);
+                        if(result.length()==0){result ="";}
+                        tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), result));
                         indice++;
                     }while (cContactosD.moveToNext());
                 }
@@ -115,7 +117,9 @@ public class BDInterna extends SQLiteOpenHelper {
                     int indice = 0;
 
                     do {
-                        tempoTel.add(indice, new Telefono(cContactosT.getInt(0), cContactosT.getString(1)));
+                        String result = cContactosT.getString(1);
+                        if(result.length()==0){result ="";}
+                        tempoTel.add(indice, new Telefono(cContactosT.getInt(0), result));
                         System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
                         indice++;
                     }while (cContactosT.moveToNext());
@@ -123,6 +127,7 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
             } while (cContactos.moveToNext());
             //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
+
 
             contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
         }
@@ -154,11 +159,23 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
                 if (orderby.equals("DOMICILIO")) {
                     System.out.println("DEBUG ORDER DOMICILIO");
-                    return new String(p1.getDomicilios().get(0).getDireccion()).compareTo(new String(p2.getDomicilios().get(0).getDireccion()));
+
+                    try {
+                        return new String(p1.getDomicilios().get(0).getDireccion()).compareTo(new String(p2.getDomicilios().get(0).getDireccion()));
+                    } catch (Exception e) {
+                    } finally {
+                        return 0;
+                    }
+
                 }
                 if (orderby.equals("TELEFONO")) {
                     System.out.println("DEBUG ORDER TELEFONO");
-                    return new String(p1.getTelefonos().get(0).getNumero()).compareTo(new String(p2.getTelefonos().get(0).getNumero()));
+                    try {
+                        return new String(p1.getTelefonos().get(0).getNumero()).compareTo(new String(p2.getTelefonos().get(0).getNumero()));
+                    } catch (Exception e) {
+                    } finally {
+                        return 0;
+                    }
                 }
                 return 0;
             }

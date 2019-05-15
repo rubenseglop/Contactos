@@ -3,12 +3,12 @@ package aplicacion.contactos.com.miscontactos;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -45,6 +45,8 @@ public class Compartir extends AppCompatActivity {
 
     BDInterna bdInterna;
     BDExterna bdExterna;
+    private ArrayList<GaleriaCompartir> galeriaCompartir;
+    private RecyclerView co;
 
     @Override
     protected void onDestroy() {
@@ -61,13 +63,19 @@ public class Compartir extends AppCompatActivity {
         bdInterna = new BDInterna(this);
         bdExterna = new BDExterna();
 
-        bdInterna.actualizaContactos("NOMBRE","ASC");
+        bdInterna.actualizaContactos("NOMBRE", "ASC");
         UUID = bdInterna.getUniqueID();
+        galeriaCompartir = new ArrayList<GaleriaCompartir>();
+
+
+        actualizar();
 
         //saco todos los UUID
         URL url = null;
         try {
-            String sURL = BDExternaLinks.verUUID;
+            String sURL = BDExternaLinks.vercontactos + bdInterna.getUniqueID();
+
+            System.out.println("DEBUG SPINNER " + sURL);
             url = new URL(sURL);
             URLConnection request = null;
             request = url.openConnection();
@@ -87,6 +95,20 @@ public class Compartir extends AppCompatActivity {
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, uuidSpinner));
     }
 
+    private void actualizar() {
+        co = (RecyclerView) findViewById(R.id.recyfotos);
+        co.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        co.setLayoutManager(llm);
+        COAdapter adapter = new COAdapter(galeriaCompartir);
+        co.setAdapter(adapter);
+    }
+
+    /**
+     * Método que lee un String en un ArrayList de uuidSpinner
+     *
+     * @param jsonString
+     */
     public void StringObjeto(String jsonString) {
 
         try {
@@ -94,10 +116,10 @@ public class Compartir extends AppCompatActivity {
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
                 // add to list
-                json_data.getString("UUIDUNIQUE");
-                if (!json_data.getString("UUIDUNIQUE").equals(UUID)) {
-                    uuidSpinner.add(json_data.getString("UUIDUNIQUE"));
-                }
+
+                System.out.println("DEBUG SPINNER " + json_data.getString("NOMBRE"));
+                uuidSpinner.add(json_data.getString("NOMBRE"));
+
             }
         } catch (Exception e) {
             System.out.println("DEBUG catch " + e.getMessage());
@@ -117,7 +139,6 @@ public class Compartir extends AppCompatActivity {
             public void onClick(DialogInterface dialogo1, int id) {
 
                 // todo aqui para compartir
-
 
                 bdInterna.getUniqueID();
 
@@ -148,6 +169,7 @@ public class Compartir extends AppCompatActivity {
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected images
             ArrayList<Image> images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+
             ArrayList<Uri> arrayUri = new ArrayList<>();
 
             for (int i = 0; i < images.size(); i++) {
@@ -155,19 +177,10 @@ public class Compartir extends AppCompatActivity {
                 // start play with image uri
                 System.out.println("DEBUG URI " + uri.getPath());
                 arrayUri.add(uri);
-
+                galeriaCompartir.add( new GaleriaCompartir(uri.getPath()));
             }
+            actualizar();
 
-
-//                Uri u = Uri.parse(uri.getPath()); File f = new File("" + u); f.getName();
-//
-//                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//                Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath(),bmOptions);
-//                String imagen = getStringImagen(bitmap);
-//                bdExterna.insertarFoto2(bdInterna.getUniqueID(),imagen,f.getName());
-
-
-            Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
 
             //if you need
@@ -175,36 +188,25 @@ public class Compartir extends AppCompatActivity {
             //intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File Description");
 
 
+            /*
+            Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
             intentShareFile.setType("text/plain");
-            startActivity(intentShareFile);
+            startActivity(intentShareFile);*/
 
 
         }
     }
 
-    public String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally {
-                cursor.close();
-            }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Metemos en el bundle lo que queremos conservar
+            actualizar();
         }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
     }
 
-}
+
 
 
