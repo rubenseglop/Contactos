@@ -124,7 +124,7 @@ public class BDInterna extends SQLiteOpenHelper {
             } while (cContactos.moveToNext());
             //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
 
-            des_contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
+            contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
         }
         /*datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         for (int i = 0; i < numerodeFilas("GALERIA"); i++) {
@@ -141,23 +141,28 @@ public class BDInterna extends SQLiteOpenHelper {
         }*/
 
         //Ordenar des_contactos
-        Contacto a,b,aux;
-        for (int i = 1; i < des_contactos.size(); i++) {
-            a = des_contactos.get(i-1);
-            b = des_contactos.get(i);
-
-            System.out.println("1 DEBUG ORDER " + a.getApellidos() + " - " + b.getApellidos());
-            if (a.getApellidos().compareTo(b.getApellidos())>0){
-                aux = a;
-                a = b;
-                b = aux;
-
-
-                System.out.println("2 DEBUG ORDER " + a.getApellidos() + " - " + b.getApellidos());
-
+        Collections.sort(contactos, new Comparator<Contacto>() {
+            @Override
+            public int compare(Contacto p1, Contacto p2) {
+                if (orderby.equals("NOMBRE")) {
+                    System.out.println("DEBUG ORDER NOMBRE");
+                    return new String(p1.getNombre()).compareTo(new String(p2.getNombre()));
+                }
+                if (orderby.equals("APELLIDOS")) {
+                    System.out.println("DEBUG ORDER APELLIDOS");
+                    return new String(p1.getApellidos()).compareTo(new String(p2.getApellidos()));
+                }
+                if (orderby.equals("DOMICILIO")) {
+                    System.out.println("DEBUG ORDER DOMICILIO");
+                    return new String(p1.getDomicilios().get(0).getDireccion()).compareTo(new String(p2.getDomicilios().get(0).getDireccion()));
+                }
+                if (orderby.equals("TELEFONO")) {
+                    System.out.println("DEBUG ORDER TELEFONO");
+                    return new String(p1.getTelefonos().get(0).getNumero()).compareTo(new String(p2.getTelefonos().get(0).getNumero()));
+                }
+                return 0;
             }
-        }
-        contactos = des_contactos;
+        });
     }
 
     @Override
