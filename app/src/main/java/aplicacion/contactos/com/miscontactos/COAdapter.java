@@ -12,11 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
@@ -46,7 +42,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     @NonNull
     @Override
     public COAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
         COAdapter.GalleryViewHolder pvh = new COAdapter.GalleryViewHolder(v);
         return pvh;
     }

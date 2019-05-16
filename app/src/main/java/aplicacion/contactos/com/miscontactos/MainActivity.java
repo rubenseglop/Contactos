@@ -3,7 +3,6 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -44,16 +43,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    BDInterna bdinterna;
-    BDExterna bdexterna;
-
-    ArrayList<Contacto> contactos;
-    ArrayList<Galeria> galerias;
-    ArrayList<Domicilio> domicilios;
-    ArrayList<Telefono> telefonos;
+    private BDInterna bdinterna;
+    private BDExterna bdexterna;
+    private ArrayList<Contacto> contactos;
+    private ArrayList<Galeria> galerias;
+    private ArrayList<Domicilio> domicilios;
+    private ArrayList<Telefono> telefonos;
     boolean error_conexion = false;
-    String orderby;
-    String ordertype;
+
+    private String orderby;
+    private String ordertype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        /*Menu lateral Navigation View*/
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,6 +93,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ordertype="ASC";
         bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
+    }
+
+
+    /**
+     * Menu Navigation
+     * @param item
+     * @return
+     */
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_nombre) {
+            orderby = "NOMBRE";
+        } else if (id == R.id.nav_apellido) {
+            orderby = "APELLIDOS";
+        } else if (id == R.id.nav_domicilio) {
+            orderby = "DOMICILIO";
+        } else if (id == R.id.nav_telefono) {
+            orderby = "TELEFONO";
+
+        }
+        actualizar();
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**
@@ -117,6 +146,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         itemTouchHelper.attachToRecyclerView(rv);
     }
 
+    /**
+     * Crea un menú en la parte superior derecha con el Layout de menu_main
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds StringDomicilio to the action bar if it is present.
@@ -124,6 +158,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Opciones del menú superior derecha
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -140,13 +179,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             exportarWebService();
         }
         if (id == R.id.importar) {
-            importarWebService();
+            RestaurarWebService();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void importarWebService() {
-
+    private void RestaurarWebService() {
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
         dialogo1.setTitle(R.string.importante);
@@ -195,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             request.connect();
             // Convierte el contenido de la URL en un String
             JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
+
             StringObjeto(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -204,87 +243,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
     }
-
-    private void exportarWebService() {
-        error_conexion = false;
-        String error;
-        error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
-        if(error_conexion) {
-            error_conexion = true;
-        }
-        if (!error_conexion) {
-            for (Contacto contacto: contactos) {
-                String varId = Integer.toString(contacto.getId());
-                String varFoto = contacto.getFoto();
-                String varNombre =  contacto.getNombre();
-                String varApellidos = contacto.getApellidos();
-                int varGaleria = contacto.getGaleria_id();
-                int varDireccion = contacto.getDireccion_id();
-                int varTelefono = contacto.getTelefono_id();
-                String varCorreo = contacto.getCorreo();
-                String varUUID = bdinterna.getUniqueID();
-                domicilios = contacto.getDomicilios();
-                telefonos = contacto.getTelefonos();
-
-                if (varId==null || varId.length()==0) { varId =""; }
-                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
-                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
-                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
-                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
-
-                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,
-                        varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
-
-                if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
-
-                if (error_conexion == false) {
-                    for (Domicilio domicilio : domicilios) {
-
-                        int varIdDOM = domicilio.getId();
-                        String varDireccionDOM = domicilio.getDireccion();
-                        if (varDireccionDOM==null || varDireccionDOM.length()==0) { varDireccionDOM=""; }
-
-                        error = bdexterna.insertarDomicilio(varIdDOM,varDireccionDOM,varUUID);
-                        if (error.equals("ERROR") || error.isEmpty()) {
-                            error_conexion = true;
-                        }
-                    }
-                }
-
-                if (error_conexion == false) {
-                    for (Telefono telefono : telefonos) {
-                        int varIdTel = telefono.getId();
-                        String varNumeroTel = telefono.getNumero();
-
-                        if (varNumeroTel==null || varNumeroTel.length()==0) { varNumeroTel =""; }
-
-                        error = bdexterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
-                        if (error.equals("ERROR") || error.isEmpty()) {
-                            error_conexion = true;
-                        }
-                    }
-                }
-            }
-        }
-        if (error_conexion == false) {
-            /*for (Galeria galeria : galerias) {
-                int varId = galeria.getId();
-                String varUrl = galeria.getURL();
-                String varUUID = bdInterna.getUniqueID();
-
-                error = luissancar.insertarGaleria(varId, varUrl, varUUID);
-                if (error == "Error") {
-                    error_conexion = true;
-                }
-            }*/
-        }
-        if (error_conexion == false) {
-            Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
-        }
-    }
-
 
     /**
      * Método que convierte un String en formato JSON a valores en la tabla que especifico. Posteriormente es insertado en la BDInterna
@@ -373,8 +331,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
+    private void exportarWebService() {
+        error_conexion = false;
+        String error;
+        error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
+        if(error_conexion) {
+            error_conexion = true;
+        }
+        if (!error_conexion) {
+            for (Contacto contacto: contactos) {
+                String varId = Integer.toString(contacto.getId());
+                String varFoto = contacto.getFoto();
+                String varNombre =  contacto.getNombre();
+                String varApellidos = contacto.getApellidos();
+                int varGaleria = contacto.getGaleria_id();
+                int varDireccion = contacto.getDireccion_id();
+                int varTelefono = contacto.getTelefono_id();
+                String varCorreo = contacto.getCorreo();
+                String varUUID = bdinterna.getUniqueID();
+                domicilios = contacto.getDomicilios();
+                telefonos = contacto.getTelefonos();
+
+                if (varId==null || varId.length()==0) { varId =""; }
+                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
+                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
+                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
+                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
+
+
+                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,
+                        varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
+
+                if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
+
+                if (error_conexion == false) {
+                    for (Domicilio domicilio : domicilios) {
+
+                        int varIdDOM = domicilio.getId();
+                        String varDireccionDOM = domicilio.getDireccion();
+                        if (varDireccionDOM==null || varDireccionDOM.length()==0) { varDireccionDOM=""; }
+
+                        error = bdexterna.insertarDomicilio(varIdDOM,varDireccionDOM,varUUID);
+                        if (error.equals("ERROR") || error.isEmpty()) {
+                            error_conexion = true;
+                        }
+                    }
+                }
+
+                if (error_conexion == false) {
+                    for (Telefono telefono : telefonos) {
+                        int varIdTel = telefono.getId();
+                        String varNumeroTel = telefono.getNumero();
+
+                        if (varNumeroTel==null || varNumeroTel.length()==0) { varNumeroTel =""; }
+
+                        error = bdexterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
+                        if (error.equals("ERROR") || error.isEmpty()) {
+                            error_conexion = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (error_conexion == false) {
+            /*for (Galeria galeria : galerias) {
+                int varId = galeria.getId();
+                String varUrl = galeria.getURL();
+                String varUUID = bdInterna.getUniqueID();
+
+                error = luissancar.insertarGaleria(varId, varUrl, varUUID);
+                if (error == "Error") {
+                    error_conexion = true;
+                }
+            }*/
+        }
+        if (error_conexion == false) {
+            Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
         private ColorDrawable background=null;
 
@@ -396,8 +436,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bdinterna.borraContacto(position);
             actualizar();
         }
+
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
             try {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 float buttonWidthWithoutPadding = 300 - 20;
@@ -432,27 +475,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_nombre) {
-            orderby = "NOMBRE";
-        } else if (id == R.id.nav_apellido) {
-            orderby = "APELLIDOS";
-        } else if (id == R.id.nav_domicilio) {
-            orderby = "DOMICILIO";
-        } else if (id == R.id.nav_telefono) {
-            orderby = "TELEFONO";
-
-        }
-        actualizar();
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
 }

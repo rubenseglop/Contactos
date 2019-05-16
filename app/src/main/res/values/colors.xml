@@ -6,6 +6,6 @@
     <color name="colorUno">#6E7C8D</color>
     <color name="colorTuplas">#C7CACD</color>
     <color name="colorFuente1">#568FDB</color>
-    <color name="colorFondoCuadros1">#FFFFFF</color>
+    <color name="colorFondoCuadros1">#00FFFFFF</color>
     <color name="colorBotones1">#008577</color>
 </resources>
