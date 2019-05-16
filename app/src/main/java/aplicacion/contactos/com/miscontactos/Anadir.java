@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -101,6 +102,7 @@ public class Anadir extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anadir);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -190,7 +192,6 @@ public class Anadir extends AppCompatActivity {
             }
         });
 
-        restoreFromBundle(savedInstanceState);
     }
     /**
      * Restoring store image path from saved instance state
@@ -315,7 +316,7 @@ public class Anadir extends AppCompatActivity {
 
             //inserto contacto con las ultimas id
             bdInterna.insertarContacto(
-                    imageStoragePath,  // todo CREAR UN TRIGGER EN MYSQL QUE CONVIERTA EL IMAGE PATH POR SU URL
+                    imageStoragePath,
                     tv_nombre.getText().toString(),
                     tv_apellido.getText().toString(),
                     last_galeria_id,
@@ -324,7 +325,6 @@ public class Anadir extends AppCompatActivity {
                     tv_email.getText().toString(),
                     bdInterna.getUniqueID()
             );
-            bdInterna.insertarGaleria(last_galeria_id,null); //todo implementar la galeria de fotos
 
 
             for (int i = 0; i < adapterdomi.getItemCount(); i++) {
@@ -333,7 +333,7 @@ public class Anadir extends AppCompatActivity {
             for (int i = 0; i < adaptertelf.getItemCount(); i++) {
                 bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
             }
-            uploadImage(imageStoragePath);
+            //uploadImage(imageStoragePath);
 
             imageStoragePath=null;
             startActivity(getIntent());

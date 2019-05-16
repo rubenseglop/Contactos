@@ -1,6 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
@@ -22,6 +23,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
     RVAdapter(ArrayList<Contacto> contactos){
         this.contactos = contactos;
     }
+
 
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
@@ -77,7 +79,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
             personViewHolder.tv_domicilio.setText(contactos.get(i).getDomicilios().get(0).getDireccion());
             personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
         } catch (Exception e) {
-            System.out.println("Problema detectado: " + e.getMessage());
+            System.out.println("Problema detectado: " + e.getMessage()); //TODO ARREGLAR PROBLEMA DE INDICE CERO EN DOMICILIO Y TELEFONO
         }
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
     }

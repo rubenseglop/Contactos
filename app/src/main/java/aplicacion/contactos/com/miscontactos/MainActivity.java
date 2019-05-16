@@ -2,6 +2,14 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+
+import android.content.pm.ActivityInfo;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -33,8 +41,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -48,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean error_conexion = false;
     String orderby;
     String ordertype;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -369,7 +373,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+        private Drawable icon;
+        private ColorDrawable background=null;
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -379,6 +386,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
             Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
             //Remove swiped item from list and notify the RecyclerView
             //int position = viewHolder.getAdapterPosition();
@@ -387,7 +395,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             bdinterna.borraContacto(position);
             actualizar();
+        }
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            try {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                float buttonWidthWithoutPadding = 300 - 20;
+                float corners = 16;
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+                    Paint paint = new Paint();
+                    paint.setColor(Color.RED);
 
+
+                    RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                    paint.setColor(Color.RED);
+                    c.drawRoundRect(rightButton, corners, corners, paint);
+                    drawText(getString(R.string.borrado), c, rightButton, paint);
+                }else {
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        private void drawText(String text, Canvas c, RectF button, Paint p) {
+            float textSize = 60;
+            p.setColor(Color.WHITE);
+            p.setAntiAlias(true);
+            p.setTextSize(textSize);
+
+            float textWidth = p.measureText(text);
+            c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);
         }
     };
 
@@ -413,4 +454,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

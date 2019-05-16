@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorFondoCuadros1"
+    android:screenOrientation="portrait"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Anadir"
     tools:showIn="@layout/activity_anadir">
@@ -69,7 +70,8 @@
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/imagen"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/perfil" />
 
                 <EditText
                     android:id="@+id/id_apellidos"
@@ -86,6 +88,7 @@
 
                 <Button
                     android:id="@+id/imagen"
+                    style="@style/BotonEstilo1"
                     android:layout_width="88dp"
                     android:layout_height="21dp"
                     android:layout_marginBottom="8dp"
@@ -118,7 +121,7 @@
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cajapellido">
+                app:layout_constraintTop_toBottomOf="@+id/cajanombre">
 
 
                 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -150,6 +153,7 @@
 
                 <Button
                     android:id="@+id/masdomicilio"
+                    style="@style/BotonEstilo1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@color/colorBotones1"
@@ -173,7 +177,7 @@
                 android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cajapellido">
+                app:layout_constraintTop_toBottomOf="@+id/cajanombre">
 
 
                 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -205,6 +209,7 @@
 
                 <Button
                     android:id="@+id/mastelefono"
+                    style="@style/BotonEstilo1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -279,6 +284,7 @@
 
                 <Button
                     android:id="@+id/aceptar"
+                    style="@style/BotonEstilo1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -299,6 +305,4 @@
 
         </TableLayout>
     </ScrollView>
-
-
 </android.support.constraint.ConstraintLayout>

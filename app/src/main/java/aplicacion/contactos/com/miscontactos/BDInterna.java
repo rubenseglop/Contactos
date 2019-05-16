@@ -62,7 +62,7 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     /**
-     * Lee todos los contactos de la BDInterna
+     * Lee todos los contactos de la BDInterna y los guarda en ArrayLists de Contactos
      * @param orderby Columna de la tabla USUARIOS a ordenar
      * @param order Debes indicar si es ASC o DESC
      */
@@ -237,7 +237,6 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
     // Inserta un contactos a la BD
-    // TODO AÑADIR LA GALERIAID Y EL RESTO QUE HE MODIFICADO
     public void insertarContacto(String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();

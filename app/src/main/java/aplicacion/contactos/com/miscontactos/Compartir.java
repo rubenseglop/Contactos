@@ -3,6 +3,7 @@ package aplicacion.contactos.com.miscontactos;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -36,10 +37,10 @@ import in.myinnos.awesomeimagepicker.models.Image;
 
 
 public class Compartir extends AppCompatActivity {
+    static final ArrayList<GaleriaCompartir> ESTADO_ACTIVITY=new ArrayList<>();
 
     Spinner spinner;
     ArrayList uuidSpinner = new ArrayList();
-
     String UUID;
     ArrayList<Contacto> contactos;
 
@@ -53,6 +54,10 @@ public class Compartir extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public Compartir() {
+        galeriaCompartir = new ArrayList<GaleriaCompartir>();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,33 +69,18 @@ public class Compartir extends AppCompatActivity {
         bdExterna = new BDExterna();
 
         bdInterna.actualizaContactos("NOMBRE", "ASC");
+        contactos = bdInterna.contactos;
         UUID = bdInterna.getUniqueID();
-        galeriaCompartir = new ArrayList<GaleriaCompartir>();
-
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
+        }
 
         actualizar();
 
-        //saco todos los UUID
-        URL url = null;
-        try {
-            String sURL = BDExternaLinks.vercontactos + bdInterna.getUniqueID();
-
-            System.out.println("DEBUG SPINNER " + sURL);
-            url = new URL(sURL);
-            URLConnection request = null;
-            request = url.openConnection();
-            request.connect();
-            // Convierte el contenido de la URL en un String
-            JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
-            StringObjeto(root.toString()); // convierto esa String en un ArrayList de esa Tabla
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(Compartir.this, R.string.errorserver, Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_LONG).show();
+        for (int i = 0; i < contactos.size(); i++) {
+            uuidSpinner.add(contactos.get(i).getNombre());
         }
-
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, uuidSpinner));
     }
@@ -102,29 +92,6 @@ public class Compartir extends AppCompatActivity {
         co.setLayoutManager(llm);
         COAdapter adapter = new COAdapter(galeriaCompartir);
         co.setAdapter(adapter);
-    }
-
-    /**
-     * Método que lee un String en un ArrayList de uuidSpinner
-     *
-     * @param jsonString
-     */
-    public void StringObjeto(String jsonString) {
-
-        try {
-            JSONArray jArray = new JSONArray(jsonString);
-            for (int i = 0; i < jArray.length(); i++) {
-                JSONObject json_data = jArray.getJSONObject(i);
-                // add to list
-
-                System.out.println("DEBUG SPINNER " + json_data.getString("NOMBRE"));
-                uuidSpinner.add(json_data.getString("NOMBRE"));
-
-            }
-        } catch (Exception e) {
-            System.out.println("DEBUG catch " + e.getMessage());
-            Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_LONG).show();
-        }
     }
 
     public void clickPulsar(View v) {
@@ -151,8 +118,6 @@ public class Compartir extends AppCompatActivity {
         });
         dialogo1.show();
         // fin muestra dialogo aceptar o cancelar
-
-
     }
 
     public void clickGaleria(View v) {
@@ -177,11 +142,9 @@ public class Compartir extends AppCompatActivity {
                 // start play with image uri
                 System.out.println("DEBUG URI " + uri.getPath());
                 arrayUri.add(uri);
-                galeriaCompartir.add( new GaleriaCompartir(uri.getPath()));
+                galeriaCompartir.add(new GaleriaCompartir(uri.getPath()));
             }
             actualizar();
-
-
 
             //if you need
             //intentShareFile.putExtra(Intent.EXTRA_SUBJECT,"Sharing File Subject);
@@ -200,12 +163,16 @@ public class Compartir extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
         super.onSaveInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
 
-        // Metemos en el bundle lo que queremos conservar
-            actualizar();
-        }
+        actualizar();
     }
+
+
+
+}
 
 
 

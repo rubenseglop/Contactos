@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
@@ -53,7 +56,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
 
         try {
             galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompatir.get(i).getPathFoto()));
-            galleryViewHolder.tv_nombrefoto.setText(galeriaCompatir.get(i).getPathFoto());
+            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompatir.get(i).getPathFoto()));
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }
@@ -76,4 +79,10 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         Bitmap bitmap = BitmapFactory.decodeFile(c);
         return  bitmap;
     }
+
+    private String nombreArchivo(String path) {
+        File f = new File(path);
+        return f.getName();
+    }
 }
+
