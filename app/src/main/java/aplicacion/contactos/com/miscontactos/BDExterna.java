@@ -52,14 +52,13 @@ public class BDExterna {
     /**
      * Método para insertar en tabla Galeria
      * @param id int con el numero de id
-     * @param url2 String con la url
+     * @param path String con la url
      * @param uuid String con el numero de uuid
      * @return devuelve un String con el resultado en JSON
      */
-    public String insertarGaleria(int id, String url2, String compartido, String uuid){
+    public String insertarGaleria(int id, String path, String uuid){
          String url = BDExternaLinks.insertargaleria + id +
-                "&URL=" + url2 +
-                "&COMPARTIDO=" + compartido +
+                "&PATH=" + path +
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");

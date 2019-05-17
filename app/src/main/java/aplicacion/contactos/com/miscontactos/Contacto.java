@@ -13,10 +13,12 @@ public class Contacto implements Serializable {
     private int direccion_id;
     private int telefono_id;
     private String correo;
+
+    private ArrayList<Galeria> galerias;
     private ArrayList<Domicilio> domicilios;
     private ArrayList<Telefono> telefonos;
 
-    public Contacto(int id, String foto, String nombre, String apellidos, int galeria_id, int direccion_id, int telefono_id, String correo, ArrayList<Domicilio> domicilios, ArrayList<Telefono> telefonos) {
+    public Contacto(int id, String foto, String nombre, String apellidos, int galeria_id, int direccion_id, int telefono_id, String correo, ArrayList<Galeria> galerias, ArrayList<Domicilio> domicilios, ArrayList<Telefono> telefonos) {
         this.setId(id);
         this.setFoto(foto);
         this.setNombre(nombre);
@@ -25,6 +27,7 @@ public class Contacto implements Serializable {
         this.setDireccion_id(direccion_id);
         this.setTelefono_id(telefono_id);
         this.setCorreo(correo);
+        this.galerias = galerias;
         this.domicilios = domicilios;
         this.telefonos = telefonos;
     }
@@ -93,9 +96,7 @@ public class Contacto implements Serializable {
         this.correo = correo;
     }
 
-    public ArrayList<Domicilio> getDomicilios() {
-        return domicilios;
-    }
+    public ArrayList<Domicilio> getDomicilios() {  return domicilios;   }
 
     public void setDomicilios(ArrayList<Domicilio> domicilios) {
         this.domicilios = domicilios;
@@ -108,5 +109,9 @@ public class Contacto implements Serializable {
     public void setTelefonos(ArrayList<Telefono> telefonos) {
         this.telefonos = telefonos;
     }
+
+    public ArrayList<Galeria> getGalerias() { return galerias; }
+
+    public void setGalerias(ArrayList<Galeria> galerias) {   this.galerias = galerias;   }
 
 }

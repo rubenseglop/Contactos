@@ -24,8 +24,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         this.contactos = contactos;
     }
 
-
-
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
         ImageView personPhoto;

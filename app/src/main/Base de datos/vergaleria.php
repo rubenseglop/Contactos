@@ -15,10 +15,10 @@ $galeria = array(); //creamos un array
 while($row = mysqli_fetch_array($result)) 
 { 
     $id=$row['ID'];
-    $url=$row['URL']; 
+    $url=$row['path'];
     $uuid=$row['UUIDUNIQUE'];
 
-    $galeria[] = array('ID' => $id,'URL'=> $url, 'UUIDUNIQUE'=> $uuid);
+    $galeria[] = array('ID' => $id,'path'=> $url, 'UUIDUNIQUE'=> $uuid);
 
 }
 

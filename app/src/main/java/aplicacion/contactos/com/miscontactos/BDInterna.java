@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,8 +38,8 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final String TABLA_GALERIA =
             "CREATE TABLE GALERIA (" +
                     "ID INTEGER(6)," +
-                    "URL MEDIUMBLOB," +
-                    "COMPARTIDO VARCHAR(50)," +
+                    "PATH VARCHAR(300)," +
+                    "PRIMARY KEY (ID, PATH)," +
                     "FOREIGN KEY (ID) REFERENCES USUARIO(GALERIA_ID) ON DELETE CASCADE);";
     private static final String TABLA_DOMICILIO =
             "CREATE TABLE DOMICILIO(" +
@@ -77,6 +76,7 @@ public class BDInterna extends SQLiteOpenHelper {
         for (int i = 0; i < datosId.length; i++) {
             cContactos = busquedaContacto(Integer.toString(datosId[i]));
             cContactos.moveToNext();
+            ArrayList<Galeria> tempoGal = new ArrayList<>();
             ArrayList<Domicilio> tempoDom = new ArrayList<>();
             ArrayList<Telefono> tempoTel = new ArrayList<>();
 
@@ -93,10 +93,23 @@ public class BDInterna extends SQLiteOpenHelper {
                 telefono_id = cContactos.getInt(6);
                 email = cContactos.getString(7);
 
+                //Meto en un ArrayList las galerias con la ID del contacto
+                Cursor cContactosG = busquedaGaleria(Integer.toString(galeria_id));
+                if (cContactosG.moveToFirst()) {
+                    //Recorremos el cursor hasta que no haya más registros (creo POJOS)
+                    int indice = 0;
+                    do{
+                        String result = cContactosG.getString(1);
+                        if(result.length()==0){result ="";}
+                        tempoGal.add(indice, new Galeria(cContactosG.getInt(0), result));
+                        indice++;
+                    }while (cContactosG.moveToNext());
+                }
+
                 //Meto en un ArrayList los domicilios con la ID del contacto
                 //int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
 
-                Cursor cContactosD = busquedaDomicilio(Integer.toString(galeria_id));
+                Cursor cContactosD = busquedaDomicilio(Integer.toString(domicilio_id));
                 if (cContactosD.moveToFirst()) {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                     int indice = 0;
@@ -126,24 +139,12 @@ public class BDInterna extends SQLiteOpenHelper {
                     System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
                 }
             } while (cContactos.moveToNext());
+
             //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
 
-
-            contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoDom, tempoTel));
+            contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoGal, tempoDom, tempoTel));
         }
-        /*datosId = recuperaIds("GALERIA", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
-        for (int i = 0; i < numerodeFilas("GALERIA"); i++) {
-            cContactos = busquedaGaleria(Integer.toString(datosId[i]));
-            if (cContactos.moveToFirst()) {
-                //Recorremos el cursor hasta que no haya más registros (creo POJOS)
-                String url;
-                do {
-                    id = cContactos.getInt(0);
-                    url = cContactos.getString(1);
-                    galerias.add(new Galeria(id, url));
-                } while (cContactos.moveToNext());
-            }
-        }*/
+
 
         //Ordenar des_contactos
         Collections.sort(contactos, new Comparator<Contacto>() {
@@ -282,13 +283,13 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertarGaleria(int id, String url) {
+    public void insertarGaleria(int id, String path) {
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
             // Creamos el registro a insertarContacto
             ContentValues valores = new ContentValues();
             valores.put("ID", id);
-            valores.put("URL", url);
+            valores.put("PATH", path);
             //insertamos el registro en la Base de Datos
             db.insert("GALERIA", null, valores);
         }
@@ -399,7 +400,7 @@ public class BDInterna extends SQLiteOpenHelper {
     }
     public Cursor busquedaGaleria(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        String[] valores_recuperar = {"ID", "URL"};
+        String[] valores_recuperar = {"ID", "PATH"};
         String[] args = new String[] {id};
         Cursor c = db.query("GALERIA", valores_recuperar, "ID=?", args, null, null,
                 null,null);

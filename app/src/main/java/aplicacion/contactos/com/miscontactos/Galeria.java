@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 public class Galeria implements Serializable {
     private int id;
-    private String URL;
-    private String compartido;
+    private String path;
 
     public Galeria(int id, String URL){
         this.setId(id);
-        this.setURL(URL);
+        this.setPath(URL);
     }
 
     public int getId() {
@@ -20,21 +19,12 @@ public class Galeria implements Serializable {
         this.id = id;
     }
 
-    public String getURL() {
-        return URL;
+    public String getPath() {   return path;    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-
-    public String getCompartido() {
-        return compartido;
-    }
-
-    public void setCompartido(String URL) {
-        this.compartido = compartido;
-    }
 }
 
 

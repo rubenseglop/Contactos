@@ -3,6 +3,7 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,12 +26,14 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -144,6 +147,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rv);
+
+
+        /*
+        rv.addOnItemTouchListener(new RecyclerTouchListener(this,
+                rv, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+                Toast.makeText(MainActivity.this, "Para editar, manten pulsado",
+                        Toast.LENGTH_SHORT).show();
+                            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Toast.makeText(MainActivity.this, "Long press on position :"+position,
+                        Toast.LENGTH_LONG).show();
+            }
+        }));
+        */
     }
 
     /**
@@ -205,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                 } else {
                     Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
-
                 }
             }
         });
@@ -245,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Método que convierte un String en formato JSON a valores en la tabla que especifico. Posteriormente es insertado en la BDInterna
+     * Método que convierte un String en formato JSON. Posteriormente es insertado en la BDInterna
      * @param tabla Es la tabla que va a ser leida (la arrastro del método WebSerTabla)
      * @param jsonString Es el String que le paso de WebSerTabla con el String JSON a convertir
      */
@@ -270,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                     System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
-            } catch (Exception e) {
+            } catch (JSONException e) {
                 Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
@@ -283,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // add to list
                     bdinterna.insertarGaleria(
                             json_data.getInt("ID"),
-                            json_data.getString("URL")
+                            json_data.getString("PATH")
                     );
                 }
             } catch (Exception e) {
@@ -301,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             json_data.getString("DIRECCION")
                     );
                 }
-            } catch (Exception e) {
+            } catch (JSONException e) {
                 Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
@@ -315,14 +336,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             json_data.getInt("ID"),
                             json_data.getString("NUMERO")
                     );
-
-
                 }
-            } catch (Exception e) {
+            } catch (JSONException e) {
                 Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
                 error_conexion = true;
             }
         }
+
         if (error_conexion == false) {
             Toast.makeText(MainActivity.this, R.string.contactos_import, Toast.LENGTH_LONG).show();
             if (tabla == "TEL") actualizar();
@@ -350,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int varTelefono = contacto.getTelefono_id();
                 String varCorreo = contacto.getCorreo();
                 String varUUID = bdinterna.getUniqueID();
+                galerias = contacto.getGalerias();
                 domicilios = contacto.getDomicilios();
                 telefonos = contacto.getTelefonos();
 
@@ -364,6 +385,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
 
                 if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
+
+
+                if (error_conexion == false) {
+                    for (Galeria galeria : galerias) {
+
+                        int varIdGAL = galeria.getId();
+                        String varPathGAL = galeria.getPath();
+                        if (varPathGAL==null || varPathGAL.length()==0) { varPathGAL=""; }
+
+                        error = bdexterna.insertarGaleria(varIdGAL,varPathGAL,varUUID);
+                        if (error.equals("ERROR") || error.isEmpty()) {
+                            error_conexion = true;
+                        }
+                    }
+                }
+
 
                 if (error_conexion == false) {
                     for (Domicilio domicilio : domicilios) {
@@ -397,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (error_conexion == false) {
             /*for (Galeria galeria : galerias) {
                 int varId = galeria.getId();
-                String varUrl = galeria.getURL();
+                String varUrl = galeria.getPath();
                 String varUUID = bdInterna.getUniqueID();
 
                 error = luissancar.insertarGaleria(varId, varUrl, varUUID);
@@ -428,11 +465,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
             Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
-            //Remove swiped item from list and notify the RecyclerView
-            //int position = viewHolder.getAdapterPosition();
 
+            //Recargo el adaptador con la posicion eliminada
             int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
-
             bdinterna.borraContacto(position);
             actualizar();
         }
