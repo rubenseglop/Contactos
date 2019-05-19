@@ -1,15 +1,11 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,35 +14,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 public class Anadir extends AppCompatActivity {
 
@@ -62,10 +45,11 @@ public class Anadir extends AppCompatActivity {
     Button masdomicilio;
     Button mastelefono;
 
+
     ArrayList<String> StringDomicilio = new ArrayList<String>();
     ArrayList<String> StringTelefono = new ArrayList<String>();
 
-
+    ArrayList<Contacto> contactos;
     /*
     Declarar instancias globales
     */
@@ -91,10 +75,8 @@ public class Anadir extends AppCompatActivity {
 
     private static String imageStoragePath;
 
-    private String UPLOAD_PHP = BDExternaLinks.upload_php;
-
     private Bitmap bitmap;
-
+    private Contacto editContacto;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -102,8 +84,10 @@ public class Anadir extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_anadir);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,6 +124,33 @@ public class Anadir extends AppCompatActivity {
         adaptertelf = new TFAdapter(StringTelefono);
         recyclertelefono.setAdapter(adaptertelf);
 
+
+        // Recuperar los datos si se dispone, para editar
+        try {
+            editContacto = (Contacto) getIntent().getSerializableExtra("EDIT");
+            if (editContacto != null) {
+
+                tv_nombre.setText(editContacto.getNombre());
+                tv_apellido.setText(editContacto.getApellidos());
+                tv_email.setText(editContacto.getCorreo());
+
+                if (editContacto.getFoto().equals("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png")){ //todo
+                    Picasso.get().load("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png");
+                } else {
+                    fotoperfil.setImageBitmap(BitmapFactory.decodeFile(editContacto.getFoto()));
+                }
+                StringDomicilio.clear();
+                for (int i = 0; i < editContacto.getDomicilios().size() ; i++) {
+                    StringDomicilio.add(editContacto.getDomicilios().get(i).getDireccion());
+                }
+                StringTelefono.clear();
+                for (int i = 0; i < editContacto.getTelefonos().size() ; i++) {
+                    StringTelefono.add(editContacto.getTelefonos().get(i).getNumero());
+                }
+            }
+        } catch (NullPointerException e) {
+            //No hay nada que editar aqui
+        }
 
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -178,7 +189,6 @@ public class Anadir extends AppCompatActivity {
             }
         });
 
-
         mastelefono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,24 +202,6 @@ public class Anadir extends AppCompatActivity {
             }
         });
 
-    }
-    /**
-     * Restoring store image path from saved instance state
-     */
-    private void restoreFromBundle(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_IMAGE_STORAGE_PATH)) {
-
-                if (savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH).length()!=0) {imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);}
-                else {imageStoragePath = BDExternaLinks.imageStoragePath;}
-
-                if (!TextUtils.isEmpty(imageStoragePath)) {
-                    if (imageStoragePath.substring(imageStoragePath.lastIndexOf(".")).equals("." + IMAGE_EXTENSION)) {
-                        previewCapturedImage();
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -291,22 +283,23 @@ public class Anadir extends AppCompatActivity {
         adaptertelf.notifyDataSetChanged();
     }
     /**
-     * Método que al hacer click en el Botón Añadir, verifica que minimo tenga un nombre,
+     * Método que al hacer click en el Botón Añadir, verifica que mínimo tenga un nombre,
      * busca los últimos ID de las tablas Galeria, Domicilio, Telefono y añade el contacto
      * en cada una de las tablas.
-     * Finaliza subiendo la posible foto
      * @param v
      */
-    public void clickAnadir(View v){
+    public void clickAnadir(View v) {
 
         boolean error = false;
-        if (tv_nombre.getText().length()==0) {
+        if (tv_nombre.getText().length() == 0) {
             Toast.makeText(this, R.string.minimo_nombre, Toast.LENGTH_SHORT).show();
             error = true;
         }
         //guardar
-        if (error==false) {
-            if(imageStoragePath == null) { imageStoragePath = BDExternaLinks.imageStoragePath;}
+        if (error == false) {
+            if (imageStoragePath == null) {
+                imageStoragePath = BDExternaLinks.imageStoragePath;
+            }
             System.out.println("DEBUG GRABANDO" + imageStoragePath);
             bdInterna = new BDInterna(this);
             //buscamos los ultimos id
@@ -314,132 +307,61 @@ public class Anadir extends AppCompatActivity {
             int last_domicilio_id = bdInterna.ultimo_id("USUARIOS");
             int last_telefono_id = bdInterna.ultimo_id("USUARIOS");
 
-            //inserto contacto con las ultimas id
-            bdInterna.insertarContacto(
-                    imageStoragePath,
-                    tv_nombre.getText().toString(),
-                    tv_apellido.getText().toString(),
-                    last_galeria_id,
-                    last_domicilio_id,
-                    last_telefono_id,
-                    tv_email.getText().toString(),
-                    bdInterna.getUniqueID()
-            );
-
-
-            for (int i = 0; i < adapterdomi.getItemCount(); i++) {
-                bdInterna.insertarDomicilio(last_domicilio_id,DMAdapter.mDatasetDOM.get(i));
-            }
-            for (int i = 0; i < adaptertelf.getItemCount(); i++) {
-                bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
-            }
-            //uploadImage(imageStoragePath);
-
-            imageStoragePath=null;
-            startActivity(getIntent());
-            finish();
-        }
-    }
-
-    /**
-     * Método que sube por WebService un bitmap
-     * Debe comprobar que existe nueva foto para subir o no (en el PHP).
-     * @param nombre String con la Uri
-     */
-    private void uploadImage(String nombre) {
-        //Mostrar el diálogo de progreso
-
-        //TODO Revisar estos errores de dialogo
-        final ProgressDialog loading = ProgressDialog.show(this, Integer.toString(R.string.subiendo), Integer.toString(R.string.mensaje_subida), false, false);
-
-        System.out.println("DEBUG ejecutrando " + UPLOAD_PHP);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_PHP,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Descartar el diálogo de progreso
-                        loading.dismiss();
-                        //Mostrando el mensaje de la respuesta
-                        System.out.println("DEBUG HASTA AQUI BIEN " + nombre);
-                        Toast.makeText(Anadir.this, s, Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Descartar el diálogo de progreso
-                        System.out.println("DEBUG HASTA ALLA ERROR");
-                        loading.dismiss();
-                        //Showing toast
-                        //Toast.makeText(Anadir.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Convertir bits a cadena
-                String imagen=null;
-
-                if (bitmap!=null){
-                    imagen = getStringImagen(bitmap);
-                } else {
-                    imagen = getStringImagen(drawableToBitmap(fotoperfil.getDrawable()));
+            //EDITO un contacto con las ultimas id
+            if (editContacto != null) {
+                //Si lo estaba editando, borro ese contacto
+                bdInterna.borraContacto(editContacto.getId());
+                bdInterna.insertarContacto(
+                        editContacto.getId(),
+                        imageStoragePath, //TODO AQUI
+                        tv_nombre.getText().toString(),
+                        tv_apellido.getText().toString(),
+                        editContacto.getGaleria_id(),
+                        editContacto.getDireccion_id(),
+                        editContacto.getTelefono_id(),
+                        tv_email.getText().toString(),
+                        bdInterna.getUniqueID()
+                );
+                for (int i = 0; i < adapterdomi.getItemCount(); i++) {
+                    bdInterna.insertarDomicilio(editContacto.getDireccion_id(), DMAdapter.mDatasetDOM.get(i));
+                }
+                for (int i = 0; i < adaptertelf.getItemCount(); i++) {
+                    bdInterna.insertarTelefono(editContacto.getTelefono_id(), TFAdapter.mDatasetTEL.get(i));
                 }
 
-                //Creación de parámetros
-                Map<String, String> params = new Hashtable<String, String>();
-                //Agregando de parámetros al PHP de Upload.php
-                params.put("UUID", bdInterna.getUniqueID());
-                params.put("FOTO", imagen);
-                params.put("PATH", nombre);
-                //Parámetros de retorno
-
-                System.out.println("DEBUG FOTO " + bdInterna.getUniqueID() + " " + imagen.isEmpty() + " " + nombre);
-                return params;
+            } else {
+                //Se genera un nuevo usuario
+                bdInterna.insertarContacto(
+                        imageStoragePath,
+                        tv_nombre.getText().toString(),
+                        tv_apellido.getText().toString(),
+                        last_galeria_id,
+                        last_domicilio_id,
+                        last_telefono_id,
+                        tv_email.getText().toString(),
+                        bdInterna.getUniqueID()
+                );
+                for (int i = 0; i < adapterdomi.getItemCount(); i++) {
+                    bdInterna.insertarDomicilio(last_domicilio_id, DMAdapter.mDatasetDOM.get(i));
+                }
+                for (int i = 0; i < adaptertelf.getItemCount(); i++) {
+                    bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
+                }
             }
-        };
-        //Creación de una cola de solicitudes
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //Agregar solicitud a la cola
-        requestQueue.add(stringRequest);
-    }
 
-    public String getStringImagen(Bitmap bmp){
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageBytes = baos.toByteArray();
-            String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            return encodedImage;
-    }
 
-    public String nextSessionId() {
-        SecureRandom random = new SecureRandom();
-        return new BigInteger(130, random).toString(32);
-    }
+            //uploadImage(imageStoragePath);
 
-    /**
-     * Método que convierte un recurso Drawable en un Bitmap
-     * @param drawable
-     * @return Devuelve un Bitmap de la foto
-     */
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap = null;
+            imageStoragePath = null;
+            if (editContacto !=null ){
 
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
+                //todo se pierde la foto al actualizar
+                finish();
+            } else {
+                startActivity(getIntent());
+                finish();
             }
         }
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

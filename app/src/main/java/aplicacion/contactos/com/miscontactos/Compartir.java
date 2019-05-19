@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -27,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
@@ -183,14 +181,25 @@ public class Compartir extends AppCompatActivity {
 
             ArrayList<Uri> arrayUri = new ArrayList<>();
 
+            //Recorro todas las fotos seleccionadas
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
-                // start play with image uri
-                System.out.println("DEBUG URI " + uri.getPath());
-                arrayUri.add(uri);
-                galeriaCompartir.add(new GaleriaCompartir(uri.getPath()));
-                compartirfoto.setEnabled(true);
+
+                //Busco si ya la tenemos repetida
+                Boolean repetido = false;
+                for (int j = 0; j < galeriaCompartir.size(); j++) {
+                    if (images.get(i).path.equals(galeriaCompartir.get(j).getPathFoto())) {
+                        repetido = true;
+                    }
+                }
+                if (repetido == false) {
+                    arrayUri.add(uri);
+                    galeriaCompartir.add(new GaleriaCompartir(uri.getPath()));
+                    compartirfoto.setEnabled(true);
+                }
+
             }
+
             actualizar();
 
             //if you need
@@ -231,11 +240,6 @@ public class Compartir extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
             Toast.makeText(Compartir.this, R.string.delswype, Toast.LENGTH_SHORT).show();
-            //Remove swiped item from list and notify the RecyclerView
-            //int position = viewHolder.getAdapterPosition();
-
-            //todo aqui
-            int position = bdInterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
             actualizar();
         }
 

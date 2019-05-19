@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,7 +21,6 @@ public class BDInterna extends SQLiteOpenHelper {
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
     private int [] datosId; // Array con el número de tuplas (de contactos, de galeria, domicilio, etc...)
-    List<Contacto> list = new ArrayList();
 
     // Creación de tabla para la BD en formato SQL en caso de no tenerla
     private static final String UNIQUE_UUID =
@@ -52,8 +53,7 @@ public class BDInterna extends SQLiteOpenHelper {
                     "NUMERO VARCHAR(15)," +
                     "FOREIGN KEY (ID) REFERENCES USUARIO(TELEFONO_ID) ON DELETE CASCADE);";
 
-    ArrayList<Contacto> contactos = new ArrayList<>();
-    ArrayList<Galeria> galerias = new ArrayList<>();
+    public ArrayList<Contacto> contactos = new ArrayList<>();
 
     // Constructor de la clase
     public BDInterna(Context context) {
@@ -115,7 +115,7 @@ public class BDInterna extends SQLiteOpenHelper {
                     int indice = 0;
                     do{
                         String result = cContactosD.getString(1);
-                        if(result.length()==0){result ="";}
+                        if(result.length()==0 || result.isEmpty() || result == null){result = " ";}
                         tempoDom.add(indice, new Domicilio(cContactosD.getInt(0), result));
                         indice++;
                     }while (cContactosD.moveToNext());
@@ -128,10 +128,9 @@ public class BDInterna extends SQLiteOpenHelper {
                 if (cContactosT.moveToFirst()) {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
                     int indice = 0;
-
                     do {
                         String result = cContactosT.getString(1);
-                        if(result.length()==0){result ="";}
+                        if(result.length()==0 || result.isEmpty() || result == null){result = " ";}
                         tempoTel.add(indice, new Telefono(cContactosT.getInt(0), result));
                         System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
                         indice++;
@@ -147,23 +146,24 @@ public class BDInterna extends SQLiteOpenHelper {
 
 
         //Ordenar des_contactos
-        Collections.sort(contactos, new Comparator<Contacto>() {
+        Collections.sort(contactos, new Comparator<Contacto>(){
             @Override
             public int compare(Contacto p1, Contacto p2) {
                 if (orderby.equals("NOMBRE")) {
                     System.out.println("DEBUG ORDER NOMBRE");
-                    return new String(p1.getNombre()).compareTo(new String(p2.getNombre()));
+                    return new String(p1.getNombre()).toLowerCase().compareTo(new String(p2.getNombre().toLowerCase()));
                 }
                 if (orderby.equals("APELLIDOS")) {
                     System.out.println("DEBUG ORDER APELLIDOS");
-                    return new String(p1.getApellidos()).compareTo(new String(p2.getApellidos()));
+                    return new String(p1.getApellidos().toLowerCase()).compareTo(new String(p2.getApellidos().toLowerCase()));
                 }
                 if (orderby.equals("DOMICILIO")) {
                     System.out.println("DEBUG ORDER DOMICILIO");
 
                     try {
-                        return new String(p1.getDomicilios().get(0).getDireccion()).compareTo(new String(p2.getDomicilios().get(0).getDireccion()));
+                        return new String(p1.getDomicilios().get(0).getDireccion().toLowerCase()).compareTo(new String(p2.getDomicilios().get(0).getDireccion().toLowerCase()));
                     } catch (Exception e) {
+                        System.out.println("DEBUG PROBLEMA DOMICILIO " +p1.getDomicilios().get(0).getDireccion());
                     } finally {
                         return 0;
                     }
@@ -172,8 +172,9 @@ public class BDInterna extends SQLiteOpenHelper {
                 if (orderby.equals("TELEFONO")) {
                     System.out.println("DEBUG ORDER TELEFONO");
                     try {
-                        return new String(p1.getTelefonos().get(0).getNumero()).compareTo(new String(p2.getTelefonos().get(0).getNumero()));
+                        return new String(p1.getTelefonos().get(0).getNumero().toLowerCase()).compareTo(new String(p2.getTelefonos().get(0).getNumero().toLowerCase()));
                     } catch (Exception e) {
+                        System.out.println("DEBUG PROBLEMA TELEFONO " +p1.getTelefonos().get(0).getNumero());
                     } finally {
                         return 0;
                     }
@@ -261,7 +262,7 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
     // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID para la BDExterna)
-    public void insertarContacto(String id, String foto, String nombre, String apellidos, String galeria_id, String domicilio_id, String telefono_id, String email, String uuid) {
+    public void insertarContacto(int id, String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
@@ -429,14 +430,6 @@ public class BDInterna extends SQLiteOpenHelper {
         return c;
     }
 
-    // Devuelve un cursor con todos los atributos elegidos de la BD para ponerlos en la Lista
-    public Cursor recuperarCursordeContactos() {
-        SQLiteDatabase db = getWritableDatabase();
-        String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "GALERIA_ID", "DOMICILIO_ID", "TELEFONO_ID", "EMAIL"};
-        // Ordena al recuperarlos
-        Cursor c = db.query("USUARIOS", valores_recuperar,null,null,null,null,"nombre ASC",null);
-        return c;
-    }
 
     // Devuelve el numero de filas de la tabla
     public int numerodeFilas(String tabla){
@@ -456,16 +449,7 @@ public class BDInterna extends SQLiteOpenHelper {
         int i;
         SQLiteDatabase db = getReadableDatabase();
         String[] valores_recuperar = {"ID"};
-        Cursor cursor;
-
-        // Cuando recupera los IDS lo tiene que hacer ordenado por el nombre como la lista
-        /*cursor = db.rawQuery("SELECT * FROM USUARIOS U " +
-                "JOIN GALERIA G ON G.ID = U.GALERIA_ID " +
-                "JOIN DOMICILIO D ON D.ID = U.DOMICILIO_ID " +
-                "JOIN TELEFONO T ON T.ID = U.TELEFONO_ID " +
-                "ORDER BY DIRECCION", null);*/
-        cursor = db.query(tabla, valores_recuperar, null,null, null, null, orderby, null);
-        orderby = null;
+        Cursor cursor = db.query(tabla, valores_recuperar, null,null, null, null, orderby, null);
         if (cursor.getCount() > 0) {
             datosId = new int[cursor.getCount()];
             i = 0;

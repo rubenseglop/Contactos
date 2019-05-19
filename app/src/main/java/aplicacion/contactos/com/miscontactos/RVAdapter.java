@@ -2,6 +2,7 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
@@ -11,20 +12,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
+public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
 
-    ArrayList<Contacto> contactos;
+    public static HashMap deId_Posicion;
+    private ArrayList<Contacto> contactos;
+    private View.OnClickListener listener;
+    private Context mContext;
+    private BDInterna bdInterna;
 
-    RVAdapter(ArrayList<Contacto> contactos){
-        this.contactos = contactos;
+    public static void setDeId_Posicion(HashMap deId_Posicion) {
+        RVAdapter.deId_Posicion = deId_Posicion;
     }
 
+    public RVAdapter(ArrayList<Contacto> contactos , Context context){
+        this.contactos = contactos;
+        mContext = context;
+        deId_Posicion = new HashMap();
+    }
+
+
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
+        Context context;
         CardView cv;
         ImageView personPhoto;
         TextView tv_nombre;
@@ -32,10 +47,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         TextView tv_domicilio;
         TextView tv_telefono;
         TextView tv_email;
+        ImageView ImagenEditContacto;
+
 
         @SuppressLint("ResourceAsColor")
         PersonViewHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
             cv = (CardView)itemView.findViewById(R.id.cv);
             personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
@@ -48,6 +66,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
             tv_domicilio.setTextColor(ColoresApp.colorTexto);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
             tv_email.setTextColor(ColoresApp.colorTexto);
+            ImagenEditContacto = (ImageView)itemView.findViewById(R.id.ImagenEditarContacto);
         }
     }
 
@@ -56,7 +75,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         return contactos.size();
     }
     @Override
-    public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public PersonViewHolder onCreateViewHolder (ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_usuarios, viewGroup, false);
         PersonViewHolder pvh = new PersonViewHolder(v);
         return pvh;
@@ -71,15 +90,29 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
         } else {
             personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
         }
-        try {
             personViewHolder.tv_nombre.setText(contactos.get(i).getNombre());
             personViewHolder.tv_apellido.setText(contactos.get(i).getApellidos());
+
+        try {
             personViewHolder.tv_domicilio.setText(contactos.get(i).getDomicilios().get(0).getDireccion());
-            personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
         } catch (Exception e) {
-            System.out.println("Problema detectado: " + e.getMessage()); //TODO ARREGLAR PROBLEMA DE INDICE CERO EN DOMICILIO Y TELEFONO
+            personViewHolder.tv_domicilio.setText("");
+        }
+        try {
+            personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
+        }catch (Exception e) {
+            personViewHolder.tv_telefono.setText("");
         }
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
+        deId_Posicion.put(i,contactos.get(i).getId());
+        personViewHolder.ImagenEditContacto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, Anadir.class);
+                intent.putExtra("EDIT", contactos.get(i));
+                mContext.startActivity(intent);
+            }
+        });
     }
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

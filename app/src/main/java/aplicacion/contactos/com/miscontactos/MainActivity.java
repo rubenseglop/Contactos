@@ -1,9 +1,8 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,7 +26,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Adapter;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonElement;
@@ -43,8 +45,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private BDInterna bdinterna;
     private BDExterna bdexterna;
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String orderby;
     private String ordertype;
+    private RVAdapter adapter;
+    private RecyclerView rv;
+    private TextView tv_orden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +99,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
         bdinterna = new BDInterna(this);
         bdexterna = new BDExterna();
-        orderby ="NOMBRE";
+
+        orderby ="Nombre";
+        tv_orden = findViewById(R.id.ordenadorpor);
+
         ordertype="ASC";
         bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
@@ -111,14 +121,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_nombre) {
-            orderby = "NOMBRE";
+            orderby = "Nombre";
         } else if (id == R.id.nav_apellido) {
-            orderby = "APELLIDOS";
+            orderby = "Apellidos";
         } else if (id == R.id.nav_domicilio) {
-            orderby = "DOMICILIO";
+            orderby = "Domicilio";
         } else if (id == R.id.nav_telefono) {
-            orderby = "TELEFONO";
-
+            orderby = "Telefono";
         }
         actualizar();
 
@@ -135,37 +144,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos(orderby, ordertype);
         contactos = bdinterna.devuelveContactos();
-        galerias = bdinterna.galerias;
 
-        RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
+
+        rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(contactos);
+        adapter = new RVAdapter(contactos,this);
         rv.setAdapter(adapter);
+        tv_orden.setText("por " + orderby);
 
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rv);
 
-
-        /*
-        rv.addOnItemTouchListener(new RecyclerTouchListener(this,
-                rv, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, final int position) {
-                //Values are passing to activity & to fragment as well
-                Toast.makeText(MainActivity.this, "Para editar, manten pulsado",
-                        Toast.LENGTH_SHORT).show();
-                            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                Toast.makeText(MainActivity.this, "Long press on position :"+position,
-                        Toast.LENGTH_LONG).show();
-            }
-        }));
-        */
+        ordenarAlfabeticamente();
     }
 
     /**
@@ -279,13 +272,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     JSONObject json_data = jArray.getJSONObject(i);
                     // add to list
                     bdinterna.insertarContacto(
-                            json_data.getString("ID"),
+                            json_data.getInt("ID"),
                             json_data.getString("FOTO"),
                             json_data.getString("NOMBRE"),
                             json_data.getString("APELLIDOS"),
-                            json_data.getString("GALERIAID"),
-                            json_data.getString("DOMICILIOID"),
-                            json_data.getString("TELEFONOID"),
+                            json_data.getInt("GALERIAID"),
+                            json_data.getInt("DOMICILIOID"),
+                            json_data.getInt("TELEFONOID"),
                             json_data.getString("EMAIL"),
                             json_data.getString("UUIDUNIQUE")
                     );
@@ -395,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (varPathGAL==null || varPathGAL.length()==0) { varPathGAL=""; }
 
                         error = bdexterna.insertarGaleria(varIdGAL,varPathGAL,varUUID);
+                        System.out.println("DEBUG EXPORT " + error + " " + varIdGAL + " " + varPathGAL);
                         if (error.equals("ERROR") || error.isEmpty()) {
                             error_conexion = true;
                         }
@@ -461,16 +455,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
         }
 
+        /**
+         * Método onSwiped de la clase ItemTouchHelper para añadirle opciones para el borrado de mis contactos
+         * @param viewHolder
+         * @param swipeDir
+         */
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-            Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
+            /**
+             * Diálogo que muestra si deseamos o no borrar a un contacto
+             */
+            new AlertDialog.Builder(viewHolder.itemView.getContext())
+                    .setMessage("¿Deseas eliminar este contacto?")
+                    .setPositiveButton("Si", (dialog, which) -> {
 
-            //Recargo el adaptador con la posicion eliminada
-            int position = bdinterna.devuelvoIDborrado(viewHolder.getAdapterPosition());
-            bdinterna.borraContacto(position);
-            actualizar();
+
+
+                        /* Al tener la lista desordenada, utilizo un HashMap con (Posicion, ID)
+                         * para descubrir la ID de la posición eliminada con Swipe
+                         */
+                        HashMap deId_Posicion;
+                        deId_Posicion = RVAdapter.deId_Posicion;
+                        int id = (int) deId_Posicion.get(viewHolder.getAdapterPosition());
+                        bdinterna.borraContacto(id);
+                        Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
+                        actualizar();
+                    })
+                    .setNegativeButton("No", (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
+
+                    /*Bug que presentaba si no escogía ninguna opción (pulsando fuera del dialog)
+                    con .setCancelable impide que se pueda presionar en otra parte de la pantalla*/
+                    .setCancelable(false)
+                    .create().show();
         }
+
+        /**
+         * Método onChildDraw de la clase ItemTouchHelper por el cual se dibuja por debajo del elemento onMove
+         * @param c
+         * @param recyclerView
+         * @param viewHolder
+         * @param dX
+         * @param dY
+         * @param actionState
+         * @param isCurrentlyActive
+         */
 
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
@@ -478,16 +507,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             try {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                float buttonWidthWithoutPadding = 300 - 20;
+                float buttonWidthWithoutPadding = 280; // esto es lo que ocupa aprox. el texto "BORRAR"
                 float corners = 16;
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
                     View itemView = viewHolder.itemView;
-                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-                    float width = height / 3;
                     Paint paint = new Paint();
-                    paint.setColor(Color.RED);
-
-
                     RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     paint.setColor(Color.RED);
                     c.drawRoundRect(rightButton, corners, corners, paint);
@@ -500,15 +524,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         private void drawText(String text, Canvas c, RectF button, Paint p) {
-            float textSize = 60;
+            float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);
             p.setTextSize(textSize);
-
             float textWidth = p.measureText(text);
             c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);
         }
     };
 
 
+    /**
+     * Método que ordena alfabeticamente por el contenido de "orderby"
+     */
+    public void ordenarAlfabeticamente() {
+        if (orderby.equals("Nombre")){Collections.sort(contactos, new CompararNombre());adapter.notifyDataSetChanged();}
+        else if (orderby.equals("Apellidos")){Collections.sort(contactos, new CompararApellido());adapter.notifyDataSetChanged();}
+        else if (orderby.equals("Domicilio")){Collections.sort(contactos, new CompararDomicilio());adapter.notifyDataSetChanged();}
+        else {Collections.sort(contactos, new CompararTelefono());adapter.notifyDataSetChanged();}
+    }
+
+    @Override
+    protected void onPause() {
+        actualizar();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        actualizar();
+        super.onResume();
+    }
 }
+
