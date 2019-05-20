@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,20 +23,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     public static HashMap deId_Posicion;
     private ArrayList<Contacto> contactos;
-    private View.OnClickListener listener;
     private Context mContext;
-    private BDInterna bdInterna;
-
-    public static void setDeId_Posicion(HashMap deId_Posicion) {
-        RVAdapter.deId_Posicion = deId_Posicion;
-    }
 
     public RVAdapter(ArrayList<Contacto> contactos , Context context){
         this.contactos = contactos;
         mContext = context;
         deId_Posicion = new HashMap();
     }
-
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         Context context;
@@ -50,23 +43,27 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         ImageView ImagenEditContacto;
 
 
-        @SuppressLint("ResourceAsColor")
         PersonViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
             cv = (CardView)itemView.findViewById(R.id.cv);
             personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
-            tv_nombre.setTextColor(ColoresApp.colorTexto);
+            tv_nombre.setTextColor(0);
+
             tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
-            tv_apellido.setTextColor(ColoresApp.colorTexto);
+            tv_apellido.setTextColor(Color.BLACK);
             tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
-            tv_domicilio.setTextColor(ColoresApp.colorTexto);
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
-            tv_domicilio.setTextColor(ColoresApp.colorTexto);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
-            tv_email.setTextColor(ColoresApp.colorTexto);
             ImagenEditContacto = (ImageView)itemView.findViewById(R.id.ImagenEditarContacto);
+
+            tv_nombre.setTextSize(1, TextoApp.nombre_texto);
+            tv_apellido.setTextSize(1,TextoApp.texto_normal);
+            tv_domicilio.setTextSize(1,TextoApp.texto_normal);
+            tv_email.setTextSize(1,TextoApp.texto_normal);
+            tv_telefono.setTextSize(1,TextoApp.nombre_texto);
+
         }
     }
 
@@ -113,6 +110,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
                 mContext.startActivity(intent);
             }
         });
+
     }
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

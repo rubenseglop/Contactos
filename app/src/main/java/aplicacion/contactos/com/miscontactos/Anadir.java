@@ -31,34 +31,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.URIResolver;
+
 public class Anadir extends AppCompatActivity {
 
-    Button bt_aceptar;
-    TextView tv_nombre;
-    TextView tv_apellido;
-    TextView tv_domicilio;
-    TextView tv_telefono;
-    TextView tv_email;
+    Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
+    TextView tv_nombre,tv_apellido,tv_domicilio,tv_telefono,tv_email;
     BDInterna bdInterna;
-    Button bt_imagen;
     ImageView fotoperfil;
-    Button masdomicilio;
-    Button mastelefono;
 
-
-    ArrayList<String> StringDomicilio = new ArrayList<String>();
-    ArrayList<String> StringTelefono = new ArrayList<String>();
+    ArrayList<String> StringDomicilio = new ArrayList<String>(),StringTelefono = new ArrayList<String>();
 
     ArrayList<Contacto> contactos;
     /*
     Declarar instancias globales
     */
-    private RecyclerView recyclerdomicilio;
-    private RecyclerView recyclertelefono;
-    private static RecyclerView.Adapter adapterdomi;
-    private static RecyclerView.Adapter adaptertelf;
-    private RecyclerView.LayoutManager lManagerDom;
-    private RecyclerView.LayoutManager lManagerTelf;
+    private RecyclerView recyclerdomicilio, recyclertelefono;
+    private static RecyclerView.Adapter adapterdomi, adaptertelf;
+    private RecyclerView.LayoutManager lManagerDom, lManagerTelf;
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
@@ -68,15 +58,14 @@ public class Anadir extends AppCompatActivity {
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
     // Gallery directory name to store the images or videos
-    public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera";
-
-    // Image and Video file extensions
-    public static final String IMAGE_EXTENSION = "jpg";
+    public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera", IMAGE_EXTENSION = "jpg";
 
     private static String imageStoragePath;
 
     private Bitmap bitmap;
     private Contacto editContacto;
+
+    private String editImagePath;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -104,6 +93,10 @@ public class Anadir extends AppCompatActivity {
         masdomicilio = findViewById(R.id.masdomicilio);
         mastelefono = findViewById(R.id.mastelefono);
 
+      /*  //Colores
+        bt_aceptar.setBackgroundColor(TextoApp.colorBoton);
+        bt_imagen.setBackgroundColor(TextoApp.colorBoton);
+*/
         // Obtener el Recycler para el adatapdor DMAdapter
         recyclerdomicilio = (RecyclerView) findViewById(R.id.recicladordomicilio);
         recyclerdomicilio.setHasFixedSize(true);
@@ -157,7 +150,6 @@ public class Anadir extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     R.string.error_camara,
                     Toast.LENGTH_LONG).show();
-            // will close the app if the device doesn't have camera
             finish();
         }
         /**
@@ -242,16 +234,12 @@ public class Anadir extends AppCompatActivity {
      */
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
         if (file != null) {
             imageStoragePath = file.getAbsolutePath();
         }
-
         Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
-
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
         // start the image capture Intent
         startActivityForResult(intent, 100);
     }
@@ -273,7 +261,6 @@ public class Anadir extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         // get the file url
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
@@ -300,7 +287,9 @@ public class Anadir extends AppCompatActivity {
             if (imageStoragePath == null) {
                 imageStoragePath = BDExternaLinks.imageStoragePath;
             }
-            System.out.println("DEBUG GRABANDO" + imageStoragePath);
+            //System.out.println("DEBUG GRABANDO" + imageStoragePath);
+            editImagePath = imageStoragePath;
+
             bdInterna = new BDInterna(this);
             //buscamos los ultimos id
             int last_galeria_id = bdInterna.ultimo_id("USUARIOS");
@@ -309,11 +298,17 @@ public class Anadir extends AppCompatActivity {
 
             //EDITO un contacto con las ultimas id
             if (editContacto != null) {
+
+                imageStoragePath=editContacto.getFoto();
+                if (editImagePath !=null) {imageStoragePath = editImagePath;}
+                //System.out.println("DEBUG IMAGEN " + imageStoragePath);
+
                 //Si lo estaba editando, borro ese contacto
                 bdInterna.borraContacto(editContacto.getId());
+
                 bdInterna.insertarContacto(
                         editContacto.getId(),
-                        imageStoragePath, //TODO AQUI
+                        imageStoragePath,
                         tv_nombre.getText().toString(),
                         tv_apellido.getText().toString(),
                         editContacto.getGaleria_id(),
@@ -353,9 +348,8 @@ public class Anadir extends AppCompatActivity {
             //uploadImage(imageStoragePath);
 
             imageStoragePath = null;
-            if (editContacto !=null ){
 
-                //todo se pierde la foto al actualizar
+            if (editContacto !=null ){
                 finish();
             } else {
                 startActivity(getIntent());
@@ -382,7 +376,6 @@ public class Anadir extends AppCompatActivity {
                     "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
                     .show();
         }
-
     }
 
     /**

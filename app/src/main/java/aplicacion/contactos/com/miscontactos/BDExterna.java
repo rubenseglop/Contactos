@@ -71,7 +71,7 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG EXPORTAR " + url);
+        //System.out.println("DEBUG EXPORTAR " + url);
         return leerUrl(url);
     }
     public String insertarTelefono(int id, String numero, String uuid){
@@ -80,16 +80,26 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG Telefono " + url);
+        //System.out.println("DEBUG Telefono " + url);
         return leerUrl(url);
     }
 
+    /**
+     * Método que elimina toda la base de datos externa del usuario UUID escogido
+     * @param uuid
+     * @return Devuelve la cadena String "Error" (determinado en el php) si algo falla
+     */
     public String borrartodo(String uuid){
 
         String url = BDExternaLinks.eliminatodo + uuid;
         return leerUrl(url);
     }
 
+    /**
+     * Método que convierte el resultado de una URL (http) en un String
+     * @param pagina
+     * @return Devuelve la cadena de texto proporcionado por el php
+     */
     public String leerUrl(String pagina) {
 
         String inputLine ="";
@@ -97,77 +107,16 @@ public class BDExterna {
             URL url = new URL(pagina.toString());
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((inputLine = in.readLine()) != null)
-                System.out.println("DEBUG URL++ " + inputLine);
+                //System.out.println("DEBUG URL++ " + inputLine);
             inputLine += inputLine;
 
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();        }
-
-        return inputLine;
-    }
-
-    public String insertarFoto(String uuid, String image, String archivo){
-        String url = BDExternaLinks.uploadgaleria +
-                "?UUID=" + uuid +
-                "&IMAGEN=" + image +
-                "&ARCHIVO=" + archivo;
-        // Solución a los espacios (reemplazar por su valor hex)
-        url = url.replace(" ", "%20");
-
-        System.out.println("DEBUG URI " +   url);
-        return leerUrl(url);
-    }
-
-
-    public String insertarFoto2(String uuid, String image, String archivo) {
-
-        try {
-            /*
-             * Creamos el objeto de HttpClient que nos permitira conectarnos
-             * mediante peticiones http.
-             */
-            HttpClient httpclient = new DefaultHttpClient();
-
-            /*
-             * El objeto HttpPost permite que enviemos una peticion de tipo POST
-             * a una URL especificada
-             */
-            HttpPost httppost = new HttpPost(BDExternaLinks.insertargaleria);
-
-            // Una lista de parametros,
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-            // Se agregan parametros.
-            params.add(new BasicNameValuePair("UUID", uuid));
-            params.add(new BasicNameValuePair("IMAGEN", image));
-            params.add(new BasicNameValuePair("ARCHIVO", archivo));
-
-            /*
-             * Una vez añadidos los parametros actualizamos la entidad de
-             * httppost, esto quiere decir en pocas palabras anexamos los
-             * parametros al objeto para que al enviarse al servidor envien los
-             * datos que hemos añadido
-             */
-            httppost.setEntity(new UrlEncodedFormEntity(params));
-
-            // Eejecutamos enviando la informacion al Server.
-            HttpResponse resp = httpclient.execute(httppost);
-
-            // Obtenemos una respuesta.
-            HttpEntity ent = resp.getEntity();
-
-            String text = EntityUtils.toString(ent);
-            // Envia la respuesta del Server.
-            return text;
-
-        } catch (Exception e) {
-            // Devuelve el mensaje de error, en caso que lo haya.
-            return e.getMessage();
+            e.printStackTrace();
         }
-
+        return inputLine;
     }
 
 }

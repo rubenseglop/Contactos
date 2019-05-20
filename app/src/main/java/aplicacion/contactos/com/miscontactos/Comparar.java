@@ -3,19 +3,13 @@ package aplicacion.contactos.com.miscontactos;
 import java.util.Comparator;
 
 class CompararNombre implements Comparator<Contacto>{
+
     @Override
     public int compare(Contacto customer1, Contacto customer2) {
-
-        // for comparison
         int Nombres = customer1.getNombre().compareTo(customer2.getNombre());
         int Apellidos = customer1.getApellidos().compareTo(customer2.getApellidos());
-        //int Domicilio = customer1.getDomicilios().get(0).getDireccion().compareTo(customer2.getDomicilios().get(0).getDireccion());
-        //int Telefono = customer1.getTelefonos().get(0).getNumero().compareTo(customer2.getTelefonos().get(0).getNumero());
-
-        // 2-level comparison using if-else block
         if (Nombres == 0) {
             return ((Apellidos == 0) ? Nombres : Apellidos);
-
         } else {
             return Nombres;
         }
@@ -25,14 +19,8 @@ class CompararNombre implements Comparator<Contacto>{
 class CompararApellido implements Comparator<Contacto>{
     @Override
     public int compare(Contacto customer1, Contacto customer2) {
-
-        // for comparison
         int Nombres = customer1.getNombre().compareTo(customer2.getNombre());
         int Apellidos = customer1.getApellidos().compareTo(customer2.getApellidos());
-        //int Domicilio = customer1.getDomicilios().get(0).getDireccion().compareTo(customer2.getDomicilios().get(0).getDireccion());
-        //int Telefono = customer1.getTelefonos().get(0).getNumero().compareTo(customer2.getTelefonos().get(0).getNumero());
-
-        // 2-level comparison using if-else block
         if (Apellidos == 0) {
             return ((Nombres == 0) ? Apellidos : Nombres);
 
@@ -45,10 +33,7 @@ class CompararApellido implements Comparator<Contacto>{
 class CompararDomicilio implements Comparator<Contacto> {
     @Override
     public int compare(Contacto customer1, Contacto customer2) {
-
-        // for comparison
         int Nombres = customer1.getNombre().compareTo(customer2.getNombre());
-        //int Apellidos = customer1.getApellidos().compareTo(customer2.getApellidos());
         int Domicilio;
         String a1, a2;
         try {
@@ -70,9 +55,6 @@ class CompararDomicilio implements Comparator<Contacto> {
 
         Domicilio = a1.compareTo(a2);
 
-        //int Telefono = customer1.getTelefonos().get(0).getNumero().compareTo(customer2.getTelefonos().get(0).getNumero());
-
-        // 2-level comparison using if-else block
         if (Nombres == 0) {
             return ((Nombres == 0) ? Domicilio : Nombres);
 
@@ -85,8 +67,6 @@ class CompararDomicilio implements Comparator<Contacto> {
 class CompararTelefono implements Comparator<Contacto> {
     @Override
     public int compare(Contacto customer1, Contacto customer2) {
-
-        // for comparison
         int Nombres = customer1.getNombre().compareTo(customer2.getNombre());
         int Telefono;
         String a1, a2;
@@ -106,11 +86,8 @@ class CompararTelefono implements Comparator<Contacto> {
         } catch (IndexOutOfBoundsException e) {
             a2 = "";
         }
-
         Telefono = a1.compareTo(a2);
 
-
-        // 2-level comparison using if-else block
         if (Nombres == 0) {
             return ((Nombres == 0) ? Telefono : Nombres);
 

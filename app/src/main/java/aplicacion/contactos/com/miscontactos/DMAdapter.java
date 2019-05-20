@@ -76,7 +76,7 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
 
             this.menosDomicilio = v.findViewById(R.id.menosDomicilio);
             this.mEditText = (EditText) v.findViewById(R.id.id_rvdomicilio);
-            this.mEditText.setTextColor(ColoresApp.colorTexto);
+
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.mEditText.addTextChangedListener(myCustomEditTextListener);
         }

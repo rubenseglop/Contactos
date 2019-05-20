@@ -1,6 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -11,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,8 +24,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
         /*Menu lateral Navigation View*/
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -108,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actualizar();
     }
 
-
     /**
      * Menu Navigation
      * @param item
@@ -129,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_telefono) {
             orderby = "Telefono";
         }
+
         actualizar();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -195,6 +192,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (id == R.id.importar) {
             RestaurarWebService();
+        }
+        if (id == R.id.tamanio) {
+            TextoApp.cambiarTexto();
+            this.recreate();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -282,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             json_data.getString("EMAIL"),
                             json_data.getString("UUIDUNIQUE")
                     );
-                    System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
+                    //System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (JSONException e) {
                 Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
@@ -388,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (varPathGAL==null || varPathGAL.length()==0) { varPathGAL=""; }
 
                         error = bdexterna.insertarGaleria(varIdGAL,varPathGAL,varUUID);
-                        System.out.println("DEBUG EXPORT " + error + " " + varIdGAL + " " + varPathGAL);
+                        //System.out.println("DEBUG EXPORT " + error + " " + varIdGAL + " " + varPathGAL);
                         if (error.equals("ERROR") || error.isEmpty()) {
                             error_conexion = true;
                         }

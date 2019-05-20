@@ -29,4 +29,3 @@ public class Galeria implements Serializable {
 
 
 
-//http://iesayala.ddns.net/BDSegura/misContactos/GALERIA/uploadgaleria.php?CARPETAUUID=12231232-4243543543-435345345435-43543534

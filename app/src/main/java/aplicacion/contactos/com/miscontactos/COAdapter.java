@@ -31,7 +31,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
             cv = (CardView)itemView.findViewById(R.id.cv);
             fotogaleria = (ImageView)itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = (TextView)itemView.findViewById(R.id.id_nombrefoto);
-            tv_nombrefoto.setTextColor(ColoresApp.colorTexto);
+
         }
     }
     COAdapter(ArrayList<GaleriaCompartir> galeriaCompartir){
@@ -66,12 +66,12 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
             result = galeriaCompatir.size();
         } catch (Exception e) {
         }
-        System.out.println("DEBUG SPINNER " + result);
+        //System.out.println("DEBUG SPINNER " + result);
         return result;
     }
 
     private Bitmap recogerImagen(String c){
-        System.out.println("DEBUG FOTO " + c);
+        //System.out.println("DEBUG FOTO " + c);
         Bitmap bitmap = BitmapFactory.decodeFile(c);
         return  bitmap;
     }

@@ -60,6 +60,11 @@
     <string name="saved_message">Foto guardada en %1$s</string>
     <string name="start_camera">Inicio Cámara</string>
     <string name="navigation_drawer_close">"Abrir navigation "</string>
-    <string name="navigation_drawer_open">Cerar navigation</string>
+    <string name="navigation_drawer_open">Cerrar navigation</string>
     <string name="borrado">BORRAR!!</string>
+    <string name="movegale">Moviendo foto</string>
+    <string name="swypefoto">Dejaste de compartir esa foto</string>
+    <string name="title_activity_compartir">Compartir</string>
+    <string name="noche">Noche</string>
+    <string name="luz">Cambiar letra</string>
 </resources>

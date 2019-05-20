@@ -45,7 +45,6 @@
                     android:background="@color/colorFondoCuadros1"
                     android:text="@string/nombre"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="@+id/id_nombre"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -88,11 +87,10 @@
 
                 <Button
                     android:id="@+id/imagen"
-                    style="@style/BotonEstilo1"
+                    style="@style/BotonEstilo"
                     android:layout_width="88dp"
                     android:layout_height="21dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorBotones1"
                     android:onClick="clickAnadir"
                     android:text="Foto"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -104,9 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:background="@color/colorFondoCuadros1"
                     android:text="@string/apellidos"
-                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="@+id/id_apellidos"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -146,17 +142,15 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajadomicilio">
 
                 <Button
                     android:id="@+id/masdomicilio"
-                    style="@style/BotonEstilo1"
+                    style="@style/BotonEstilo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorBotones1"
                     android:text="@string/add_domicilio"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +168,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajanombre">
@@ -184,7 +177,6 @@
                     android:id="@+id/recicladortelefono"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorFondoCuadros1"
                     android:padding="3dp"
                     android:scrollbars="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -202,21 +194,19 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajatelefono">
 
                 <Button
                     android:id="@+id/mastelefono"
-                    style="@style/BotonEstilo1"
+                    style="@style/BotonEstilo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorBotones1"
                     android:text="@string/add_telefono"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -233,7 +223,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cajatelefono">
@@ -245,10 +234,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorFondoCuadros1"
                     android:text="Email "
                     android:textAllCaps="false"
-                    android:textColor="@color/colorFuente1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -276,7 +263,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorFondoCuadros1"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -284,12 +270,11 @@
 
                 <Button
                     android:id="@+id/aceptar"
-                    style="@style/BotonEstilo1"
+                    style="@style/BotonEstilo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorAccent"
                     android:onClick="clickAnadir"
                     android:text="@string/aceptar"
                     app:layout_constraintBottom_toBottomOf="parent"

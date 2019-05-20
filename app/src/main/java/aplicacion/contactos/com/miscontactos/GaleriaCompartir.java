@@ -3,9 +3,10 @@ package aplicacion.contactos.com.miscontactos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class GaleriaCompartir implements Parcelable {
     /* Implemento la interfaz Parcelable que me permitirá almacenar objetos de tipo GaleriaCompartir para
-     * posteriormente usarlo en onSaveInstanceState (guardar el estado del objeto al destruir una Activity)*/
+    * posteriormente usarlo en onSaveInstanceState (guardar el estado del objeto al destruir una Activity)*/
+
+public class GaleriaCompartir implements Parcelable {
 
     String pathFoto;
 

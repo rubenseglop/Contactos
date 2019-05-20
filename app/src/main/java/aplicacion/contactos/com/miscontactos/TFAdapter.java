@@ -71,7 +71,7 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
 
             this.menosTelefono = v.findViewById(R.id.menosTelefono);
             this.mEditText = (EditText) v.findViewById(R.id.id_rvtelefono);
-            this.mEditText.setTextColor(ColoresApp.colorTexto);
+/*            this.mEditText.setTextColor(TextoApp.colorTexto);*/
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.mEditText.addTextChangedListener(myCustomEditTextListener);
         }

@@ -112,7 +112,7 @@ public class CameraUtils {
         File mediaFile;
         if (type == Anadir.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMGTEMPORAL_" + timeStamp + "." + Anadir.IMAGE_EXTENSION);
+                    + "IMG_" + timeStamp + "." + Anadir.IMAGE_EXTENSION);
         } else {
             return null;
         }

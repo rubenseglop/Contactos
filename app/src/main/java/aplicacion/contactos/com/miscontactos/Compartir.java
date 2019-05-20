@@ -86,8 +86,6 @@ public class Compartir extends AppCompatActivity {
             galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
         }
 
-        //actualizar();
-
         for (int i = 0; i < contactos.size(); i++) {
             usuarioSpinner.add(contactos.get(i).getNombre());
             idSpinner.add(contactos.get(i).getId());
@@ -197,22 +195,8 @@ public class Compartir extends AppCompatActivity {
                     galeriaCompartir.add(new GaleriaCompartir(uri.getPath()));
                     compartirfoto.setEnabled(true);
                 }
-
             }
-
             actualizar();
-
-            //if you need
-            //intentShareFile.putExtra(Intent.EXTRA_SUBJECT,"Sharing File Subject);
-            //intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File Description");
-
-
-            /*
-            Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
-            intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
-            intentShareFile.setType("text/plain");
-            startActivity(intentShareFile);*/
-
         }
     }
 
@@ -221,10 +205,8 @@ public class Compartir extends AppCompatActivity {
         outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
         super.onSaveInstanceState(outState);
         // Always call the superclass so it can save the view hierarchy state
-
         actualizar();
     }
-
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
@@ -232,14 +214,14 @@ public class Compartir extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            Toast.makeText(Compartir.this, R.string.moveswype, Toast.LENGTH_SHORT).show();
+            Toast.makeText(Compartir.this, R.string.movegale, Toast.LENGTH_SHORT).show();
             return false;
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-            Toast.makeText(Compartir.this, R.string.delswype, Toast.LENGTH_SHORT).show();
+            Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
             actualizar();
         }
 

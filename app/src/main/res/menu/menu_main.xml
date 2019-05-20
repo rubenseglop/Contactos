@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="@string/recupeseg"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/tamanio"
+        android:orderInCategory="100"
+        android:title="@string/luz"
+        app:showAsAction="never" />
 </menu>

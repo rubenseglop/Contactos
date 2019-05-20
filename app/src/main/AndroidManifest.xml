@@ -5,9 +5,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--<uses-permission android:name="android.permission.RECORD_AUDIO" />-->
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -30,16 +30,15 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".Anadir"
+            android:label="@string/title_activity_anadir"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden"
-            android:label="@string/title_activity_anadir"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -49,7 +48,7 @@
 
         <activity
             android:name=".Compartir"
-            android:label="Compartir"
+            android:label="@string/title_activity_compartir"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -67,5 +66,4 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-
 </manifest>

@@ -107,8 +107,6 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
 
                 //Meto en un ArrayList los domicilios con la ID del contacto
-                //int[] datosIdDom = recuperaIds("DOMICILIO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
-
                 Cursor cContactosD = busquedaDomicilio(Integer.toString(domicilio_id));
                 if (cContactosD.moveToFirst()) {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
@@ -122,8 +120,6 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
 
                 //Meto en un ArrayList los telefono con la ID del contacto
-                //int[] datosIdTel = recuperaIds("TELEFONO", null);  // recorro todos los ID's de Domicilio y guardo los ID's en un array (datosIdDom)
-
                 Cursor cContactosT = busquedaTelefono(Integer.toString(telefono_id));
                 if (cContactosT.moveToFirst()) {
                     //Recorremos el cursor hasta que no haya más registros (creo POJOS)
@@ -132,56 +128,13 @@ public class BDInterna extends SQLiteOpenHelper {
                         String result = cContactosT.getString(1);
                         if(result.length()==0 || result.isEmpty() || result == null){result = " ";}
                         tempoTel.add(indice, new Telefono(cContactosT.getInt(0), result));
-                        System.out.println("DEBUG CONTAC " + i + "TEL " + cContactosT.getString(1));
                         indice++;
                     }while (cContactosT.moveToNext());
-                    System.out.println("DEBUG CONTAC TELEFO " + tempoTel.size() + " "+ tempoTel);
                 }
             } while (cContactos.moveToNext());
 
-            //Leidas todas las tablas, relacionamos las ID's (FOREIGN KEY)
-
             contactos.add(new Contacto(id, foto, nombre, apellidos, galeria_id, domicilio_id, telefono_id, email, tempoGal, tempoDom, tempoTel));
         }
-
-
-        //Ordenar des_contactos
-        Collections.sort(contactos, new Comparator<Contacto>(){
-            @Override
-            public int compare(Contacto p1, Contacto p2) {
-                if (orderby.equals("NOMBRE")) {
-                    System.out.println("DEBUG ORDER NOMBRE");
-                    return new String(p1.getNombre()).toLowerCase().compareTo(new String(p2.getNombre().toLowerCase()));
-                }
-                if (orderby.equals("APELLIDOS")) {
-                    System.out.println("DEBUG ORDER APELLIDOS");
-                    return new String(p1.getApellidos().toLowerCase()).compareTo(new String(p2.getApellidos().toLowerCase()));
-                }
-                if (orderby.equals("DOMICILIO")) {
-                    System.out.println("DEBUG ORDER DOMICILIO");
-
-                    try {
-                        return new String(p1.getDomicilios().get(0).getDireccion().toLowerCase()).compareTo(new String(p2.getDomicilios().get(0).getDireccion().toLowerCase()));
-                    } catch (Exception e) {
-                        System.out.println("DEBUG PROBLEMA DOMICILIO " +p1.getDomicilios().get(0).getDireccion());
-                    } finally {
-                        return 0;
-                    }
-
-                }
-                if (orderby.equals("TELEFONO")) {
-                    System.out.println("DEBUG ORDER TELEFONO");
-                    try {
-                        return new String(p1.getTelefonos().get(0).getNumero().toLowerCase()).compareTo(new String(p2.getTelefonos().get(0).getNumero().toLowerCase()));
-                    } catch (Exception e) {
-                        System.out.println("DEBUG PROBLEMA TELEFONO " +p1.getTelefonos().get(0).getNumero());
-                    } finally {
-                        return 0;
-                    }
-                }
-                return 0;
-            }
-        });
     }
 
     @Override
@@ -200,11 +153,12 @@ public class BDInterna extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Inserta el identificador unico a la BD
+    /**
+     * Inserta el identificador unico a la BD
+     */
     public void insertarUUID() {
 
         SQLiteDatabase db = getWritableDatabase();
-
         //Leemos la Tabla UUID
         Cursor c = db.rawQuery("SELECT ID FROM UNIQUE_UUID", null);
         String id = "";
@@ -238,7 +192,17 @@ public class BDInterna extends SQLiteOpenHelper {
         return uniqueID;
     }
 
-    // Inserta un contactos a la BD
+    /**
+     * Inserta un contactos a la BD
+     * @param foto
+     * @param nombre
+     * @param apellidos
+     * @param galeria_id
+     * @param domicilio_id
+     * @param telefono_id
+     * @param email
+     * @param uuid
+     */
     public void insertarContacto(String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -258,10 +222,22 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("USUARIOS", null, valores);
         }
-
         db.close();
     }
-    // SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID para la BDExterna)
+
+    /**
+     * SOBRECARGA DE METODO - Inserta un contactos a la BD (restauracion con ID para la BDExterna)
+     * Usado para insertarlo dada la ID
+     * @param id
+     * @param foto
+     * @param nombre
+     * @param apellidos
+     * @param galeria_id
+     * @param domicilio_id
+     * @param telefono_id
+     * @param email
+     * @param uuid
+     */
     public void insertarContacto(int id, String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -284,6 +260,11 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Inserta una galeria en la BD
+     * @param id
+     * @param path
+     */
     public void insertarGaleria(int id, String path) {
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
@@ -297,6 +278,11 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Inserta un domicilio en la BD
+     * @param id
+     * @param domicilio
+     */
     public void insertarDomicilio(int id, String domicilio) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -312,6 +298,12 @@ public class BDInterna extends SQLiteOpenHelper {
 
         db.close();
     }
+
+    /**
+     * Inserta un teléfono en la BD
+     * @param id
+     * @param telefono
+     */
     public void insertarTelefono(int id, String telefono) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -324,12 +316,17 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("TELEFONO", null, valores);
         }
-
         db.close();
     }
 
-
-    // Modifica un contacto del a BD
+    /**
+     * Modifica un contacto del a BD
+     * @param id
+     * @param nombre
+     * @param direccion
+     * @param movil
+     * @param mail
+     */
     public void modificarContacto(int id, String nombre, String direccion,String movil,String mail){
 
         SQLiteDatabase db = getWritableDatabase();
@@ -345,7 +342,10 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
-    // Borra un contacto de la BD dado un id
+    /**
+     * Borra un contacto de la BD dado un id
+     * @param id
+     */
     public void borraContacto(int id) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("GALERIA", "ID=" + id, null);
@@ -355,6 +355,9 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Método que elimina todas las tablas de la base de datos (excepto la del UUID)
+     */
     public void borrarTodo() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("GALERIA", null, null);
@@ -380,17 +383,11 @@ public class BDInterna extends SQLiteOpenHelper {
         return c.getInt(0)+1;
     }
 
-    public Cursor todoContacto(String id) {
-        SQLiteDatabase db = getReadableDatabase();
-        String[] valores_recuperar = {"ID", "NOMBRE", "APELLIDOS", "DOMICILIO_ID", "TELEFONO_ID","EMAIL"};
-        String[] args = new String[] {id};
-        Cursor c = db.query("USUARIOS", valores_recuperar, "*", null, null,
-                "NOMBRE ASC",null);
-        return c;
-    }
-
-
-    // Devuelve datos de un Contacto dado un nombre, los devuelve de forma ordenada por nombre
+    /**
+     * Busca el contacto con la ID proporcionada
+     * @param id
+     * @return Devuelve un cursor con el resultado
+     */
     public Cursor busquedaContacto(String id) {
         SQLiteDatabase db = getReadableDatabase();
         String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "GALERIA_ID", "DOMICILIO_ID", "TELEFONO_ID", "EMAIL"};
@@ -399,6 +396,12 @@ public class BDInterna extends SQLiteOpenHelper {
                 "NOMBRE ASC",null);
         return c;
     }
+
+    /**
+     * Devuelve datos de un Contacto dado un nombre, los devuelve de forma ordenada por nombre
+     * @param id
+     * @return
+     */
     public Cursor busquedaGaleria(String id) {
         SQLiteDatabase db = getReadableDatabase();
         String[] valores_recuperar = {"ID", "PATH"};
@@ -434,7 +437,7 @@ public class BDInterna extends SQLiteOpenHelper {
     // Devuelve el numero de filas de la tabla
     public int numerodeFilas(String tabla){
         int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), tabla);
-        System.out.println("DEBUG FILAS " +tabla+" " + dato);
+        //System.out.println("DEBUG FILAS " +tabla+" " + dato);
         return dato;
     }
 
@@ -465,14 +468,12 @@ public class BDInterna extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Método getter que devuelve el ArrayList de contactos
+     * @return
+     */
     public ArrayList<Contacto> devuelveContactos() {
         return contactos;
     }
-
-    public int devuelvoIDborrado(int id){
-        int [] datosId = recuperaIds("USUARIOS", "nombre ASC");
-        return datosId[id];
-    }
-
 
 }
