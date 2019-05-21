@@ -1,9 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,8 +22,6 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         ImageView fotogaleria;
         TextView tv_nombrefoto;
 
-
-        @SuppressLint("ResourceAsColor")
         GalleryViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
@@ -39,16 +35,16 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     }
 
 
-    @NonNull
+
     @Override
-    public COAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public COAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
         COAdapter.GalleryViewHolder pvh = new COAdapter.GalleryViewHolder(v);
         return pvh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull COAdapter.GalleryViewHolder galleryViewHolder, int i) {
+    public void onBindViewHolder(COAdapter.GalleryViewHolder galleryViewHolder, int i) {
 
         try {
             galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompatir.get(i).getPathFoto()));
@@ -56,7 +52,6 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }
-
     }
 
     @Override
@@ -70,10 +65,16 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         return result;
     }
 
+    /**
+     * Convierte la image en un Bitmap y la reduzco
+     * @param c
+     * @return
+     */
     private Bitmap recogerImagen(String c){
-        //System.out.println("DEBUG FOTO " + c);
-        Bitmap bitmap = BitmapFactory.decodeFile(c);
-        return  bitmap;
+        Bitmap bitmapImage = BitmapFactory.decodeFile(c);
+        int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
+        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
+        return scaled;
     }
 
     private String nombreArchivo(String path) {

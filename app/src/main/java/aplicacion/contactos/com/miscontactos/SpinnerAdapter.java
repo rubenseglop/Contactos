@@ -4,28 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
-import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class SpinnerAdapter extends ArrayAdapter<ItemData> {
-    int groupid;
-    ArrayList<ItemData> list;
-    LayoutInflater inflater;
+    private int groupid;
+    private ArrayList<ItemData> list;
+    private LayoutInflater inflater;
 
     public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<ItemData>
             list){
@@ -51,12 +41,24 @@ public class SpinnerAdapter extends ArrayAdapter<ItemData> {
         return getView(position,convertView,parent);
 
     }
-    private Bitmap recogerImagen(String c){
-        Bitmap bitmap = BitmapFactory.decodeFile(c);
-        return  bitmap;
+
+    private Bitmap recogerImagen(String c) {
+        Bitmap scaled = null;
+        Bitmap bitmapImage;
+        try {
+            bitmapImage = BitmapFactory.decodeFile(c);
+        } catch (Exception e) {
+            bitmapImage = null;
+        }
+        try {
+            int nh = (int) (bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()));
+            scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
+        } catch (Exception e) {
+            scaled = null;
+        }
+        return scaled;
     }
 }
-
 class ItemData {
     String text;
     String imageId;

@@ -115,9 +115,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @return Bitmap con la imagen
      */
     private Bitmap recogerImagen(String c){
-        System.out.println("DEBUG FOTO " + c);
-        Bitmap bitmap = BitmapFactory.decodeFile(c);
-        return  bitmap;
+        Bitmap bitmapImage = BitmapFactory.decodeFile(c);
+        int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
+        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
+        return scaled;
     }
 
 }

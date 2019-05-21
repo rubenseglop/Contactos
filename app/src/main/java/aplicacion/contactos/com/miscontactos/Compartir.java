@@ -63,13 +63,6 @@ public class Compartir extends AppCompatActivity {
     }
 
     /**
-     * Constructor de la clase Compartir
-     */
-    public Compartir() {
-        galeriaCompartir = new ArrayList<GaleriaCompartir>();
-    }
-
-    /**
      * Método de la clase Activity que se ejecuta al iniciar una actividad (por un Intent)
      *
      * @param savedInstanceState
@@ -93,20 +86,17 @@ public class Compartir extends AppCompatActivity {
         if (savedInstanceState != null) {
             // Restore value of members from saved state
             galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
+        } else {
+            galeriaCompartir = new ArrayList<GaleriaCompartir>();
         }
         ArrayList<ItemData> itemData = new ArrayList<>();
         for (int i = 0; i < contactos.size(); i++) {
-     /*       usuarioSpinner.add(contactos.get(i).getNombre());
-            fotosSpinner.add(contactos.get(i).getFoto());*/
             idSpinner.add(contactos.get(i).getId());
             itemData.add(i, new ItemData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
         }
         spinner = (Spinner) findViewById(R.id.spinner);
-        //spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.textview, usuarioSpinner));
-
         SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, itemData);
         spinner.setAdapter(adapter);
-
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -221,9 +211,18 @@ public class Compartir extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
+
+        System.out.println("DEBUG DESTRUYO " + galeriaCompartir.size());
         super.onSaveInstanceState(outState);
         // Always call the superclass so it can save the view hierarchy state
         actualizar();
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle outState) {
+        galeriaCompartir = outState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
+        System.out.println("DEBUG RESTAURA " + galeriaCompartir.size()) ;
+        super.onRestoreInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
     }
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -257,7 +256,6 @@ public class Compartir extends AppCompatActivity {
                     float width = height / 3;
                     Paint paint = new Paint();
                     paint.setColor(Color.RED);
-
 
                     RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     paint.setColor(Color.RED);
