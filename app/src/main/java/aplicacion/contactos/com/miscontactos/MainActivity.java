@@ -52,13 +52,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Galeria> galerias;
     private ArrayList<Domicilio> domicilios;
     private ArrayList<Telefono> telefonos;
-    boolean error_conexion = false;
+    private boolean error_conexion=false;
 
     private String orderby;
     private String ordertype;
     private RVAdapter adapter;
     private RecyclerView rv;
     private TextView tv_orden;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bdexterna = new BDExterna();
 
         orderby ="Nombre";
-        tv_orden = findViewById(R.id.ordenadorpor);
+        tv_orden = findViewById(R.id.ordenadopor);
 
         ordertype="ASC";
         bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
@@ -192,11 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (id == R.id.importar) {
             RestaurarWebService();
-        }
-        if (id == R.id.tamanio) {
-            TextoApp.cambiarTexto();
-            this.recreate();
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -350,7 +350,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void exportarWebService() {
         error_conexion = false;
         String error;
-        error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
+        System.out.println("DEBUG " + bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error"));
+        //error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
         if(error_conexion) {
             error_conexion = true;
         }

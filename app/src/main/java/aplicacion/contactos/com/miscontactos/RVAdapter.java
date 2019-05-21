@@ -49,20 +49,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             cv = (CardView)itemView.findViewById(R.id.cv);
             personPhoto = (ImageView)itemView.findViewById(R.id.foto);
             tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
-            tv_nombre.setTextColor(0);
-
             tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
-            tv_apellido.setTextColor(Color.BLACK);
             tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
             tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
             tv_email = (TextView)itemView.findViewById(R.id.id_email);
             ImagenEditContacto = (ImageView)itemView.findViewById(R.id.ImagenEditarContacto);
 
-            tv_nombre.setTextSize(1, TextoApp.nombre_texto);
-            tv_apellido.setTextSize(1,TextoApp.texto_normal);
-            tv_domicilio.setTextSize(1,TextoApp.texto_normal);
-            tv_email.setTextSize(1,TextoApp.texto_normal);
-            tv_telefono.setTextSize(1,TextoApp.nombre_texto);
 
         }
     }

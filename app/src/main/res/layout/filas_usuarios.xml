@@ -17,56 +17,46 @@
 
             <ImageView
                 android:id="@+id/foto"
-                android:layout_width="57dp"
-                android:layout_height="89dp"
+                android:layout_width="58dp"
+                android:layout_height="76dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_conversion_wrapHeight="131"
                 tools:layout_conversion_wrapWidth="131" />
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/id_nombre"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="TextView"
+                app:fontFamily="sans-serif-black"
                 app:layout_constraintStart_toEndOf="@+id/foto"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="50"
+                tools:layout_conversion_wrapWidth="0" />
 
-                <TextView
-                    android:id="@+id/id_apellido"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:background="#00662B2B"
-                    android:textSize="@dimen/texto_nombre"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/id_nombre"
-                    tools:layout_conversion_wrapHeight="36"
-                    tools:layout_conversion_wrapWidth="0" />
 
-                <TextView
-                    android:id="@+id/id_nombre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:elegantTextHeight="false"
-                    android:textSize="@dimen/texto_nombre"
-                    app:layout_constraintBottom_toBottomOf="@+id/id_apellido"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_conversion_wrapHeight="50"
-                    tools:layout_conversion_wrapWidth="0" />
-            </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/id_apellido"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="TextView"
+                app:fontFamily="sans-serif-black"
+                app:layout_constraintStart_toEndOf="@+id/id_nombre"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="50"
+                tools:layout_conversion_wrapWidth="0" />
 
             <TextView
                 android:id="@+id/id_domicilio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:textSize="@dimen/texto_normal"
-                app:layout_constraintLeft_toRightOf="@+id/foto"
+                android:layout_marginStart="8dp"
+                android:text="TextView"
                 app:layout_constraintStart_toEndOf="@+id/foto"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                app:layout_constraintTop_toBottomOf="@+id/id_apellido"
                 tools:layout_conversion_wrapHeight="36"
                 tools:layout_conversion_wrapWidth="0" />
 
@@ -74,8 +64,8 @@
                 android:id="@+id/id_telefono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:textSize="@dimen/texto_nombre"
+                android:layout_marginStart="8dp"
+                android:text="TextView"
                 app:layout_constraintStart_toEndOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_domicilio"
                 tools:layout_conversion_wrapHeight="36"
@@ -85,7 +75,8 @@
                 android:id="@+id/id_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/texto_normal"
+                android:layout_marginLeft="8dp"
+                android:text="TextView"
                 app:layout_constraintLeft_toRightOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_telefono"
                 tools:layout_conversion_wrapHeight="36"
