@@ -49,7 +49,7 @@ public class CameraUtils {
         BitmapFactory.Options options = new BitmapFactory.Options();
 
         // downsizing image as it throws OutOfMemory Exception for larger
-        // images
+        // imagenes
         options.inSampleSize = sampleSize;
 
         return BitmapFactory.decodeFile(filePath, options);

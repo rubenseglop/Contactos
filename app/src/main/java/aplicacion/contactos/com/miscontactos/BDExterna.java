@@ -76,7 +76,7 @@ public class BDExterna {
     }
     public String insertarTelefono(int id, String numero, String uuid){
         String url = BDExternaLinks.insertartelefono + id +
-                "&NUMERO=" + numero +
+                "&NUMERO=" + numero.replace("+", "%2B") +
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");

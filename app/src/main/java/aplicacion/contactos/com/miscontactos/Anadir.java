@@ -57,7 +57,7 @@ public class Anadir extends AppCompatActivity {
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
-    // Gallery directory name to store the images or videos
+    // Gallery directory name to store the imagenes or videos
     public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera", IMAGE_EXTENSION = "jpg";
 
     private static String imageStoragePath;

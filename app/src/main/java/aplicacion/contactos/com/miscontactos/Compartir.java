@@ -19,14 +19,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import in.myinnos.awesomeimagepicker.activities.AlbumSelectActivity;
 import in.myinnos.awesomeimagepicker.helpers.ConstantsCustomGallery;
@@ -39,13 +42,15 @@ public class Compartir extends AppCompatActivity {
     private Spinner spinner; //Declaro un Spinner
     private RecyclerView co; //Declaro un RecyclerView
 
-    private ArrayList usuarioSpinner = new ArrayList(); //Creo un ArrayList de usuarios para pasarselo al Adaptador del Spinner
+    private ArrayList usuarioSpinner = new ArrayList(); //Creo un ArrayList de nombres de usuarios para pasarselo al Adaptador del Spinner
+    private ArrayList fotosSpinner = new ArrayList(); //Creo un ArrayList de fotos de usuarios para pasarselo al Adaptador del Spinner
     private ArrayList idSpinner = new ArrayList(); //Copia del ArrayList anterior, pero almacenando las ids
     private String selectedIdSpinner; //Contendrá la id del Spinner seleccionado en el adaptador
 
     private ArrayList<Contacto> contactos; //Declaro un ArrayList de Contactos
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
     private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
+
 
     /**
      * Método de la clase Activity que se ejecuta al finalizar / rotar
@@ -88,10 +93,13 @@ public class Compartir extends AppCompatActivity {
 
         for (int i = 0; i < contactos.size(); i++) {
             usuarioSpinner.add(contactos.get(i).getNombre());
+            fotosSpinner.add(contactos.get(i).getFoto());
             idSpinner.add(contactos.get(i).getId());
         }
         spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, usuarioSpinner));
+        spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.textview, usuarioSpinner));
+
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 selectedIdSpinner = idSpinner.get(pos).toString();
@@ -103,7 +111,7 @@ public class Compartir extends AppCompatActivity {
                 }
                 compartirfoto.setEnabled(false);
                 actualizar();
-          }
+            }
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -174,7 +182,7 @@ public class Compartir extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            //The array list has the image paths of the selected images
+            //The array list has the image paths of the selected imagenes
             ArrayList<Image> images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
 
             ArrayList<Uri> arrayUri = new ArrayList<>();
