@@ -11,7 +11,9 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,8 +71,10 @@ public class Compartir extends AppCompatActivity {
 
     /**
      * Método de la clase Activity que se ejecuta al iniciar una actividad (por un Intent)
+     *
      * @param savedInstanceState
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +83,7 @@ public class Compartir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        compartirfoto = (Button)findViewById(R.id.aceptarCompartir);
+        compartirfoto = (Button) findViewById(R.id.aceptarCompartir);
         compartirfoto.setEnabled(false); // deshabilito el boton de compartir
 
         bdInterna = new BDInterna(this);
@@ -90,14 +94,18 @@ public class Compartir extends AppCompatActivity {
             // Restore value of members from saved state
             galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
         }
-
+        ArrayList<ItemData> itemData = new ArrayList<>();
         for (int i = 0; i < contactos.size(); i++) {
-            usuarioSpinner.add(contactos.get(i).getNombre());
-            fotosSpinner.add(contactos.get(i).getFoto());
+     /*       usuarioSpinner.add(contactos.get(i).getNombre());
+            fotosSpinner.add(contactos.get(i).getFoto());*/
             idSpinner.add(contactos.get(i).getId());
+            itemData.add(i, new ItemData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
         }
         spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.textview, usuarioSpinner));
+        //spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.textview, usuarioSpinner));
+
+        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, itemData);
+        spinner.setAdapter(adapter);
 
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -106,12 +114,13 @@ public class Compartir extends AppCompatActivity {
                 galeriaCompartir.clear();
 
                 Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
-                while (c.moveToNext()){
+                while (c.moveToNext()) {
                     galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
                 }
                 compartirfoto.setEnabled(false);
                 actualizar();
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -136,6 +145,7 @@ public class Compartir extends AppCompatActivity {
 
     /**
      * Método que muestra un Dialog y en caso de aceptar nos guarda galeriaCompartir en nuestra BDInterna
+     *
      * @param v
      */
     public void clickPulsar(View v) {
@@ -154,8 +164,8 @@ public class Compartir extends AppCompatActivity {
              */
             public void onClick(DialogInterface dialogo1, int id) {
 
-                for (int i = 0; i < galeriaCompartir.size() ; i++) {
-                    bdInterna.insertarGaleria(Integer.parseInt(selectedIdSpinner),galeriaCompartir.get(i).getPathFoto());
+                for (int i = 0; i < galeriaCompartir.size(); i++) {
+                    bdInterna.insertarGaleria(Integer.parseInt(selectedIdSpinner), galeriaCompartir.get(i).getPathFoto());
                 }
                 Toast.makeText(Compartir.this, "Fotos compartidas", Toast.LENGTH_SHORT).show();
                 compartirfoto.setEnabled(false);
@@ -218,7 +228,7 @@ public class Compartir extends AppCompatActivity {
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
-        private ColorDrawable background=null;
+        private ColorDrawable background = null;
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -241,7 +251,7 @@ public class Compartir extends AppCompatActivity {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 float buttonWidthWithoutPadding = 300 - 20;
                 float corners = 16;
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     View itemView = viewHolder.itemView;
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
@@ -253,13 +263,14 @@ public class Compartir extends AppCompatActivity {
                     paint.setColor(Color.RED);
                     c.drawRoundRect(rightButton, corners, corners, paint);
                     drawText(getString(R.string.borrado), c, rightButton, paint);
-                }else {
+                } else {
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
         private void drawText(String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
@@ -267,7 +278,7 @@ public class Compartir extends AppCompatActivity {
             p.setTextSize(textSize);
 
             float textWidth = p.measureText(text);
-            c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);
+            c.drawText(text, button.centerX() - (textWidth / 2), button.centerY() + (textSize / 2), p);
         }
     };
 }
