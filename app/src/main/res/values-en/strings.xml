@@ -58,4 +58,6 @@
     <string name="menu_telefono">by Phone</string>
     <string name="borrado">DELETE!!</string>
     <string name="nav_header_title" translatable="false">My Contacts</string>
+    <string name="movegale">Moving photo</string>
+    <string name="title_activity_compartir">Share</string>
 </resources>

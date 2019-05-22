@@ -20,7 +20,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        layout="@layout/content_compartir" />
+    <include layout="@layout/content_compartir" />
 
 </android.support.design.widget.CoordinatorLayout>

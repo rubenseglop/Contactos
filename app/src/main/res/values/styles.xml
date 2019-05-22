@@ -30,8 +30,11 @@
         <item name="android:layout_margin" >3dp</item>
         <item name="android:textSize" >8pt</item>
         <item name="android:background">#86B667</item>
-        <item name="android:shadowColor" >#70ff106d</item>
         <item name="android:radius">25dp</item>
+        <item name="android:startColor">#f1f1f2</item>
+        <item name="android:centerColor">#e7e7e8</item>
+        <item name="android:endColor">#f1f1f2</item>
     </style>
 
 </resources>
+

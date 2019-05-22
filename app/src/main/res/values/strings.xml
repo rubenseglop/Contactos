@@ -63,8 +63,7 @@
     <string name="navigation_drawer_open">Cerrar navigation</string>
     <string name="borrado">BORRAR!!</string>
     <string name="movegale">Moviendo foto</string>
-    <string name="swypefoto">Dejaste de compartir esa foto</string>
+    <string name="swypefoto">Galeria compartida actualizada</string>
     <string name="title_activity_compartir">Compartir</string>
-    <string name="noche">Noche</string>
     <string name="luz">Cambiar letra</string>
 </resources>

@@ -7,12 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
 
 public class BDInterna extends SQLiteOpenHelper {
@@ -355,6 +350,12 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void borraGaleria( String path) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("GALERIA",  "PATH='" + path+"'", null);
+        db.close();
+    }
+
     /**
      * Método que elimina todas las tablas de la base de datos (excepto la del UUID)
      */
@@ -366,7 +367,6 @@ public class BDInterna extends SQLiteOpenHelper {
         db.delete("USUARIOS", null, null);
         db.close();
     }
-
 
     /**
      * Método que devuelve el último ID de la tabla espeficicada

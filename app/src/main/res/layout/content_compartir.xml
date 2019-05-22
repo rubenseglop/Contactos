@@ -62,33 +62,50 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal">
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/anadirGaleria"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:onClick="clickGaleria"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            style="@style/BotonEstilo"
+            android:text="Añadir de Galería" />
 
         <Button
             android:id="@+id/aceptarCompartir"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="20dp"
-            android:background="@color/colorPrimary"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:onClick="clickPulsar"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Compartir fotos"
+            android:text="Guardar"
+            style="@style/BotonEstilo"
             app:layout_constraintTop_toBottomOf="@+id/id_email" />
 
-        <Button
-            android:id="@+id/anadirGaleria"
+        <ImageButton
+            android:id="@+id/compartirAndroid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:background="@color/colorPrimary"
-            android:onClick="clickGaleria"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="clickCompartirAndroid"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Añadir de Galería" />
+            android:src="@drawable/ic_share"
+            style="@style/BotonEstilo"
+            app:layout_constraintTop_toBottomOf="@+id/id_email" />
 
     </LinearLayout>
 

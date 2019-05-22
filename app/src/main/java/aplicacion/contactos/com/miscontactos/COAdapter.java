@@ -12,26 +12,25 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
     ArrayList<GaleriaCompartir> galeriaCompatir;
+    public static HashMap deIdGaleria_Path;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-        CardView cv;
-
         ImageView fotogaleria;
         TextView tv_nombrefoto;
 
         GalleryViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.cv);
             fotogaleria = (ImageView)itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = (TextView)itemView.findViewById(R.id.id_nombrefoto);
-
         }
     }
-    COAdapter(ArrayList<GaleriaCompartir> galeriaCompartir){
+    public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartir){
         this.galeriaCompatir = galeriaCompartir;
+        deIdGaleria_Path = new HashMap();
     }
 
 
@@ -49,6 +48,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         try {
             galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompatir.get(i).getPathFoto()));
             galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompatir.get(i).getPathFoto()));
+            deIdGaleria_Path.put(i,galeriaCompatir.get(i).getPathFoto());
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }

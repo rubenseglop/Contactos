@@ -12,12 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-public class SpinnerAdapter extends ArrayAdapter<ItemData> {
+public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     private int groupid;
-    private ArrayList<ItemData> list;
+    private ArrayList<SpinnerContactosData> list;
     private LayoutInflater inflater;
 
-    public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<ItemData>
+    public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<SpinnerContactosData>
             list){
         super(context,id,list);
         this.list=list;
@@ -59,10 +59,10 @@ public class SpinnerAdapter extends ArrayAdapter<ItemData> {
         return scaled;
     }
 }
-class ItemData {
+class SpinnerContactosData {
     String text;
     String imageId;
-    public ItemData(String text, String imageId){
+    public SpinnerContactosData(String text, String imageId){
         this.text=text;
         this.imageId=imageId;
     }
