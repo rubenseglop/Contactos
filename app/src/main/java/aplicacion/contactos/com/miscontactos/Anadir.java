@@ -36,14 +36,14 @@ import javax.xml.transform.URIResolver;
 
 public class Anadir extends AppCompatActivity {
 
-    Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
-    TextView tv_nombre,tv_apellido,tv_domicilio,tv_telefono,tv_email;
-    BDInterna bdInterna;
-    ImageView fotoperfil;
+    private Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
+    private TextView tv_nombre,tv_apellido,tv_domicilio,tv_telefono,tv_email;
+    private ImageView fotoperfil;
 
-    ArrayList<String> StringDomicilio = new ArrayList<String>(),StringTelefono = new ArrayList<String>();
+    private BDInterna bdInterna;
 
-    ArrayList<Contacto> contactos;
+    private ArrayList<String> StringDomicilio = new ArrayList<String>(),StringTelefono = new ArrayList<String>();
+    private ArrayList<Contacto> contactos;
     /*
     Declarar instancias globales
     */

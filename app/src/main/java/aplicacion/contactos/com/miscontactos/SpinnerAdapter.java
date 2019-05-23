@@ -45,7 +45,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     }
 
     private Bitmap recogerImagen(String c) {
-        System.out.println("DEBUG RECOGER");
+        //todo pq tantas veces?
         Bitmap scaled = null;
         Bitmap bitmapImage;
         if (c.equals("NO")) {
@@ -53,7 +53,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
                     R.drawable.perfil);
         } else {
             try {
-                bitmapImage = BitmapFactory.decodeFile(c);
+                bitmapImage = BitmapFactory.decodeFile(c); //todo muy lento esto
             } catch (Exception e) {
                 bitmapImage = null;
             }

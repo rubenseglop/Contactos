@@ -34,7 +34,7 @@ import in.myinnos.awesomeimagepicker.models.Image;
 
 public class Compartir extends AppCompatActivity {
 
-    private ArrayList<GaleriaCompartir> ESTADO_ACTIVITY = new ArrayList<>(); // ArrayList (será una copia del contenido GaleriaCompartir) para recuperar en caso de rotación pantalla (Bundle)
+    private ArrayList<GaleriaCompartir> ESTADO_ACTIVITY; // ArrayList (será una copia del contenido GaleriaCompartir) para recuperar en caso de rotación pantalla (Bundle)
     private Button bt_compartirAceptar; //Declaro un Button
     private Spinner spinner; //Declaro un Spinner
     private RecyclerView co; //Declaro un RecyclerView
@@ -48,17 +48,14 @@ public class Compartir extends AppCompatActivity {
 
     private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
 
-    public Compartir() {
-        galeriaCompartir = new ArrayList<GaleriaCompartir>();
-        selectedIdSpinner=new String();
-    }
+    private COAdapter adapter;
 
-    /**
-     * Método de la clase Activity que se ejecuta al finalizar / rotar
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public Compartir() {
+        if (galeriaCompartir == null) {
+            galeriaCompartir = new ArrayList<GaleriaCompartir>();
+            ESTADO_ACTIVITY = new ArrayList<>();
+            selectedIdSpinner = new String();
+        }
     }
 
     /**
@@ -66,10 +63,11 @@ public class Compartir extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("DEBUG CREO");
         setContentView(R.layout.activity_compartir);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,8 +83,9 @@ public class Compartir extends AppCompatActivity {
         if (savedInstanceState != null) {
             // Restore value of members from saved state
             galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
-            //System.out.println("DEBUG COMPARTIR SAVEDI" +galeriaCompartir.size() );
+            System.out.println("DEBUG CREO COMPARTIR SAVED " +galeriaCompartir.size() );
         } else {
+            System.out.println("DEBUG CREO COMPARTIR CLEAR" +galeriaCompartir.size() );
            galeriaCompartir.clear();
         }
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
@@ -95,25 +94,74 @@ public class Compartir extends AppCompatActivity {
             spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
         }
         spinner = (Spinner) findViewById(R.id.spinner);
-        SpinnerAdapter adapter = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
-        spinner.setAdapter(adapter);
+        SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
+        spinner.setAdapter(adapterSpinner);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                galeriaCompartir.clear();
+
+                try {
+                    System.out.println("DEBUG SPINNER CLEAR"); //TODO AQUI ESTA EL FALLO
+                    System.out.println("DEBUG SPINNER CLEAR " + galeriaCompartir.size());
+                    //galeriaCompartir.clear();
+                } catch (NullPointerException e) {
+                }
                 selectedIdSpinner = idSpinner.get(pos).toString();
 
+                // Actualiza la galeriaCompartir con el contenido de la SQLite
                 Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
                 while (c.moveToNext()) {
                     galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
                 }
                 bt_compartirAceptar.setEnabled(false);
-                actualizar(); // todo arreglar por aqui
+
+                System.out.println("DEBUG ESTADO_ACTIVI" + ESTADO_ACTIVITY.size());
+                if (ESTADO_ACTIVITY!=null){
+                    for (int i = 0; i < ESTADO_ACTIVITY.size(); i++) {
+                        galeriaCompartir.add(ESTADO_ACTIVITY.get(i));
+                    }
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        co = (RecyclerView) findViewById(R.id.recyfotos);
+        co.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        co.setLayoutManager(llm);
+        adapter = new COAdapter(galeriaCompartir);
+        co.setAdapter(adapter);
+
+        //esto es parte del Swype
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(co);
+    }
+
+    /**
+     * Método de la clase Activity que se ejecuta al finalizar / rotar
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("DEBUG DESTRUYO");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
+        System.out.println("DEBUG GUARDO " + galeriaCompartir.size());
+        super.onSaveInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
+        actualizar();
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle outState) {
+        galeriaCompartir = outState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
+        System.out.println("DEBUG RESTAURA " + galeriaCompartir.size()) ;
+        super.onRestoreInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
         actualizar();
     }
 
@@ -121,16 +169,8 @@ public class Compartir extends AppCompatActivity {
      * Método que actualiza el RecyclerView
      */
     private void actualizar() {
-        co = (RecyclerView) findViewById(R.id.recyfotos);
-        co.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        co.setLayoutManager(llm);
-        COAdapter adapter = new COAdapter(galeriaCompartir);
-        co.setAdapter(adapter);
-
-        //esto es parte del Swype
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(co);
+        System.out.println("DEBUG ACTUALIZO " + galeriaCompartir.size());
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -231,22 +271,6 @@ public class Compartir extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
-        System.out.println("DEBUG DESTRUYO " + galeriaCompartir.size());
-        super.onSaveInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-        actualizar();
-    }
-    @Override
-    protected void onRestoreInstanceState(Bundle outState) {
-        //galeriaCompartir = outState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
-        System.out.println("DEBUG RESTAURA " + galeriaCompartir.size()) ;
-        super.onRestoreInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-        actualizar();
-    }
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;

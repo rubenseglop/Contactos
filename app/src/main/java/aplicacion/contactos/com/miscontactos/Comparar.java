@@ -19,11 +19,17 @@ class CompararNombre implements Comparator<Contacto>{
 class CompararApellido implements Comparator<Contacto>{
     @Override
     public int compare(Contacto customer1, Contacto customer2) {
+
         int Nombres = customer1.getNombre().compareTo(customer2.getNombre());
         int Apellidos = customer1.getApellidos().compareTo(customer2.getApellidos());
+
+        //En el caso de no tener Apellidos (null) se vaya al fondo
+        if (customer1.getApellidos().length()==0){ Apellidos = 1; }
+        if (customer2.getApellidos().length()==0){ Apellidos = -1; }
+
+        //En el caso de ser idéntido, que mire el nombre
         if (Apellidos == 0) {
             return ((Nombres == 0) ? Apellidos : Nombres);
-
         } else {
             return Apellidos;
         }
@@ -54,6 +60,11 @@ class CompararDomicilio implements Comparator<Contacto> {
         }
 
         Domicilio = a1.compareTo(a2);
+
+
+        //En el caso de no tener Domicilios (null) se vaya al fondo
+        if (a1.length()==0){ Domicilio=1; }
+        if (a2.length()==0){ Domicilio = -1; }
 
         if (Nombres == 0) {
             return ((Nombres == 0) ? Domicilio : Nombres);
@@ -87,6 +98,10 @@ class CompararTelefono implements Comparator<Contacto> {
             a2 = "";
         }
         Telefono = a1.compareTo(a2);
+
+        //En el caso de no tener Telefonos (null) se vaya al fondo
+        if (a1.length()==0){ Telefono=1;   }
+        if (a2.length()==0){ Telefono = -1;}
 
         if (Nombres == 0) {
             return ((Nombres == 0) ? Telefono : Nombres);
