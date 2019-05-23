@@ -73,9 +73,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
 
-        //TODO en cuanto todo sea online, quedarme con el Picasso del if
-        if (contactos.get(i).getFoto().equals("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png")){
-            Picasso.get().load("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png").into(personViewHolder.personPhoto);
+        if (contactos.get(i).getFoto().equals("NO")){
+            personViewHolder.personPhoto.setImageResource(R.drawable.perfil);
         } else {
             personViewHolder.personPhoto.setImageBitmap(recogerImagen(contactos.get(i).getFoto()));
         }

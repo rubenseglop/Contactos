@@ -16,10 +16,12 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     private int groupid;
     private ArrayList<SpinnerContactosData> list;
     private LayoutInflater inflater;
+    Context context;
 
     public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<SpinnerContactosData>
             list){
         super(context,id,list);
+        this.context = context;
         this.list=list;
         inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.groupid=groupid;
@@ -43,13 +45,20 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     }
 
     private Bitmap recogerImagen(String c) {
+        System.out.println("DEBUG RECOGER");
         Bitmap scaled = null;
         Bitmap bitmapImage;
-        try {
-            bitmapImage = BitmapFactory.decodeFile(c);
-        } catch (Exception e) {
-            bitmapImage = null;
+        if (c.equals("NO")) {
+            bitmapImage = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.perfil);
+        } else {
+            try {
+                bitmapImage = BitmapFactory.decodeFile(c);
+            } catch (Exception e) {
+                bitmapImage = null;
+            }
         }
+
         try {
             int nh = (int) (bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()));
             scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);

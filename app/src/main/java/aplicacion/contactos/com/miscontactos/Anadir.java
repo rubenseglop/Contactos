@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.xml.transform.URIResolver;
 
+
 public class Anadir extends AppCompatActivity {
 
     Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
@@ -127,8 +128,8 @@ public class Anadir extends AppCompatActivity {
                 tv_apellido.setText(editContacto.getApellidos());
                 tv_email.setText(editContacto.getCorreo());
 
-                if (editContacto.getFoto().equals("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png")){ //todo
-                    Picasso.get().load("http://iesayala.ddns.net/BDSegura/misContactos/fotosperfiles/perfil.png");
+                if (editContacto.getFoto().equals("NO")){
+                    fotoperfil.setImageResource(R.drawable.perfil);
                 } else {
                     fotoperfil.setImageBitmap(BitmapFactory.decodeFile(editContacto.getFoto()));
                 }
@@ -285,7 +286,7 @@ public class Anadir extends AppCompatActivity {
         //guardar
         if (error == false) {
             if (imageStoragePath == null) {
-                imageStoragePath = BDExternaLinks.imageStoragePath;
+                imageStoragePath = "NO";
             }
             //System.out.println("DEBUG GRABANDO" + imageStoragePath);
             editImagePath = imageStoragePath;

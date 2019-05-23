@@ -13,9 +13,6 @@ public class BDExternaLinks {
     static String verdomicilio = LINKS + "verdomicilio.php/?UUIDUNIQUE=";
     static String vertelefono = LINKS + "vertelefono.php/?UUIDUNIQUE=";
 
-    static String upload_php = LINKS + "upload.php";
-    static String imageStoragePath = LINKS + "fotosperfiles/perfil.png";
-
     static String insertarcontacto = LINKS + "insertarcontacto.php/?ID=";
     static String insertargaleria = LINKS + "insertargaleria.php/?ID=";
     static String insertardomicilio = LINKS + "insertardomicilio.php/?ID=";

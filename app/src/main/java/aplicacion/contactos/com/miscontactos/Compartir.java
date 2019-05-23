@@ -85,7 +85,7 @@ public class Compartir extends AppCompatActivity {
         if (savedInstanceState != null) {
             // Restore value of members from saved state
             galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
-            System.out.println("DEBUG COMPARTIR SAVEDI" +galeriaCompartir.size() );
+            //System.out.println("DEBUG COMPARTIR SAVEDI" +galeriaCompartir.size() );
         } else {
            galeriaCompartir.clear();
         }
@@ -100,6 +100,7 @@ public class Compartir extends AppCompatActivity {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                galeriaCompartir.clear();
                 selectedIdSpinner = idSpinner.get(pos).toString();
 
                 Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
