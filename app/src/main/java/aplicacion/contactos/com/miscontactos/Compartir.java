@@ -50,14 +50,6 @@ public class Compartir extends AppCompatActivity {
 
     private COAdapter adapter;
 
-    public Compartir() {
-        if (galeriaCompartir == null) {
-            galeriaCompartir = new ArrayList<GaleriaCompartir>();
-            ESTADO_ACTIVITY = new ArrayList<>();
-            selectedIdSpinner = new String();
-        }
-    }
-
     /**
      * Método de la clase Activity que se ejecuta al iniciar una actividad (por un Intent)
      *
@@ -72,6 +64,10 @@ public class Compartir extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        galeriaCompartir = new ArrayList<GaleriaCompartir>();
+        ESTADO_ACTIVITY = new ArrayList<>();
+        selectedIdSpinner = new String();
 
         bt_compartirAceptar = (Button) findViewById(R.id.aceptarCompartir);
         bt_compartirAceptar.setEnabled(false); // deshabilito el boton de compartir
@@ -103,6 +99,7 @@ public class Compartir extends AppCompatActivity {
                 try {
                     System.out.println("DEBUG SPINNER CLEAR"); //TODO AQUI ESTA EL FALLO
                     System.out.println("DEBUG SPINNER CLEAR " + galeriaCompartir.size());
+                    System.out.println("DEBUG SPINNER ESTADO " + ESTADO_ACTIVITY.size());
                     //galeriaCompartir.clear();
                 } catch (NullPointerException e) {
                 }
