@@ -80,19 +80,6 @@
             style="@style/BotonEstilo"
             android:text="Añadir de Galería" />
 
-        <Button
-            android:id="@+id/aceptarCompartir"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:onClick="clickPulsar"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="Guardar"
-            style="@style/BotonEstilo"
-            app:layout_constraintTop_toBottomOf="@+id/id_email" />
-
         <ImageButton
             android:id="@+id/compartirAndroid"
             android:layout_width="match_parent"

@@ -2,7 +2,6 @@ package aplicacion.contactos.com.miscontactos;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Contacto implements Serializable {
     private int id;

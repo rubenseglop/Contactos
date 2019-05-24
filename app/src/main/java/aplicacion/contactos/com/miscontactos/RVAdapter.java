@@ -1,11 +1,9 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,14 +42,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         PersonViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            cv = (CardView)itemView.findViewById(R.id.cv);
-            personPhoto = (ImageView)itemView.findViewById(R.id.foto);
-            tv_nombre = (TextView)itemView.findViewById(R.id.id_nombre);
-            tv_apellido = (TextView)itemView.findViewById(R.id.id_apellido);
-            tv_domicilio = (TextView)itemView.findViewById(R.id.id_domicilio);
-            tv_telefono = (TextView)itemView.findViewById(R.id.id_telefono);
-            tv_email = (TextView)itemView.findViewById(R.id.id_email);
-            ImagenEditContacto = (ImageView)itemView.findViewById(R.id.ImagenEditarContacto);
+            cv = itemView.findViewById(R.id.cv);
+            personPhoto = itemView.findViewById(R.id.foto);
+            tv_nombre = itemView.findViewById(R.id.id_nombre);
+            tv_apellido = itemView.findViewById(R.id.id_apellido);
+            tv_domicilio = itemView.findViewById(R.id.id_domicilio);
+            tv_telefono = itemView.findViewById(R.id.id_telefono);
+            tv_email = itemView.findViewById(R.id.id_email);
+            ImagenEditContacto = itemView.findViewById(R.id.ImagenEditarContacto);
 
 
         }

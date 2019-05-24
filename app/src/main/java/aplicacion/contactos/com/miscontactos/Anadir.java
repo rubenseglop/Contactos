@@ -25,13 +25,10 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.transform.URIResolver;
 
 
 public class Anadir extends AppCompatActivity {
@@ -83,13 +80,13 @@ public class Anadir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        bt_aceptar = (Button)findViewById(R.id.aceptar);
-        tv_nombre = (TextView)findViewById(R.id.id_nombre);
-        tv_apellido = (TextView)findViewById(R.id.id_apellidos);
-        tv_domicilio = (TextView)findViewById(R.id.id_domicilio);
-        tv_telefono = (TextView)findViewById(R.id.id_telefono);
-        tv_email = (TextView)findViewById(R.id.id_email);
-        bt_imagen = (Button) findViewById(R.id.imagen);
+        bt_aceptar = findViewById(R.id.aceptar);
+        tv_nombre = findViewById(R.id.id_nombre);
+        tv_apellido = findViewById(R.id.id_apellidos);
+        tv_domicilio = findViewById(R.id.id_domicilio);
+        tv_telefono = findViewById(R.id.id_telefono);
+        tv_email = findViewById(R.id.id_email);
+        bt_imagen = findViewById(R.id.imagen);
         fotoperfil = findViewById(R.id.fotoperfil);
         masdomicilio = findViewById(R.id.masdomicilio);
         mastelefono = findViewById(R.id.mastelefono);
@@ -99,7 +96,7 @@ public class Anadir extends AppCompatActivity {
         bt_imagen.setBackgroundColor(TextoApp.colorBoton);
 */
         // Obtener el Recycler para el adatapdor DMAdapter
-        recyclerdomicilio = (RecyclerView) findViewById(R.id.recicladordomicilio);
+        recyclerdomicilio = findViewById(R.id.recicladordomicilio);
         recyclerdomicilio.setHasFixedSize(true);
         // Usar un administrador para LinearLayout
         lManagerDom = new LinearLayoutManager(this);
@@ -109,7 +106,7 @@ public class Anadir extends AppCompatActivity {
         recyclerdomicilio.setAdapter(adapterdomi);
 
         // Obtener el Recycler para el adatapdor TFAdapter
-        recyclertelefono = (RecyclerView) findViewById(R.id.recicladortelefono);
+        recyclertelefono = findViewById(R.id.recicladortelefono);
         recyclertelefono.setHasFixedSize(true);
         // Usar un administrador para LinearLayout
         lManagerTelf = new LinearLayoutManager(this);

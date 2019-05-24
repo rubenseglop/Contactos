@@ -1,7 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -12,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,8 +31,6 @@ import in.myinnos.awesomeimagepicker.models.Image;
 
 public class Compartir extends AppCompatActivity {
 
-    private ArrayList<GaleriaCompartir> ESTADO_ACTIVITY; // ArrayList (será una copia del contenido GaleriaCompartir) para recuperar en caso de rotación pantalla (Bundle)
-    private Button bt_compartirAceptar; //Declaro un Button
     private Spinner spinner; //Declaro un Spinner
     private RecyclerView co; //Declaro un RecyclerView
 
@@ -43,12 +38,18 @@ public class Compartir extends AppCompatActivity {
     private String selectedIdSpinner; //Contendrá la id del Spinner seleccionado en el adaptador
 
     private ArrayList<Contacto> contactos; //Declaro un ArrayList de Contactos
-    private ArrayList<Galeria> galerias; //Declaro un ArrayList de Contactos
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
 
     private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
 
     private COAdapter adapter;
+
+    public Compartir() {
+        if (galeriaCompartir == null) {
+            galeriaCompartir = new ArrayList<GaleriaCompartir>();
+            selectedIdSpinner = "";
+        }
+    }
 
     /**
      * Método de la clase Activity que se ejecuta al iniciar una actividad (por un Intent)
@@ -65,66 +66,79 @@ public class Compartir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        galeriaCompartir = new ArrayList<GaleriaCompartir>();
-        ESTADO_ACTIVITY = new ArrayList<>();
-        selectedIdSpinner = new String();
 
-        bt_compartirAceptar = (Button) findViewById(R.id.aceptarCompartir);
-        bt_compartirAceptar.setEnabled(false); // deshabilito el boton de compartir
 
         bdInterna = new BDInterna(this);
         bdInterna.actualizaContactos("NOMBRE", "ASC");
         contactos = bdInterna.contactos;
 
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            galeriaCompartir = savedInstanceState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
-            System.out.println("DEBUG CREO COMPARTIR SAVED " +galeriaCompartir.size() );
-        } else {
-            System.out.println("DEBUG CREO COMPARTIR CLEAR" +galeriaCompartir.size() );
-           galeriaCompartir.clear();
-        }
+        galeriaCompartir.clear();
+
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
         for (int i = 0; i < contactos.size(); i++) {
             idSpinner.add(contactos.get(i).getId());
             spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
         }
-        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner = findViewById(R.id.spinner);
         SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
         spinner.setAdapter(adapterSpinner);
 
+        actualizarSpinner();
+        actualizarGaleriadeSQL();
+
+    }
+
+    private void actualizarSpinner() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                System.out.println("DEBUG AQUI");
 
-                try {
-                    System.out.println("DEBUG SPINNER CLEAR"); //TODO AQUI ESTA EL FALLO
-                    System.out.println("DEBUG SPINNER CLEAR " + galeriaCompartir.size());
-                    System.out.println("DEBUG SPINNER ESTADO " + ESTADO_ACTIVITY.size());
-                    //galeriaCompartir.clear();
-                } catch (NullPointerException e) {
-                }
                 selectedIdSpinner = idSpinner.get(pos).toString();
-
-                // Actualiza la galeriaCompartir con el contenido de la SQLite
-                Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
-                while (c.moveToNext()) {
-                    galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
-                }
-                bt_compartirAceptar.setEnabled(false);
-
-                System.out.println("DEBUG ESTADO_ACTIVI" + ESTADO_ACTIVITY.size());
-                if (ESTADO_ACTIVITY!=null){
-                    for (int i = 0; i < ESTADO_ACTIVITY.size(); i++) {
-                        galeriaCompartir.add(ESTADO_ACTIVITY.get(i));
-                    }
-                }
+                actualizarGaleriadeSQL();
             }
-
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
 
-        co = (RecyclerView) findViewById(R.id.recyfotos);
+    private void actualizarGaleriadeSQL() {
+        // Actualiza la galeriaCompartir con el contenido de la SQLite
+        galeriaCompartir.clear();
+        Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
+        while (c.moveToNext()) {
+            galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
+        }
+        actualizarAdapter();
+    }
+
+    /**
+     * Método de la clase Activity que se ejecuta al finalizar / rotar
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        actualizarGaleriadeSQL();
+        super.onSaveInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
+
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle outState) {
+        actualizarGaleriadeSQL();
+        super.onRestoreInstanceState(outState);
+        // Always call the superclass so it can save the view hierarchy state
+
+    }
+
+    /**
+     * Método que actualiza el RecyclerView
+     */
+    private void actualizarAdapter() {
+        co = findViewById(R.id.recyfotos);
         co.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         co.setLayoutManager(llm);
@@ -136,77 +150,6 @@ public class Compartir extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(co);
     }
 
-    /**
-     * Método de la clase Activity que se ejecuta al finalizar / rotar
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.out.println("DEBUG DESTRUYO");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(String.valueOf(ESTADO_ACTIVITY), galeriaCompartir);
-        System.out.println("DEBUG GUARDO " + galeriaCompartir.size());
-        super.onSaveInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-        actualizar();
-    }
-    @Override
-    protected void onRestoreInstanceState(Bundle outState) {
-        galeriaCompartir = outState.getParcelableArrayList(String.valueOf(ESTADO_ACTIVITY));
-        System.out.println("DEBUG RESTAURA " + galeriaCompartir.size()) ;
-        super.onRestoreInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-        actualizar();
-    }
-
-    /**
-     * Método que actualiza el RecyclerView
-     */
-    private void actualizar() {
-        System.out.println("DEBUG ACTUALIZO " + galeriaCompartir.size());
-        adapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Método que muestra un Dialog y en caso de aceptar nos guarda galeriaCompartir en nuestra BDInterna
-     *
-     * @param v
-     */
-    public void clickPulsar(View v) {
-
-        // Muestra un dialogo con aceptar o cancelar
-        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-        dialogo1.setTitle(R.string.importante);
-        dialogo1.setMessage(R.string.compartir_foto);
-        dialogo1.setCancelable(false);
-        dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
-
-            /**
-             * Listener onClick que se ejecuta al pulsar sobre el boton 'Confirmar' del dialogo
-             * @param dialogo1
-             * @param id
-             */
-            public void onClick(DialogInterface dialogo1, int id) {
-
-                for (int i = 0; i < galeriaCompartir.size(); i++) {
-                    bdInterna.insertarGaleria(Integer.parseInt(selectedIdSpinner), galeriaCompartir.get(i).getPathFoto());
-                }
-                Toast.makeText(Compartir.this, "Fotos compartidas", Toast.LENGTH_SHORT).show();
-                bt_compartirAceptar.setEnabled(false);
-            }
-        });
-        dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogo1, int id) {
-                Toast.makeText(Compartir.this, "Proceso cancelado", Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialogo1.show();
-        // fin muestra dialogo aceptar o cancelar
-    }
-
     public void clickGaleria(View v) {
         // https://github.com/myinnos/AwesomeImagePicker
         Intent intent = new Intent(this, AlbumSelectActivity.class);
@@ -216,19 +159,20 @@ public class Compartir extends AppCompatActivity {
 
     public void clickCompartirAndroid(View v){
 
-            ArrayList<Uri> arrayUri = new ArrayList<>();
+        ArrayList<Uri> arrayUri = new ArrayList<>();
 
-            for (int i = 0; i < galeriaCompartir.size(); i++) {
-                Uri uri = Uri.fromFile(new File(galeriaCompartir.get(i).getPathFoto()));
-                // start play with image uri
-                System.out.println("DEBUG URI " + uri.getPath());
-                arrayUri.add(uri);
+        for (int i = 0; i < galeriaCompartir.size(); i++) {
+            Uri uri = Uri.fromFile(new File(galeriaCompartir.get(i).getPathFoto()));
+            // start play with image uri
+            System.out.println("DEBUG URI " + uri.getPath());
+            arrayUri.add(uri);
 
-            }
-            Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
-            intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
-            intentShareFile.setType("text/plain");
-            startActivity(intentShareFile);
+        }
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
+        intentShareFile.setType("text/plain");
+        startActivity(intentShareFile);
+        actualizarGaleriadeSQL();
     }
 
     /**
@@ -260,12 +204,14 @@ public class Compartir extends AppCompatActivity {
                 }
                 if (repetido == false) {
                     arrayUri.add(uri);
-                    galeriaCompartir.add(new GaleriaCompartir(uri.getPath()));
-                    bt_compartirAceptar.setEnabled(true);
+
+                    bdInterna.insertarGaleria(Integer.parseInt(selectedIdSpinner), uri.getPath());
+
                 }
             }
-            actualizar();
         }
+        actualizarGaleriadeSQL();
+
     }
 
 
@@ -287,13 +233,12 @@ public class Compartir extends AppCompatActivity {
 
 
             galeriaCompartir.remove(viewHolder.getAdapterPosition());
-            bt_compartirAceptar.setEnabled(true);
             bdInterna.borraGaleria((String) deIdGaleria_Path.get(viewHolder.getAdapterPosition()));
 
 
             System.out.println("DEBUG PATH " + path + " tam: " + galeriaCompartir.size());
             Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
-            actualizar();
+            actualizarAdapter();
         }
 
         @Override

@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         contactos = bdinterna.devuelveContactos();
 
 
-        rv = (RecyclerView) findViewById(R.id.rv);
+        rv = findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);

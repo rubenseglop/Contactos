@@ -2,7 +2,6 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +23,8 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
 
         GalleryViewHolder(View itemView) {
             super(itemView);
-            fotogaleria = (ImageView)itemView.findViewById(R.id.fotogaleria);
-            tv_nombrefoto = (TextView)itemView.findViewById(R.id.id_nombrefoto);
+            fotogaleria = itemView.findViewById(R.id.fotogaleria);
+            tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
         }
     }
     public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartir){
