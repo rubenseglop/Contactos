@@ -6,6 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -60,8 +66,6 @@ public class CameraUtils {
      * android:required="true" is used in manifest file
      */
     public static boolean isDeviceSupportCamera(Context context) {
-        // this device has a camera
-// no camera on this device
         return context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA);
     }
@@ -115,4 +119,26 @@ public class CameraUtils {
 
         return mediaFile;
     }
+
+    /**
+     * Método que me redondea la esquinas de las fotos
+     * @param bitmap
+     * @param pixeles
+     * @return devuelve un bitmap con las esquinas redondeadas
+     */
+    public static Bitmap redondearEsquinas(Bitmap bitmap, int pixeles) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(0xff424242);
+        canvas.drawRoundRect(rectF, pixeles, pixeles, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
+    }
+
 }

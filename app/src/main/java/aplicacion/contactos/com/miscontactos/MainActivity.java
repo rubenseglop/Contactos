@@ -29,12 +29,11 @@ import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -72,19 +71,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
                 startActivity(new Intent(MainActivity.this,Anadir.class));
             }
         });
-
 
         /*Menu lateral Navigation View*/
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -108,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Menu Navigation
+     * Menu Navigation Drawler
      * @param item
      * @return
      */
@@ -143,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
         bdinterna.actualizaContactos(orderby, ordertype);
         contactos = bdinterna.devuelveContactos();
-
 
         rv = findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -198,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Método que lee la base de datos externa y la clona en la interna SQLITE
+     */
     private void RestaurarWebService() {
         // muestra un dialogo con aceptar o cancelar
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
@@ -208,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             public void onClick(DialogInterface dialogo1, int id) {
                 error_conexion = false;
-                // en el caso de aceptar el dialog
 
+                // en el caso de aceptar el dialog
                 if (bdexterna.leerUrl(BDExternaLinks.conexion)!=null) { //comprobar conexion
                     bdinterna.borrarTodo();
                     String UUID = bdinterna.getUniqueID();
@@ -231,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Método que lee el contenido web (interpretado por el PHP a un JSON) y posteriormente llamo al método StringObjeto con dicho contenido web
+     * Método que lee el contenido web (interpretado por el PHP a un JSON) y posteriormente llamo al método StringToBaseDatosInterna con dicho contenido web
      * @param tabla Tabla que va a ser leida
      * @param sUrl Direccion URL en la que está ubicada el .php
      */
@@ -247,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Convierte el contenido de la URL en un String
             JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
 
-            StringObjeto(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
+            StringToBaseDatosInterna(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
             e.printStackTrace();
             Toast.makeText(MainActivity.this, R.string.errorserver, Toast.LENGTH_LONG).show();
@@ -262,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param tabla Es la tabla que va a ser leida (la arrastro del método WebSerTabla)
      * @param jsonString Es el String que le paso de WebSerTabla con el String JSON a convertir
      */
-    public void StringObjeto(String tabla, String jsonString) {
+    public void StringToBaseDatosInterna(String tabla, String jsonString) {
 
         if (tabla == "CON") {
             try {

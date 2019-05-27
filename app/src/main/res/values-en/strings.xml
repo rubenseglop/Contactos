@@ -22,7 +22,7 @@
     <string name="error">Error finding image</string>
     <string name="error_camara">Error! your device does not incorporate a camera</string>
     <string name="error_io">Error I/O</string>
-    <string name="error_metodo">" The StringObject method could not be performed"</string>
+    <string name="error_metodo">" The StringToBaseDatosInterna method could not be performed"</string>
     <string name="errorconex">There was a problem with the connection</string>
     <string name="errorserver">There was a problem with the server</string>
     <string name="exportar">Export</string>
@@ -60,4 +60,6 @@
     <string name="nav_header_title" translatable="false">My Contacts</string>
     <string name="movegale">Moving photo</string>
     <string name="title_activity_compartir">Share</string>
+    <string name="swypefoto">Shared gallery updated</string>
+    <string name="limite5">Limit is 5</string>
 </resources>

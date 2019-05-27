@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
@@ -42,7 +41,6 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     public View getDropDownView(int position, View convertView, ViewGroup
             parent){
         return getView(position,convertView,parent);
-
     }
 
     private Bitmap recogerImagen(String c) {

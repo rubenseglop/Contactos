@@ -3,8 +3,8 @@ package aplicacion.contactos.com.miscontactos;
 public class BDExternaLinks {
 
 
-    //static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //1 IESAyala
-    static String LINKS = "https://miscontactosrsl.webcindario.com/";   //2 Miarroba
+    static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //1 IESAyala
+    //static String LINKS = "https://miscontactosrsl.webcindario.com/";   //2 Miarroba
 
 
     static String conexion = LINKS + "conexion.php";

@@ -91,7 +91,6 @@ public class Compartir extends AppCompatActivity {
     private void actualizarSpinner() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                System.out.println("DEBUG AQUI");
 
                 selectedIdSpinner = idSpinner.get(pos).toString();
                 actualizarGaleriadeSQL();
@@ -123,15 +122,11 @@ public class Compartir extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         actualizarGaleriadeSQL();
         super.onSaveInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-
     }
     @Override
     protected void onRestoreInstanceState(Bundle outState) {
         actualizarGaleriadeSQL();
         super.onRestoreInstanceState(outState);
-        // Always call the superclass so it can save the view hierarchy state
-
     }
 
     /**

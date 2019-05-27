@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,17 +18,22 @@ import java.util.HashMap;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
 
-    public static HashMap deId_Posicion;
+    public static HashMap deId_Posicion; //Mapeo de ID Contacto con la posicion ocupada en el RecyclerView
     private ArrayList<Contacto> contactos;
     private Context mContext;
 
+    /**
+     * Constructor del adaptador
+     * @param contactos
+     * @param context
+     */
     public RVAdapter(ArrayList<Contacto> contactos , Context context){
         this.contactos = contactos;
         mContext = context;
         deId_Posicion = new HashMap();
     }
 
-    public static class PersonViewHolder extends RecyclerView.ViewHolder {
+    public class PersonViewHolder extends RecyclerView.ViewHolder {
         Context context;
         CardView cv;
         ImageView personPhoto;
@@ -37,7 +43,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         TextView tv_telefono;
         TextView tv_email;
         ImageView ImagenEditContacto;
-
 
         PersonViewHolder(View itemView) {
             super(itemView);
@@ -50,8 +55,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             tv_telefono = itemView.findViewById(R.id.id_telefono);
             tv_email = itemView.findViewById(R.id.id_email);
             ImagenEditContacto = itemView.findViewById(R.id.ImagenEditarContacto);
-
-
         }
     }
 
@@ -59,13 +62,25 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     public int getItemCount() {
         return contactos.size();
     }
+
+    /**
+     * Se llama cuando se crea un RecyclerView y se usa para inicializar el ViewHolder
+     * @param viewGroup
+     * @param i
+     * @return
+     */
     @Override
     public PersonViewHolder onCreateViewHolder (ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_usuarios, viewGroup, false);
-        PersonViewHolder pvh = new PersonViewHolder(v);
-        return pvh;
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_usuarios, viewGroup, false);
+        PersonViewHolder personViewHolder = new PersonViewHolder(view);
+        return personViewHolder;
     }
 
+    /**
+     * Llamado por RecyclerView para mostrar los datos en la posición especificada.
+     * @param personViewHolder
+     * @param i
+     */
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
 
@@ -84,6 +99,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         }
         try {
             personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
+            personViewHolder.tv_telefono.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_CALL,
+                            Uri.parse("tel:" + contactos.get(i).getTelefonos().get(0).getNumero()));
+                    mContext.startActivity(intent);
+                }
+            });
         }catch (Exception e) {
             personViewHolder.tv_telefono.setText("");
         }
@@ -97,8 +120,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
                 mContext.startActivity(intent);
             }
         });
-
     }
+
+    /**
+     * Llamado por RecyclerView cuando comienza a observar este adaptador.
+     * @param recyclerView
+     */
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -113,7 +140,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         Bitmap bitmapImage = BitmapFactory.decodeFile(c);
         int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
         Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
-        return scaled;
+        //antes de devolverlo, le redondeo las esquinas
+        return CameraUtils.redondearEsquinas(scaled, 20);
     }
+
 
 }

@@ -6,6 +6,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,7 +37,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Anadir extends AppCompatActivity {
 
     private Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
@@ -40,30 +46,30 @@ public class Anadir extends AppCompatActivity {
     private BDInterna bdInterna;
 
     private ArrayList<String> StringDomicilio = new ArrayList<String>(),StringTelefono = new ArrayList<String>();
-    private ArrayList<Contacto> contactos;
-    /*
-    Declarar instancias globales
-    */
+
     private RecyclerView recyclerdomicilio, recyclertelefono;
+
+     /*Hago métodos staticos para poder acceder a ellos en la clase Anadir (para
+     añadir un notifyDataSetChanged )*/
     private static RecyclerView.Adapter adapterdomi, adaptertelf;
+
+    // LayoutManager mide y posiciona las vistas de elementos dentro de un RecyclerView
     private RecyclerView.LayoutManager lManagerDom, lManagerTelf;
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     public static final int MEDIA_TYPE_IMAGE = 1;
-
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
-
     // Gallery directory name to store the imagenes or videos
     public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera", IMAGE_EXTENSION = "jpg";
-
     private static String imageStoragePath;
 
     private Bitmap bitmap;
     private Contacto editContacto;
 
     private String editImagePath;
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -91,10 +97,6 @@ public class Anadir extends AppCompatActivity {
         masdomicilio = findViewById(R.id.masdomicilio);
         mastelefono = findViewById(R.id.mastelefono);
 
-      /*  //Colores
-        bt_aceptar.setBackgroundColor(TextoApp.colorBoton);
-        bt_imagen.setBackgroundColor(TextoApp.colorBoton);
-*/
         // Obtener el Recycler para el adatapdor DMAdapter
         recyclerdomicilio = findViewById(R.id.recicladordomicilio);
         recyclerdomicilio.setHasFixedSize(true);
@@ -115,7 +117,6 @@ public class Anadir extends AppCompatActivity {
         adaptertelf = new TFAdapter(StringTelefono);
         recyclertelefono.setAdapter(adaptertelf);
 
-
         // Recuperar los datos si se dispone, para editar
         try {
             editContacto = (Contacto) getIntent().getSerializableExtra("EDIT");
@@ -128,7 +129,13 @@ public class Anadir extends AppCompatActivity {
                 if (editContacto.getFoto().equals("NO")){
                     fotoperfil.setImageResource(R.drawable.perfil);
                 } else {
-                    fotoperfil.setImageBitmap(BitmapFactory.decodeFile(editContacto.getFoto()));
+                    try {
+                        fotoperfil.setImageBitmap(BitmapFactory.decodeFile(editContacto.getFoto()));
+                    } catch (Exception e) {
+                        System.out.println("DEBUG - Problema al leer la foto " + editContacto.getFoto());
+                        // Muestro una foto en blanco
+                        fotoperfil.setImageResource(R.drawable.perfil);
+                    }
                 }
                 StringDomicilio.clear();
                 for (int i = 0; i < editContacto.getDomicilios().size() ; i++) {
@@ -169,12 +176,26 @@ public class Anadir extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(adapterdomi.getItemCount()<=2) {
-                    StringDomicilio.add("");
-                    actualizarAdaptador();
+                int cantidadDomicilios = adapterdomi.getItemCount();
+
+                if(cantidadDomicilios<=4) {
+                    if (cantidadDomicilios > 0) {
+                        if (DMAdapter.mDatasetDOM.get(cantidadDomicilios - 1).length() != 0) {
+                            StringDomicilio.add("");
+                            actualizarAdaptador();
+                        } else {
+                            Toast toast = Toast.makeText(Anadir.this,R.string.rellenardomicilio, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+
+                        }
+                    } else {
+                        StringDomicilio.add("");
+                        actualizarAdaptador();
+                    }
                 }
                 else
-                    Toast.makeText(Anadir.this, R.string.limite3,
+                    Toast.makeText(Anadir.this, R.string.limite5,
                             Toast.LENGTH_LONG).show();
             }
         });
@@ -182,26 +203,39 @@ public class Anadir extends AppCompatActivity {
         mastelefono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(adaptertelf.getItemCount()<=2) {
-                    StringTelefono.add("");
-                    actualizarAdaptador();
+
+                int cantidadTelefonos = adaptertelf.getItemCount();
+
+                if(cantidadTelefonos<=2) {
+                    if (cantidadTelefonos > 0) {
+                        if (TFAdapter.mDatasetTEL.get(cantidadTelefonos - 1).length() != 0) {
+                            StringTelefono.add("");
+                            actualizarAdaptador();
+                        } else {
+                            Toast toast = Toast.makeText(Anadir.this,R.string.rellenartelefono, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+
+                        }
+                    } else {
+                        StringTelefono.add("");
+                        actualizarAdaptador();
+                    }
                 }
                 else
                     Toast.makeText(Anadir.this, R.string.limite3,
                             Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     /**
-     * Requesting permissions using Dexter library
+     * Dexter es una libreria que simplifica el proceso de requerir permisos en tiempo de ejecución
      */
     private void requestCameraPermission(final int type) {
         Dexter.withActivity(this)
                 .withPermissions(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.RECORD_AUDIO)
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     private List<PermissionRequest> permissions;
                     private PermissionToken token;
@@ -210,11 +244,11 @@ public class Anadir extends AppCompatActivity {
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
-                            // capture picture
+                            // En caso de todos los permisos estén bien, capturar una foto
                             if (type == MEDIA_TYPE_IMAGE) captureImage();
 
                         } else if (report.isAnyPermissionPermanentlyDenied()) {
-                            showPermissionsAlert();
+                            dialogPermisos();
                         }
                     }
 
@@ -228,7 +262,7 @@ public class Anadir extends AppCompatActivity {
     }
 
     /**
-     * Capturing Camera Image will launch camera app requested image capture
+     * Capturar foto, y el link URI de la foto la envio mediante Bundle
      */
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -238,31 +272,30 @@ public class Anadir extends AppCompatActivity {
         }
         Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        // start the image capture Intent
         startActivityForResult(intent, 100);
     }
 
     /**
-     * Saving stored image path to saved instance state
+     * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o rotar la pantalla)
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // save file url in bundle as it will be null on screen orientation
-        // changes
         outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
     }
     /**
-     * Restoring image path from saved instance state
+     * Restaura la ruta de la imagen tomada (URI)
      */
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        // get the file url
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
 
+    /**
+     * Método que avisa a los dos adaptadores
+     */
     public static void actualizarAdaptador(){
         adapterdomi.notifyDataSetChanged();
         adaptertelf.notifyDataSetChanged();
@@ -285,22 +318,21 @@ public class Anadir extends AppCompatActivity {
             if (imageStoragePath == null) {
                 imageStoragePath = "NO";
             }
-            //System.out.println("DEBUG GRABANDO" + imageStoragePath);
+
             editImagePath = imageStoragePath;
 
             bdInterna = new BDInterna(this);
-            //buscamos los ultimos id
-            int last_galeria_id = bdInterna.ultimo_id("USUARIOS");
-            int last_domicilio_id = bdInterna.ultimo_id("USUARIOS");
-            int last_telefono_id = bdInterna.ultimo_id("USUARIOS");
 
-            //EDITO un contacto con las ultimas id
+            //Última ID de la tabla Usuarios (para generar un nuevo contacto)
+            int last_id = bdInterna.ultimo_id("USUARIOS");
+
+
+            //EDITO un contacto con sus ID's
+            //editContacto es la copia que hago al mandarme un "EDIT" el Bundle
+
             if (editContacto != null) {
-
                 imageStoragePath=editContacto.getFoto();
                 if (editImagePath !=null) {imageStoragePath = editImagePath;}
-                //System.out.println("DEBUG IMAGEN " + imageStoragePath);
-
                 //Si lo estaba editando, borro ese contacto
                 bdInterna.borraContacto(editContacto.getId());
 
@@ -323,30 +355,29 @@ public class Anadir extends AppCompatActivity {
                 }
 
             } else {
-                //Se genera un nuevo usuario
+                //Se genera un nuevo usuario (ID's nuevas)
                 bdInterna.insertarContacto(
                         imageStoragePath,
                         tv_nombre.getText().toString(),
                         tv_apellido.getText().toString(),
-                        last_galeria_id,
-                        last_domicilio_id,
-                        last_telefono_id,
+                        last_id,
+                        last_id,
+                        last_id,
                         tv_email.getText().toString(),
                         bdInterna.getUniqueID()
                 );
                 for (int i = 0; i < adapterdomi.getItemCount(); i++) {
-                    bdInterna.insertarDomicilio(last_domicilio_id, DMAdapter.mDatasetDOM.get(i));
+                    bdInterna.insertarDomicilio(last_id, DMAdapter.mDatasetDOM.get(i));
                 }
                 for (int i = 0; i < adaptertelf.getItemCount(); i++) {
-                    bdInterna.insertarTelefono(last_telefono_id, TFAdapter.mDatasetTEL.get(i));
+                    bdInterna.insertarTelefono(last_id, TFAdapter.mDatasetTEL.get(i));
                 }
             }
 
-
-            //uploadImage(imageStoragePath);
-
             imageStoragePath = null;
 
+            // Si estaba editando un contacto, cierro.
+            // Si estaba añadiendo uno, abro nueva instancia y cierro la actual
             if (editContacto !=null ){
                 finish();
             } else {
@@ -356,44 +387,49 @@ public class Anadir extends AppCompatActivity {
         }
     }
 
+    /**
+     * Método que se ejecuta al tomar una foto
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            // Refreshing the gallery
+            // Recarga la galeria
             CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
-            // successfully captured the image
-            // display it in image view
+            // Visualiza la foto
             previewCapturedImage();
         } else if (resultCode == RESULT_CANCELED) {
-            // user cancelled Image capture
+            // Foto cancelada, muestro un Toast
             Toast.makeText(getApplicationContext(),
-                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    R.string.canceladoFoto, Toast.LENGTH_SHORT)
                     .show();
         } else {
-            // failed to capture image
+            // Fallo al tomar la foto, muestro un Toast
             Toast.makeText(getApplicationContext(),
-                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                    R.string.errorfoto, Toast.LENGTH_SHORT)
                     .show();
         }
     }
 
     /**
-     * Muestra la imagen de la galeria
+     * Muestra la foto capturada en mi Layout. El método CameraUtils.optimizeBitmap reduce la foto
+     * para no dar problemas con la memoria OutOfMemory exceptions
      */
     private void previewCapturedImage() {
         try {
             fotoperfil.setVisibility(View.VISIBLE);
             bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
-            fotoperfil.setImageBitmap(bitmap);
+            fotoperfil.setImageBitmap(CameraUtils.redondearEsquinas(bitmap,50));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Alert dialog to navigate to app settings
-     * to enable necessary permissions
+     * Muestra un dialog con los requisitos a activar en caso de no tener acceso a la cámara
      */
-    private void showPermissionsAlert() {
+    private void dialogPermisos() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.permisos_camara)
                 .setMessage(R.string.mensaje_error_camara)

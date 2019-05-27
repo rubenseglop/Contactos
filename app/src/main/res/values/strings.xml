@@ -27,13 +27,13 @@
     <string name="errorserver">Hubo un problema con el servidor</string>
     <string name="errorconex">Hubo un problema con la conexión</string>
     <string name="contactos_export">Contactos exportados</string>
-    <string name="error_metodo">No se pudo realizar el metodo StringObjeto</string>
+    <string name="error_metodo">No se pudo realizar el metodo StringToBaseDatosInterna</string>
     <string name="contactos_import">Contactos importados</string>
     <string name="error_io">Hubo un error de entrada/salida!!!</string>
     <string name="moveswype">Moviendo contacto</string>
     <string name="delswype">Has eliminado un contacto</string>
     <string name="error_camara">Error! tu dispositivo no incorpora una cámara</string>
-    <string name="limite3">Maximo limite es 3</string>
+    <string name="limite3">Máximo limite es 3</string>
     <string name="minimo_nombre">Debes rellenar mínimo el nombre</string>
     <string name="subiendo">Subiendo foto...</string>
     <string name="mensaje_subida">Espere por favor...</string>
@@ -65,5 +65,9 @@
     <string name="movegale">Moviendo foto</string>
     <string name="swypefoto">Galeria compartida actualizada</string>
     <string name="title_activity_compartir">Compartir</string>
-    <string name="luz">Cambiar letra</string>
+    <string name="limite5">Máximo limite es 5</string>
+    <string name="canceladoFoto">User cancelled image capture</string>
+    <string name="errorfoto">Sorry! Failed to capture image</string>
+    <string name="rellenardomicilio">Debes rellenar domicilio antes de crear uno nuevo</string>
+    <string name="rellenartelefono">Debes rellenar un número antes de crear otro</string>
 </resources>

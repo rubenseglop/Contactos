@@ -1,6 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,10 +13,7 @@ import java.util.ArrayList;
 
 public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
 
-
     public static ArrayList<String> mDatasetDOM;
-
-
 
     public DMAdapter(ArrayList<String> myDataset) {
 
@@ -50,8 +46,6 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
                 Anadir.actualizarAdaptador();
             }
         });
-
-
     }
 
     @Override
@@ -61,12 +55,10 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public ImageView menosDomicilio;
         public EditText mEditText;
         public MyCustomEditTextListener myCustomEditTextListener;
 
-        @SuppressLint("ResourceAsColor")
         public ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
 
@@ -78,9 +70,6 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         }
     }
 
-    // we make TextWatcher to be aware of the position it currently works with
-    // this way, once a new item is attached in onBindViewHolder, it will
-    // update current position MyCustomEditTextListener, reference to which is kept by ViewHolder
     private class MyCustomEditTextListener implements TextWatcher {
         private int position;
 

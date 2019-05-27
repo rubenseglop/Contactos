@@ -66,6 +66,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="TextView"
+                android:textColor="@color/design_default_color_primary"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/foto"
                 app:layout_constraintTop_toBottomOf="@+id/id_domicilio"
                 tools:layout_conversion_wrapHeight="36"
