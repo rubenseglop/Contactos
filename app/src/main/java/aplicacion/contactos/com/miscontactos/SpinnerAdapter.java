@@ -16,22 +16,30 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     private int groupid;
     private ArrayList<SpinnerContactosData> list;
     private LayoutInflater inflater;
-    Context context;
+    private Context context;
 
-    public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<SpinnerContactosData>
-            list){
+    // Despues de horas y horas, decidí sacar un array de fotos
+    // (y sacarlo del getView del Spinner que lo hacia tremendamente lento)
+    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+
+    public SpinnerAdapter(Activity context, int groupid, int id, ArrayList<SpinnerContactosData> list){
         super(context,id,list);
         this.context = context;
         this.list=list;
         inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.groupid=groupid;
+        for (int i = 0; i < list.size() ; i++) {
+            bitmaps.add(recogerImagen(list.get(i).getImageId()));
+        }
+
     }
 
     public View getView(int position, View convertView, ViewGroup parent ){
         View itemView=inflater.inflate(groupid,parent,false);
         ImageView imageView= itemView.findViewById(R.id.img);
 
-        imageView.setImageBitmap(recogerImagen(list.get(position).getImageId()));
+        imageView.setImageBitmap(bitmaps.get(position));
+        //imageView.setImageBitmap(recogerImagen(list.get(position).getImageId()));
 
         TextView textView= itemView.findViewById(R.id.txt);
         textView.setText(list.get(position).getText());
@@ -44,7 +52,6 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     }
 
     private Bitmap recogerImagen(String c) {
-        //todo pq tantas veces?
         Bitmap scaled = null;
         Bitmap bitmapImage;
         if (c.equals("NO")) {
@@ -52,7 +59,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
                     R.drawable.perfil);
         } else {
             try {
-                bitmapImage = BitmapFactory.decodeFile(c); //todo muy lento esto
+                bitmapImage = BitmapFactory.decodeFile(c);
             } catch (Exception e) {
                 bitmapImage = null;
             }

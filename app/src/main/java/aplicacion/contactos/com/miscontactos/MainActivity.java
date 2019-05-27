@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.action_compartir) {
             Intent i = new Intent(this, Compartir.class);
-            //i.putExtra("contactos", contactos);
             startActivity(i);
             return true;
         }
@@ -339,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     private void exportarWebService() {
         error_conexion = false;
         String error;
@@ -369,12 +367,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
                 if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
 
-
                 error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,
                         varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
 
                 if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
-
 
                 if (error_conexion == false) {
                     for (Galeria galeria : galerias) {
@@ -390,7 +386,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                 }
-
 
                 if (error_conexion == false) {
                     for (Domicilio domicilio : domicilios) {
@@ -421,18 +416,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        if (error_conexion == false) {
-            /*for (Galeria galeria : galerias) {
-                int varId = galeria.getId();
-                String varUrl = galeria.getPath();
-                String varUUID = bdInterna.getUniqueID();
 
-                error = luissancar.insertarGaleria(varId, varUrl, varUUID);
-                if (error == "Error") {
-                    error_conexion = true;
-                }
-            }*/
-        }
         if (error_conexion == false) {
             Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
         } else {
@@ -528,7 +512,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);
         }
     };
-
 
     /**
      * Método que ordena alfabeticamente por el contenido de "orderby"

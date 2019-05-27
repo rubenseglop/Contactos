@@ -40,7 +40,7 @@
     <string name="nombre">Name</string>
     <string name="not_saved">Image not saved!</string>
     <string name="permisos_camara">Permissions required!</string>
-    <string name="permission_denied">Permission denied</string>
+    <string name="permission_denied">Permission denied!</string>
     <string name="pic">Photos</string>
     <string name="recupeseg">"Recover copy "</string>
     <string name="saved_message">Image Saved at %1$s</string>
@@ -50,7 +50,7 @@
     <string name="title_activity_anadir">Add</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">by Surname</string>
-    <string name="menu_apellido">Gallery</string>
+    <string name="menu_apellido">by Surname</string>
     <string name="menu_nombre">by Name</string>
     <string name="menu_send">Send</string>
     <string name="menu_share">Share</string>
@@ -62,4 +62,8 @@
     <string name="title_activity_compartir">Share</string>
     <string name="swypefoto">Shared gallery updated</string>
     <string name="limite5">Limit is 5</string>
+    <string name="errorfoto">Sorry! Failed to capture image</string>
+    <string name="rellenardomicilio">You must fill in your address before creating a new one</string>
+    <string name="rellenartelefono">" You must fill in a number before creating another"</string>
+    <string name="canceladoFoto">User cancelled image capture</string>
 </resources>
