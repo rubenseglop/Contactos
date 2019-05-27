@@ -3,6 +3,7 @@ package aplicacion.contactos.com.miscontactos;
 public class BDExternaLinks {
 
 
+
     static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //1 IESAyala
     //static String LINKS = "https://miscontactosrsl.webcindario.com/";   //2 Miarroba
 
@@ -12,7 +13,7 @@ public class BDExternaLinks {
     static String vergaleria = LINKS + "vergaleria.php/?UUIDUNIQUE=";
     static String verdomicilio = LINKS + "verdomicilio.php/?UUIDUNIQUE=";
     static String vertelefono = LINKS + "vertelefono.php/?UUIDUNIQUE=";
-
+    static String insertarusuario = LINKS +"insertarUsuario.php/?NOMBRE=";
     static String insertarcontacto = LINKS + "insertarcontacto.php/?ID=";
     static String insertargaleria = LINKS + "insertargaleria.php/?ID=";
     static String insertardomicilio = LINKS + "insertardomicilio.php/?ID=";

@@ -66,4 +66,5 @@
     <string name="rellenardomicilio">You must fill in your address before creating a new one</string>
     <string name="rellenartelefono">" You must fill in a number before creating another"</string>
     <string name="canceladoFoto">User cancelled image capture</string>
+    <string name="configuracion">Setup</string>
 </resources>

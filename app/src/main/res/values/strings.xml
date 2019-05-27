@@ -70,4 +70,6 @@
     <string name="rellenardomicilio">Debes rellenar domicilio antes de crear uno nuevo</string>
     <string name="rellenartelefono">Debes rellenar un número antes de crear otro</string>
     <string name="errorfoto">Error. Fallo al capturar una foto</string>
+    <string name="configuracion">Configuración</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

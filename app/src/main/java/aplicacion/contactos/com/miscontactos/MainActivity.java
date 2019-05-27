@@ -187,6 +187,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.importar) {
             RestaurarWebService();
         }
+        if (id == R.id.configuracion) {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

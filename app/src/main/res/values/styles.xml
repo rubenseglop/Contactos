@@ -26,9 +26,9 @@
         <item name="android:shadowDy">1.2</item>
         <item name="android:shadowRadius">2</item>
         <item name="android:textColor">#000000</item>
-        <item name="android:gravity" >center</item>
-        <item name="android:layout_margin" >3dp</item>
-        <item name="android:textSize" >8pt</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textSize">8pt</item>
         <item name="android:background">#86B667</item>
         <item name="android:radius">25dp</item>
         <item name="android:startColor">#f1f1f2</item>

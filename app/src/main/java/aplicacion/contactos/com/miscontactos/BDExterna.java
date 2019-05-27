@@ -1,5 +1,7 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.widget.ImageView;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -106,4 +108,15 @@ public class BDExterna {
         return inputLine;
     }
 
+    public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid) {
+        String url = BDExternaLinks.insertarusuario + nombre +
+                "&EMAIL=" + email +
+                "&FOTO=" + path +
+                "&UUIDUNIQUE=" + uuid;
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20");
+        //TODO SUBIR IMAGEN PHP
+
+        return leerUrl(url);
+    }
 }

@@ -47,7 +47,7 @@ repositories {
 android {
     useLibrary 'org.apache.http.legacy'
 }
-  // Para el AwesomeImagePicker
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
+// Para el AwesomeImagePicker
+repositories {
+    maven { url "https://jitpack.io" }
+}

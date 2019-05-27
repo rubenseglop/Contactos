@@ -36,6 +36,7 @@ public class BDInterna extends SQLiteOpenHelper {
             "CREATE TABLE GALERIA (" +
                     "ID INTEGER(6)," +
                     "PATH VARCHAR(300)," +
+                    "IMAGE BLOB " +
                     "PRIMARY KEY (ID, PATH)," +
                     "FOREIGN KEY (ID) REFERENCES USUARIO(GALERIA_ID) ON DELETE CASCADE);";
     private static final String TABLA_DOMICILIO =
