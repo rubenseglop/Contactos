@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
-                        "mipath",
+                        "/storage/emulated/0/Pictures/Hello_Camera/IMG_20190527_125839.jpg",
                         fotoUsuario,
                         "uueiruere"
                         );

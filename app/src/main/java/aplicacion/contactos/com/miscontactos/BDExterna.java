@@ -1,13 +1,34 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedReader;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BDExterna {
     /**
@@ -109,14 +130,105 @@ public class BDExterna {
     }
 
     public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid) {
-        String url = BDExternaLinks.insertarusuario + nombre +
-                "&EMAIL=" + email +
-                "&FOTO=" + path +
-                "&UUIDUNIQUE=" + uuid;
-        // Solución a los espacios (reemplazar por su valor hex)
-        url = url.replace(" ", "%20");
-        //TODO SUBIR IMAGEN PHP
 
-        return leerUrl(url);
+        // verificar que no existe esa UUID
+        URL url=null;
+        try {
+            url = new URL(BDExternaLinks.verUsuario + uuid);
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+        }
+        URLConnection request = null;
+        JsonElement root=null;
+        try {
+            request = url.openConnection();
+            request.connect();
+            // Convierte el contenido de la URL en un String
+            root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            JSONArray jArray = new JSONArray(root.toString());
+            if (jArray.length() == 0) {
+                //No existe (es su primer acceso)
+
+                // Creo el usuario y subo su foto
+                String urlString = BDExternaLinks.insertarusuario + nombre +
+                        "&EMAIL=" + email +
+                        "&FOTO=" + path +
+                        "&UUIDUNIQUE=" + uuid;
+                // Solución a los espacios (reemplazar por su valor hex)
+                urlString = urlString.replace(" ", "%20");
+
+                //reduzco la foto a lo minimo
+                try {
+                    BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 70, 70, true);
+                    imagen.setImageBitmap(bitmap);
+
+                } catch (Exception e) {
+
+                }
+               // todo BDExternaLinks.
+            }
+        } catch (JSONException e) {
+            System.out.println("DEBUG ERROR " + e.getMessage());
+        }
+        //TODO SUBIR IMAGEN PHP
+        insertarFoto2("12","223", "34");
+
+     return "";
     }
+    public String insertarFoto2(String uuid, String image, String archivo) {
+
+        try {
+            /*
+             * Creamos el objeto de HttpClient que nos permitira conectarnos
+             * mediante peticiones http.
+             */
+            HttpClient httpclient = new DefaultHttpClient();
+
+            /*
+             * El objeto HttpPost permite que enviemos una peticion de tipo POST
+             * a una URL especificada
+             */
+            HttpPost httppost = new HttpPost(BDExternaLinks.insertargaleria);
+
+            // Una lista de parametros,
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            // Se agregan parametros.
+            params.add(new BasicNameValuePair("UUID", uuid));
+            params.add(new BasicNameValuePair("IMAGEN", image));
+            params.add(new BasicNameValuePair("ARCHIVO", archivo));
+
+            /*
+             * Una vez añadidos los parametros actualizamos la entidad de
+             * httppost, esto quiere decir en pocas palabras anexamos los
+             * parametros al objeto para que al enviarse al servidor envien los
+             * datos que hemos añadido
+             */
+            httppost.setEntity(new UrlEncodedFormEntity(params));
+
+            // Eejecutamos enviando la informacion al Server.
+            HttpResponse resp = httpclient.execute(httppost);
+
+            // Obtenemos una respuesta.
+            HttpEntity ent = resp.getEntity();
+
+            String text = EntityUtils.toString(ent);
+            // Envia la respuesta del Server.
+            return text;
+
+        } catch (Exception e) {
+            // Devuelve el mensaje de error, en caso que lo haya.
+            return e.getMessage();
+        }
+
+    }
+
 }
+
+
