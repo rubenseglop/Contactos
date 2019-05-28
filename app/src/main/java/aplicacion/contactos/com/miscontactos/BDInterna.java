@@ -184,7 +184,7 @@ public class BDInterna extends SQLiteOpenHelper {
      * Método que lee el UUID almacenado
      * @return Devuelvo el UUID
      */
-    public String getUniqueID(){
+    static String getUniqueID(){
         return uniqueID;
     }
 

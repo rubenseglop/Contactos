@@ -14,6 +14,7 @@ public class BDExternaLinks {
     static String verdomicilio = LINKS + "verdomicilio.php/?UUIDUNIQUE=";
     static String vertelefono = LINKS + "vertelefono.php/?UUIDUNIQUE=";
     static String verUsuario = LINKS + "verusuario.php/?UUIDUNIQUE=";
+    static String verusuariogaleria = LINKS + "/GALERIA/verusuariosgaleria.php";
     static String insertarusuario = LINKS +"insertarUsuario.php/?NOMBRE=";
     static String insertarcontacto = LINKS + "insertarcontacto.php/?ID=";
     static String insertargaleria = LINKS + "insertargaleria.php/?ID=";

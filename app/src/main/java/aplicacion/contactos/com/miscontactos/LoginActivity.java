@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        BDInterna bdInterna = new BDInterna(this);
         BDExterna bdExterna = new BDExterna();
 
         tv_nombreUsuario = (TextView) findViewById(R.id.tv_nombreUsuario);
@@ -63,12 +64,13 @@ public class LoginActivity extends AppCompatActivity {
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bdInterna.insertarUUID(); // intenta generar un UUID
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
                         imageStoragePath,
                         fotoUsuario,
-                        "eeeee",
+                        bdInterna.getUniqueID(),
                         LoginActivity.this
                         );
                 Toast.makeText(LoginActivity.this, "hecho", Toast.LENGTH_SHORT).show();

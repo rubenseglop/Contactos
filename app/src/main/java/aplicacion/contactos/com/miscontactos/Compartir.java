@@ -21,7 +21,20 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,8 +54,10 @@ public class Compartir extends AppCompatActivity {
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
 
     private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
+    BDExterna bdExterna;
 
     private COAdapter adapter;
+    private boolean error_conexion=false;
 
     public Compartir() {
         if (galeriaCompartir == null) {
@@ -60,7 +75,6 @@ public class Compartir extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("DEBUG CREO");
         setContentView(R.layout.activity_compartir);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,11 +88,31 @@ public class Compartir extends AppCompatActivity {
 
         galeriaCompartir.clear();
 
+
+
+        ArrayList<String> usuarios = BDExterna.devuelveUsuarios(this);
+
+
+//TODO AQUI
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
+        for (int i = 0; i < usuarios.size(); i++) {
+            idSpinner.add(usuarios.get(i));
+            spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
+        }
+
+
+
+
+
+/*        ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
         for (int i = 0; i < contactos.size(); i++) {
             idSpinner.add(contactos.get(i).getId());
             spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
-        }
+        }*/
+
+
+
+
         spinner = findViewById(R.id.spinner);
         SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
         spinner.setAdapter(adapterSpinner);

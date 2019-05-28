@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,7 +59,10 @@ public class CameraUtils {
         // imagenes
         options.inSampleSize = sampleSize;
 
-        return BitmapFactory.decodeFile(filePath, options);
+        Bitmap imagen = BitmapFactory.decodeFile(filePath, options);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        imagen.compress(Bitmap.CompressFormat.JPEG, 40, out);
+        return imagen;
     }
 
     /**
