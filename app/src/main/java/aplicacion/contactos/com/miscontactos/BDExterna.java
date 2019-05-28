@@ -1,8 +1,10 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -21,6 +23,7 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +33,12 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.sauronsoftware.ftp4j.FTPClient;
+import it.sauronsoftware.ftp4j.FTPDataTransferListener;
+
+
+
+// TODO MANUAL http://www.sauronsoftware.it/projects/ftp4j/manual.php#2
 public class BDExterna {
     /**
      * Método para insertar un contacto en la BD Externa
@@ -129,7 +138,7 @@ public class BDExterna {
         return inputLine;
     }
 
-    public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid) {
+    public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid, Context mContext) {
 
         // verificar que no existe esa UUID
         URL url=null;
@@ -161,6 +170,7 @@ public class BDExterna {
                 // Solución a los espacios (reemplazar por su valor hex)
                 urlString = urlString.replace(" ", "%20");
 
+                // todo no graba sql
                 //reduzco la foto a lo minimo
                 try {
                     BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
@@ -177,7 +187,10 @@ public class BDExterna {
             System.out.println("DEBUG ERROR " + e.getMessage());
         }
         //TODO SUBIR IMAGEN PHP
-        insertarFoto2("12","223", "34");
+        //insertarFoto2("12","223", "34");
+
+
+        uploadFile(new File(path),mContext);
 
      return "";
     }
@@ -225,6 +238,76 @@ public class BDExterna {
         } catch (Exception e) {
             // Devuelve el mensaje de error, en caso que lo haya.
             return e.getMessage();
+        }
+    }
+
+    public void uploadFile(File fileName, Context mContext){
+        FTPClient client = new FTPClient();
+        try {
+            /*********  work only for Dedicated IP ***********/
+             final String FTP_HOST= "iesayala.ddns.net";
+            /*********  FTP USERNAME ***********/
+             final String FTP_USER = "BDSegura";
+            /*********  FTP PASSWORD ***********/
+             final String FTP_PASS  ="BDSegura";
+            client.connect(FTP_HOST,21);
+            client.login(FTP_USER, FTP_PASS);
+            client.setType(FTPClient.TYPE_BINARY);
+            client.changeDirectory("/uploads/");
+            client.upload(fileName, new MyTransferListener(mContext));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                client.disconnect(true);
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+
+    }
+    public class MyTransferListener implements FTPDataTransferListener {
+
+        Context mContext;
+
+        public MyTransferListener(Context mContext){
+            this.mContext=mContext;
+        }
+
+        public void started() {
+
+            // Transfer started
+            Toast.makeText(mContext, " Upload Started ...", Toast.LENGTH_SHORT).show();
+            System.out.println(" Upload Started ...");
+        }
+
+        public void transferred(int length) {
+
+            // Yet other length bytes has been transferred since the last time this
+            // method was called
+            Toast.makeText(mContext, " transferred ..." + length, Toast.LENGTH_SHORT).show();
+            //System.out.println(" transferred ..." + length);
+        }
+
+        public void completed() {
+
+            // Transfer completed
+
+            Toast.makeText(mContext, " completed ...", Toast.LENGTH_SHORT).show();
+            //System.out.println(" completed ..." );
+        }
+
+        public void aborted() {
+
+            // Transfer aborted
+            Toast.makeText(mContext," transfer aborted,please try again...", Toast.LENGTH_SHORT).show();
+            //System.out.println(" aborted ..." );
+        }
+
+        public void failed() {
+
+            // Transfer failed
+            System.out.println(" failed ..." );
         }
 
     }
