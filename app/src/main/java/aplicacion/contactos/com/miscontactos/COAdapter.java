@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
-    ArrayList<GaleriaCompartir> galeriaCompatir;
-    public static HashMap deIdGaleria_Path;
+    public static HashMap selected;
+    public static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
+    ArrayList<GaleriaCompartir> galeriaCompartida;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         ImageView fotogaleria;
@@ -27,12 +29,12 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
         }
     }
-    public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartir){
-        this.galeriaCompatir = galeriaCompartir;
-        deIdGaleria_Path = new HashMap();
+    public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartida){
+        this.galeriaCompartida = galeriaCompartida;
+        selectedUsuarioGaleriaRecyclerView = null;
+        selected = new HashMap();
+
     }
-
-
 
     @Override
     public COAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -45,9 +47,13 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     public void onBindViewHolder(COAdapter.GalleryViewHolder galleryViewHolder, int i) {
 
         try {
-            galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompatir.get(i).getPathFoto()));
-            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompatir.get(i).getPathFoto()));
-            deIdGaleria_Path.put(i,galeriaCompatir.get(i).getPathFoto());
+
+            galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
+            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompartida.get(i).getPathFoto()));
+
+            selectedUsuarioGaleriaRecyclerView = new GaleriaCompartir(galeriaCompartida.get(i).getId(),galeriaCompartida.get(i).getPathFoto(),galeriaCompartida.get(i).getUuid());
+
+            selected.put(i,selectedUsuarioGaleriaRecyclerView);
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }
@@ -57,7 +63,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     public int getItemCount() {
         int result = 0;
         try {
-            result = galeriaCompatir.size();
+            result = galeriaCompartida.size();
         } catch (Exception e) {
         }
         //System.out.println("DEBUG SPINNER " + result);

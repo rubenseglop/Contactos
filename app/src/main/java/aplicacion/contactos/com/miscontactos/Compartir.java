@@ -52,12 +52,13 @@ public class Compartir extends AppCompatActivity {
 
     private ArrayList<Contacto> contactos; //Declaro un ArrayList de Contactos
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
+    private ArrayList<UsuariosGaleria> usuarios;
 
     private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
-    BDExterna bdExterna;
+    private BDExterna bdExterna;
 
     private COAdapter adapter;
-    private boolean error_conexion=false;
+
 
     public Compartir() {
         if (galeriaCompartir == null) {
@@ -83,6 +84,7 @@ public class Compartir extends AppCompatActivity {
 
 
         bdInterna = new BDInterna(this);
+        bdExterna = new BDExterna();
         bdInterna.actualizaContactos("NOMBRE", "ASC");
         contactos = bdInterna.contactos;
 
@@ -90,18 +92,23 @@ public class Compartir extends AppCompatActivity {
 
 
 
-        ArrayList<String> usuarios = BDExterna.devuelveUsuarios(this);
-
-
-//TODO AQUI
+        // Carga un ArrayList para el Spinner de usuarios cogidos de la BDExterna (los toma a todos excepto al del móvil propietario)
+        usuarios = BDExterna.devuelveUsuarios(this);
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
-            idSpinner.add(usuarios.get(i));
-            spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
+
+                idSpinner.add(usuarios.get(i).getUUID());
+                spinnerContactosData.add(i, new SpinnerContactosData(usuarios.get(i).getNombre(), usuarios.get(i).getPath()));
+
         }
 
-
-
+        //Elimino el usuario del movil
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (BDInterna.getUniqueID().equals(usuarios.get(i).getUUID())) {
+                idSpinner.remove(i);
+                spinnerContactosData.remove(i);
+            }
+        }
 
 
 /*        ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
@@ -110,15 +117,11 @@ public class Compartir extends AppCompatActivity {
             spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
         }*/
 
-
-
-
         spinner = findViewById(R.id.spinner);
         SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
         spinner.setAdapter(adapterSpinner);
 
         actualizarSpinner();
-        actualizarGaleriadeSQL();
 
     }
 
@@ -136,11 +139,18 @@ public class Compartir extends AppCompatActivity {
 
     private void actualizarGaleriadeSQL() {
         // Actualiza la galeriaCompartir con el contenido de la SQLite
+
         galeriaCompartir.clear();
-        Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
+
+
+        //TODO los muestra todos y solo quiero los del spinner
+        galeriaCompartir = BDExterna.devuelveGaleria(this, selectedIdSpinner);
+
+
+        /*Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
         while (c.moveToNext()) {
             galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
-        }
+        }*/
         actualizarAdapter();
     }
 
@@ -164,7 +174,7 @@ public class Compartir extends AppCompatActivity {
     }
 
     /**
-     * Método que actualiza el RecyclerView
+     * Método que actualiza del RecyclerView
      */
     private void actualizarAdapter() {
         co = findViewById(R.id.recyfotos);
@@ -186,6 +196,11 @@ public class Compartir extends AppCompatActivity {
         startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
     }
 
+    public void clickVerCompartido(View v) {
+        Intent intent = new Intent(this, verCompartidos.class);
+        startActivity(intent);
+    }
+
     public void clickCompartirAndroid(View v){
 
         ArrayList<Uri> arrayUri = new ArrayList<>();
@@ -195,7 +210,6 @@ public class Compartir extends AppCompatActivity {
             // start play with image uri
             System.out.println("DEBUG URI " + uri.getPath());
             arrayUri.add(uri);
-
         }
         Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
@@ -233,9 +247,8 @@ public class Compartir extends AppCompatActivity {
                 }
                 if (repetido == false) {
                     arrayUri.add(uri);
-
-                    bdInterna.insertarGaleria(Integer.parseInt(selectedIdSpinner), uri.getPath());
-
+                    // Guardo la informacion IDUSUARIO - PATH - USUARIOALQUECOMPARTO
+                    bdExterna.insertarGaleria(BDInterna.getUniqueID(), uri.getPath(),selectedIdSpinner);
                 }
             }
         }
@@ -257,17 +270,17 @@ public class Compartir extends AppCompatActivity {
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-            HashMap deIdGaleria_Path = COAdapter.deIdGaleria_Path;
-            String path = (String) deIdGaleria_Path.get(viewHolder.getAdapterPosition());
+            HashMap selected = COAdapter.selected;
+            //galeriaCompartir.remove(viewHolder.getAdapterPosition());
+            //bdInterna.borraGaleria((String) deIdGaleria_Path.get(viewHolder.getAdapterPosition()));
 
+            GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
 
-            galeriaCompartir.remove(viewHolder.getAdapterPosition());
-            bdInterna.borraGaleria((String) deIdGaleria_Path.get(viewHolder.getAdapterPosition()));
+            bdExterna.borraGaleria(sel.getId(),sel.getPathFoto(),sel.getUuid());
 
-
-            System.out.println("DEBUG PATH " + path + " tam: " + galeriaCompartir.size());
             Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
-            actualizarAdapter();
+            actualizarGaleriadeSQL();
+            //actualizarAdapter();
         }
 
         @Override

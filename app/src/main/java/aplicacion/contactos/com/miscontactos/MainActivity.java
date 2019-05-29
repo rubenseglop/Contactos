@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onClick(View view) {
+
+
+                //TODO COMPROBAR QUE TENGO LOGIN
+
                 startActivity(new Intent(MainActivity.this,Anadir.class));
             }
         });
@@ -212,11 +216,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // en el caso de aceptar el dialog
                 if (bdexterna.leerUrl(BDExternaLinks.conexion)!=null) { //comprobar conexion
                     bdinterna.borrarTodo();
+
                     String UUID = bdinterna.getUniqueID();
-                    WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
-                    WebSerTabla("GAL", BDExternaLinks.vergaleria + UUID);
-                    WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
-                    WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
+
+                    if (UUID.length()!=0){
+                        WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                        WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                        WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
+                    } else {Toast.makeText(MainActivity.this, "Para acceder a la base de datos externa, previamente debes configurar un perfil", Toast.LENGTH_SHORT).show();}
+
                 } else {
                     Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
                 }
@@ -376,21 +384,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
 
                 if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
-
-                if (error_conexion == false) {
-                    for (Galeria galeria : galerias) {
-
-                        int varIdGAL = galeria.getId();
-                        String varPathGAL = galeria.getPath();
-                        if (varPathGAL==null || varPathGAL.length()==0) { varPathGAL=""; }
-
-                        error = bdexterna.insertarGaleria(varIdGAL,varPathGAL,varUUID);
-                        //System.out.println("DEBUG EXPORT " + error + " " + varIdGAL + " " + varPathGAL);
-                        if (error.equals("ERROR") || error.isEmpty()) {
-                            error_conexion = true;
-                        }
-                    }
-                }
 
                 if (error_conexion == false) {
                     for (Domicilio domicilio : domicilios) {

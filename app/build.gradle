@@ -41,7 +41,7 @@ dependencies {
 
     implementation 'com.loopj.android:android-async-http:1.4.9'
 
-   /* implementation 'net.gotev:uploadservice:3.0'*/
+    /* implementation 'net.gotev:uploadservice:3.0'*/
 
 
     implementation 'com.mcxiaoke.volley:library-aar:1.0.0'

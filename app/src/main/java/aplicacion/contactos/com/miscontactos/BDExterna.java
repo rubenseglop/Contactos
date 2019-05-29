@@ -58,15 +58,16 @@ public class BDExterna {
     /**
      * Método para insertar en tabla Galeria
      *
-     * @param id   int con el numero de id
      * @param path String con la url
      * @param uuid String con el numero de uuid
      * @return devuelve un String con el resultado en JSON
      */
-    public String insertarGaleria(int id, String path, String uuid) {
-        String url = BDExternaLinks.insertargaleria + id +
+    public String insertarGaleria(String idusuario, String path, String uuid) {
+        String url = BDExternaLinks.insertargaleria + idusuario +
                 "&PATH=" + path +
                 "&UUIDUNIQUE=" + uuid;
+
+        System.out.println("DEBUG URL " + url);
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
 
@@ -200,9 +201,9 @@ public class BDExterna {
         return "";
     }
 
-    public static ArrayList<String> devuelveUsuarios(Context mContext) {
+    public static ArrayList<UsuariosGaleria> devuelveUsuarios(Context mContext) {
 
-        ArrayList<String> devuelta = null;
+        ArrayList<UsuariosGaleria> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
         URL url = null;
         try {
@@ -218,9 +219,14 @@ public class BDExterna {
                 JSONArray jArray = new JSONArray(root.toString());
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
-                    System.out.println("DEBUG " + json_data.getString("NOMBRE"));
-                    json_data.getString("FOTO");
-                    json_data.getString("UUIDUNIQUE");
+                    devuelta.add(new UsuariosGaleria(
+                            json_data.getString("NOMBRE"),
+                            json_data.getString("EMAIL"),
+                            json_data.getString("FOTO"),
+                            json_data.getString("UUIDUNIQUE")
+                            ));
+
+
                 }
             } catch (JSONException e) {
                 Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
@@ -237,6 +243,60 @@ public class BDExterna {
         return devuelta;
     }
 
+    public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
+
+        ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
+        String UUID = BDInterna.getUniqueID();
+        URL url = null;
+        try {
+            String sURL = BDExternaLinks.vergaleria + UUID;
+            url = new URL(sURL);
+            URLConnection request = null;
+            request = url.openConnection();
+            request.connect();
+            // Convierte el contenido de la URL en un String
+            JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
+
+            try {
+                JSONArray jArray = new JSONArray(root.toString());
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    if(!json_data.getString("UUIDUNIQUE").equals(selectUUID)){}
+                    devuelta.add(new GaleriaCompartir(
+                            json_data.getString("IDUSUARIO"),
+                            json_data.getString("PATH"),
+                            json_data.getString("UUIDUNIQUE")
+                    ));
+
+
+                }
+            } catch (JSONException e) {
+                Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+            }
+        } catch (
+                MalformedURLException e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.errorserver, Toast.LENGTH_LONG).show();
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.errorconex, Toast.LENGTH_LONG).show();
+        }
+        return devuelta;
+    }
+
+
+
+    public String borraGaleria(String idusuario, String path, String uuid) {
+
+        String url = BDExternaLinks.eliminaGaleria + idusuario +
+                "&PATH=" + path +
+                "&UUIDUNIQUE=" + uuid;
+
+        url = url.replace(" ", "%20");
+        System.out.println("DEBUG BORRATE " + url);
+        return leerUrl(url);
+    }
 }
 
 

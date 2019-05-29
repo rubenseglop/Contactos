@@ -10,17 +10,18 @@ public class BDExternaLinks {
 
     static String conexion = LINKS + "conexion.php";
     static String vercontactos = LINKS + "vercontactos.php/?UUIDUNIQUE=";
-    static String vergaleria = LINKS + "vergaleria.php/?UUIDUNIQUE=";
+    static String vergaleria = LINKS + "vergaleria.php/?IDUSUARIO=";
     static String verdomicilio = LINKS + "verdomicilio.php/?UUIDUNIQUE=";
     static String vertelefono = LINKS + "vertelefono.php/?UUIDUNIQUE=";
     static String verUsuario = LINKS + "verusuario.php/?UUIDUNIQUE=";
     static String verusuariogaleria = LINKS + "/GALERIA/verusuariosgaleria.php";
     static String insertarusuario = LINKS +"insertarUsuario.php/?NOMBRE=";
     static String insertarcontacto = LINKS + "insertarcontacto.php/?ID=";
-    static String insertargaleria = LINKS + "insertargaleria.php/?ID=";
+    static String insertargaleria = LINKS + "insertargaleria.php/?IDUSUARIO=";
     static String insertardomicilio = LINKS + "insertardomicilio.php/?ID=";
     static String insertartelefono = LINKS + "insertartelefono.php/?ID=";
     static String eliminatodo = LINKS + "eliminatodo.php?UUIDUNIQUE=";
+    static String eliminaGaleria = LINKS + "eliminagaleria.php?IDUSUARIO=";
     static String verUUID = LINKS + "verUUID.php";
     static String uploadgaleria = LINKS + "GALERIA/uploadgaleria.php";
 
