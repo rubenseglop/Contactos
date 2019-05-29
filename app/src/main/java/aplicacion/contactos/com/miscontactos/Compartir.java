@@ -146,7 +146,6 @@ public class Compartir extends AppCompatActivity {
         //TODO los muestra todos y solo quiero los del spinner
         galeriaCompartir = BDExterna.devuelveGaleria(this, selectedIdSpinner);
 
-
         /*Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
         while (c.moveToNext()) {
             galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));

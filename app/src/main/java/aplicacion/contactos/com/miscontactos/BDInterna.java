@@ -152,9 +152,10 @@ public class BDInterna extends SQLiteOpenHelper {
     /**
      * Inserta el identificador unico a la BD
      */
-    public void insertarUUID() {
+    public boolean leerUUID() {
 
         SQLiteDatabase db = getWritableDatabase();
+        Boolean result = false;
         //Leemos la Tabla UUID
         Cursor c = db.rawQuery("SELECT ID FROM UNIQUE_UUID", null);
         String id = "";
@@ -162,11 +163,29 @@ public class BDInterna extends SQLiteOpenHelper {
             //Recorremos el cursor hasta que no haya más registros
             do {
                 id = c.getString(0);
-                if (id != null) { uniqueID = id;}
+                if (id != null) { uniqueID = id; result = true;}
             } while(c.moveToNext());
         }
 
+        db.close();
+        return result;
+    }
+
+    public void crearUUID() {
+        SQLiteDatabase db = getWritableDatabase();
+        //Leemos la Tabla UUID
+        Cursor c = db.rawQuery("SELECT ID FROM UNIQUE_UUID", null);
         //En el caso de no tener una UUID, creamos uno nuevo aleatoriamente
+        String id = "";
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+                id = c.getString(0);
+                if (id != null) {
+                    uniqueID = id;
+                }
+            } while (c.moveToNext());
+        }
         if (id.length() == 0) {
             if (db != null) {
                 // Creamos el registro a insertarContacto

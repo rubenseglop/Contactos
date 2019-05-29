@@ -29,11 +29,12 @@ import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.IOException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -76,10 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onClick(View view) {
-
-
-                //TODO COMPROBAR QUE TENGO LOGIN
-
                 startActivity(new Intent(MainActivity.this,Anadir.class));
             }
         });
@@ -101,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tv_orden = findViewById(R.id.ordenadopor);
 
         ordertype="ASC";
-        bdinterna.insertarUUID(); //Busca si tengo una UUID (en caso de no tenerla genero uno aleatoriamente
         actualizar();
     }
 
@@ -180,18 +176,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_compartir) {
-            Intent i = new Intent(this, Compartir.class);
-            startActivity(i);
-            return true;
-        }
+        if (hasLogin()) {
+            if (id == R.id.action_compartir) {
+                Intent i = new Intent(this, Compartir.class);
+                startActivity(i);
+                return true;
+            }
+        } else Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
+
         if (id == R.id.exportar) {
-            exportarWebService();
+            if (hasLogin()) {
+                exportarWebService();
+            } else
+                Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
+
         }
         if (id == R.id.importar) {
-            RestaurarWebService();
+            if (hasLogin()) {
+                RestaurarWebService();
+            } else
+                Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.configuracion) {
+            // TODO SEGUIR PARA EL CASO DE EDITAR
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
             return true;
@@ -214,16 +221,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 error_conexion = false;
 
                 // en el caso de aceptar el dialog
-                if (bdexterna.leerUrl(BDExternaLinks.conexion)!=null) { //comprobar conexion
+                if (bdexterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
                     bdinterna.borrarTodo();
 
                     String UUID = bdinterna.getUniqueID();
 
-                    if (UUID.length()!=0){
+                    if (UUID.length() != 0) {
                         WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
                         WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
                         WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
-                    } else {Toast.makeText(MainActivity.this, "Para acceder a la base de datos externa, previamente debes configurar un perfil", Toast.LENGTH_SHORT).show();}
+                    } else {
+                        Toast.makeText(MainActivity.this, "Para acceder a la base de datos externa, previamente debes configurar un perfil", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
                     Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
@@ -235,7 +244,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // en el caso de cancelar (no hago nada)
             }
         });
-        dialogo1.show();// fin muestra dialog aceptar o cancelar
+        dialogo1.show();// fin muestra dialog aceptar o cancelar}
+
     }
 
     /**
@@ -244,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param sUrl Direccion URL en la que está ubicada el .php
      */
     private void WebSerTabla(String tabla, String sUrl) {
-        // Connect to the URL using java's native library
         URL url = null;
         try {
             String sURL = sUrl;
@@ -351,19 +360,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private boolean hasLogin() {
+        if (bdinterna.leerUUID()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void exportarWebService() {
+
+
         error_conexion = false;
         String error;
         System.out.println("DEBUG " + bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error"));
         //error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
-        if(error_conexion) {
+        if (error_conexion) {
             error_conexion = true;
         }
         if (!error_conexion) {
-            for (Contacto contacto: contactos) {
+            for (Contacto contacto : contactos) {
                 String varId = Integer.toString(contacto.getId());
                 String varFoto = contacto.getFoto();
-                String varNombre =  contacto.getNombre();
+                String varNombre = contacto.getNombre();
                 String varApellidos = contacto.getApellidos();
                 int varGaleria = contacto.getGaleria_id();
                 int varDireccion = contacto.getDireccion_id();
@@ -374,25 +393,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 domicilios = contacto.getDomicilios();
                 telefonos = contacto.getTelefonos();
 
-                if (varId==null || varId.length()==0) { varId =""; }
-                if (varFoto==null || varFoto.length()==0) { varFoto =""; }
-                if (varNombre==null || varNombre.length()==0) { varNombre =""; }
-                if (varApellidos==null || varApellidos.length()==0) { varApellidos =""; }
-                if (varCorreo==null || varCorreo.length()==0) { varCorreo =""; }
+                if (varId == null || varId.length() == 0) {
+                    varId = "";
+                }
+                if (varFoto == null || varFoto.length() == 0) {
+                    varFoto = "";
+                }
+                if (varNombre == null || varNombre.length() == 0) {
+                    varNombre = "";
+                }
+                if (varApellidos == null || varApellidos.length() == 0) {
+                    varApellidos = "";
+                }
+                if (varCorreo == null || varCorreo.length() == 0) {
+                    varCorreo = "";
+                }
 
-                error = bdexterna.insertarContacto(varId,varFoto,varNombre,varApellidos,
-                        varGaleria,varDireccion,varTelefono,varCorreo,varUUID);
+                error = bdexterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
+                        varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
 
-                if (error.equals("ERROR") || error.isEmpty()){error_conexion = true; }
+                if (error.equals("ERROR") || error.isEmpty()) {
+                    error_conexion = true;
+                }
 
                 if (error_conexion == false) {
                     for (Domicilio domicilio : domicilios) {
 
                         int varIdDOM = domicilio.getId();
                         String varDireccionDOM = domicilio.getDireccion();
-                        if (varDireccionDOM==null || varDireccionDOM.length()==0) { varDireccionDOM=""; }
+                        if (varDireccionDOM == null || varDireccionDOM.length() == 0) {
+                            varDireccionDOM = "";
+                        }
 
-                        error = bdexterna.insertarDomicilio(varIdDOM,varDireccionDOM,varUUID);
+                        error = bdexterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
                         if (error.equals("ERROR") || error.isEmpty()) {
                             error_conexion = true;
                         }
@@ -404,7 +437,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         int varIdTel = telefono.getId();
                         String varNumeroTel = telefono.getNumero();
 
-                        if (varNumeroTel==null || varNumeroTel.length()==0) { varNumeroTel =""; }
+                        if (varNumeroTel == null || varNumeroTel.length() == 0) {
+                            varNumeroTel = "";
+                        }
 
                         error = bdexterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
                         if (error.equals("ERROR") || error.isEmpty()) {
@@ -420,6 +455,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
         }
+
+
     }
 
 

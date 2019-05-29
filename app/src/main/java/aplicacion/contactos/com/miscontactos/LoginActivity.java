@@ -1,7 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -64,7 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bdInterna.insertarUUID(); // intenta generar un UUID
+                if (!bdInterna.leerUUID()) {  // intenta generar un UUID
+                    bdInterna.crearUUID();
+                }
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
@@ -72,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
                         fotoUsuario,
                         bdInterna.getUniqueID(),
                         LoginActivity.this
-                        );
-                Toast.makeText(LoginActivity.this, "hecho", Toast.LENGTH_SHORT).show();
+                );
+                Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+
+
             }
         });
 

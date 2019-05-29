@@ -195,7 +195,7 @@ public class BDExterna {
         //insertarFoto2("12","223", "34");
 
 
-        //TODO DETENIDO NO SE PUEDE CON USUARIO BDSEGURA
+        //TODO DETENIDO NO SE PUEDE POR FTP USUARIO BDSEGURA
         //uploadFilePHP(path, mContext);
 
         return "";
@@ -243,8 +243,49 @@ public class BDExterna {
         return devuelta;
     }
 
-    public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
+    public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext) {
+        ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
+        String UUID = BDInterna.getUniqueID();
+        URL url = null;
+        try {
+            String sURL = BDExternaLinks.vergaleria + UUID;
+            url = new URL(sURL);
+            URLConnection request = null;
+            request = url.openConnection();
+            request.connect();
+            // Convierte el contenido de la URL en un String
+            JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
 
+            try {
+                JSONArray jArray = new JSONArray(root.toString());
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+
+                    devuelta.add(new GaleriaCompartir(
+                            json_data.getString("IDUSUARIO"),
+                            json_data.getString("PATH"),
+                            json_data.getString("UUIDUNIQUE")
+                    ));
+
+                }
+            } catch (JSONException e) {
+                Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+            }
+        } catch (
+                MalformedURLException e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.errorserver, Toast.LENGTH_LONG).show();
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.errorconex, Toast.LENGTH_LONG).show();
+        }
+        return devuelta;
+    }
+
+
+
+    public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
         URL url = null;
@@ -268,7 +309,6 @@ public class BDExterna {
                             json_data.getString("UUIDUNIQUE")
                     ));
 
-
                 }
             } catch (JSONException e) {
                 Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
@@ -284,8 +324,6 @@ public class BDExterna {
         }
         return devuelta;
     }
-
-
 
     public String borraGaleria(String idusuario, String path, String uuid) {
 
