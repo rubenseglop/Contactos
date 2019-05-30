@@ -191,13 +191,6 @@ public class BDExterna {
         } catch (JSONException e) {
             System.out.println("DEBUG ERROR " + e.getMessage());
         }
-        //TODO SUBIR IMAGEN PHP
-        //insertarFoto2("12","223", "34");
-
-
-        //TODO DETENIDO NO SE PUEDE POR FTP USUARIO BDSEGURA
-        //uploadFilePHP(path, mContext);
-
         return "";
     }
 
@@ -243,12 +236,12 @@ public class BDExterna {
         return devuelta;
     }
 
-    public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext) {
+    public static ArrayList<GaleriaCompartir> devuelveGaleriaCompleta(Context mContext) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
         URL url = null;
         try {
-            String sURL = BDExternaLinks.vergaleria + UUID;
+            String sURL = BDExternaLinks.vergaleriacompartida + UUID;
             url = new URL(sURL);
             URLConnection request = null;
             request = url.openConnection();
@@ -302,12 +295,14 @@ public class BDExterna {
                 JSONArray jArray = new JSONArray(root.toString());
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
-                    if(!json_data.getString("UUIDUNIQUE").equals(selectUUID)){}
-                    devuelta.add(new GaleriaCompartir(
-                            json_data.getString("IDUSUARIO"),
-                            json_data.getString("PATH"),
-                            json_data.getString("UUIDUNIQUE")
-                    ));
+                    if (json_data.getString("UUIDUNIQUE").equals(selectUUID)) {
+                        devuelta.add(new GaleriaCompartir(
+                                json_data.getString("IDUSUARIO"),
+                                json_data.getString("PATH"),
+                                json_data.getString("UUIDUNIQUE")
+                        ));
+                    }
+
 
                 }
             } catch (JSONException e) {

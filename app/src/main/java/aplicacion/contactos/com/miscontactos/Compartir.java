@@ -59,6 +59,8 @@ public class Compartir extends AppCompatActivity {
 
     private COAdapter adapter;
 
+    MetodoFTP myftp = new MetodoFTP(this);
+
 
     public Compartir() {
         if (galeriaCompartir == null) {
@@ -89,7 +91,6 @@ public class Compartir extends AppCompatActivity {
         contactos = bdInterna.contactos;
 
         galeriaCompartir.clear();
-
 
 
         // Carga un ArrayList para el Spinner de usuarios cogidos de la BDExterna (los toma a todos excepto al del móvil propietario)
@@ -142,14 +143,13 @@ public class Compartir extends AppCompatActivity {
 
         galeriaCompartir.clear();
 
-
-        //TODO los muestra todos y solo quiero los del spinner
         galeriaCompartir = BDExterna.devuelveGaleria(this, selectedIdSpinner);
 
         /*Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
         while (c.moveToNext()) {
             galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
         }*/
+
         actualizarAdapter();
     }
 
@@ -180,7 +180,7 @@ public class Compartir extends AppCompatActivity {
         co.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         co.setLayoutManager(llm);
-        adapter = new COAdapter(galeriaCompartir);
+        adapter = new COAdapter(galeriaCompartir, this);
         co.setAdapter(adapter);
 
         //esto es parte del Swype
@@ -227,6 +227,9 @@ public class Compartir extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
+
+
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected imagenes
             ArrayList<Image> images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
@@ -247,7 +250,15 @@ public class Compartir extends AppCompatActivity {
                 if (repetido == false) {
                     arrayUri.add(uri);
                     // Guardo la informacion IDUSUARIO - PATH - USUARIOALQUECOMPARTO
-                    bdExterna.insertarGaleria(BDInterna.getUniqueID(), uri.getPath(),selectedIdSpinner);
+                    // https://miscontactosrsl.webcindario.com/uploads/ee158af8-7798-4463-b48e-3dcc6224c22f/IMG-20190529-WA0003.jpg
+
+                    // sacar la carpeta y nombrefichero
+
+                    String url = BDExternaLinks.URLFTP + BDInterna.getUniqueID() + "/" + new File(uri.getPath()).getName();
+
+                    bdExterna.insertarGaleria(BDInterna.getUniqueID(),url,selectedIdSpinner);
+
+                    myftp.uploadFile(new File(uri.getPath()),BDInterna.getUniqueID());
                 }
             }
         }
@@ -276,6 +287,8 @@ public class Compartir extends AppCompatActivity {
             GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
 
             bdExterna.borraGaleria(sel.getId(),sel.getPathFoto(),sel.getUuid());
+
+            myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
 
             Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
             actualizarGaleriadeSQL();

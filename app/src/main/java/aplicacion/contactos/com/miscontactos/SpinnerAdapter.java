@@ -28,6 +28,9 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
         this.list=list;
         inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.groupid=groupid;
+
+        //TODO RECOGER LA IMAGEN CON GLIDE
+
         for (int i = 0; i < list.size() ; i++) {
             bitmaps.add(recogerImagen(list.get(i).getImageId()));
         }

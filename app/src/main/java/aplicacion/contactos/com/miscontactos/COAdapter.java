@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,6 +20,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     public static HashMap selected;
     public static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
     ArrayList<GaleriaCompartir> galeriaCompartida;
+    Context mContext;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         ImageView fotogaleria;
@@ -29,10 +32,11 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
         }
     }
-    public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartida){
+    public COAdapter(ArrayList<GaleriaCompartir> galeriaCompartida, Context mContext){
         this.galeriaCompartida = galeriaCompartida;
         selectedUsuarioGaleriaRecyclerView = null;
         selected = new HashMap();
+        this.mContext = mContext;
 
     }
 
@@ -47,8 +51,11 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     public void onBindViewHolder(COAdapter.GalleryViewHolder galleryViewHolder, int i) {
 
         try {
+            Glide.with(mContext)
+                    .load(galeriaCompartida.get(i).getPathFoto())
+                    .into(galleryViewHolder.fotogaleria);
 
-            galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
+            //galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
             galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompartida.get(i).getPathFoto()));
 
             selectedUsuarioGaleriaRecyclerView = new GaleriaCompartir(galeriaCompartida.get(i).getId(),galeriaCompartida.get(i).getPathFoto(),galeriaCompartida.get(i).getUuid());

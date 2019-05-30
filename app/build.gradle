@@ -39,12 +39,8 @@ dependencies {
 
     implementation 'com.github.myinnos:AwesomeImagePicker:1.0.2'
 
-    implementation 'com.loopj.android:android-async-http:1.4.9'
-
-    /* implementation 'net.gotev:uploadservice:3.0'*/
-
-
-    implementation 'com.mcxiaoke.volley:library-aar:1.0.0'
+    // Para el uso de las imágenes por HTTP
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
 }
 repositories {

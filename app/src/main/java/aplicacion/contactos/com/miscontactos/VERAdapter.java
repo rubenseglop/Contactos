@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -17,6 +20,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     public static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
     ArrayList<GaleriaCompartir> galeriaCompartida;
     ArrayList<UsuariosGaleria> usuarios;
+    Context mContext;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         ImageView fotogaleria;
@@ -28,10 +32,12 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
         }
     }
-    public VERAdapter(ArrayList<GaleriaCompartir> galeriaCompartida, ArrayList<UsuariosGaleria> usuarios){
+    public VERAdapter(ArrayList<GaleriaCompartir> galeriaCompartida, ArrayList<UsuariosGaleria> usuarios, Context mContext){
         this.galeriaCompartida = galeriaCompartida;
         selectedUsuarioGaleriaRecyclerView = null;
         this.usuarios=usuarios;
+        this.mContext = mContext;
+
     }
 
     @Override
@@ -45,7 +51,12 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     @Override
     public void onBindViewHolder(VERAdapter.GalleryViewHolder galleryViewHolder, int i) {
         try {
-            galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
+
+            Glide.with(mContext)
+                    .load(galeriaCompartida.get(i).getPathFoto())
+                    .into(galleryViewHolder.fotogaleria);
+
+            //galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
             String nombre = "";
             for (int j = 0; j < usuarios.size(); j++) {
                 if (galeriaCompartida.get(i).getId().equals(usuarios.get(j).getUUID())) {

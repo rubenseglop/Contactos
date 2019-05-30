@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
-
     TextView tv_nombreUsuario;
     TextView tv_emailUsuario;
     ImageView fotoUsuario;
@@ -40,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     Button bt_aceptaConfig;
 
     BDInterna bdInterna;
+    MetodoFTP myftp;
 
     private Bitmap bitmap;
 
@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         BDInterna bdInterna = new BDInterna(this);
         BDExterna bdExterna = new BDExterna();
+        myftp = new MetodoFTP(this);
 
         tv_nombreUsuario = (TextView) findViewById(R.id.tv_nombreUsuario);
         tv_emailUsuario = (TextView) findViewById(R.id.tv_emailUsuario);
@@ -66,14 +67,19 @@ public class LoginActivity extends AppCompatActivity {
                 if (!bdInterna.leerUUID()) {  // intenta generar un UUID
                     bdInterna.crearUUID();
                 }
+                String url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
-                        imageStoragePath,
+                        url,
                         fotoUsuario,
                         bdInterna.getUniqueID(),
                         LoginActivity.this
                 );
+
+                if (imageStoragePath!=null){
+                    myftp.uploadFile(new File(imageStoragePath),"perfil");
+                }
                 Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
 
 
@@ -91,6 +97,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        try {
+            if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
+                tv_nombreUsuario.setText("EDITADO");
+            }
+            ;
+        } catch (NullPointerException e) {
+            //es nuevo usuario
+        }
+
 
 
     }

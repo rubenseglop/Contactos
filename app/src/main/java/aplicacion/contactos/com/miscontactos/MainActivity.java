@@ -182,27 +182,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i);
                 return true;
             }
+            if (id == R.id.exportar) {
+                if (hasLogin()) {
+                    exportarWebService();
+                }
+
+            }
+            if (id == R.id.importar) {
+                if (hasLogin()) {
+                    RestaurarWebService();
+                }
+            }
         } else Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
-
-        if (id == R.id.exportar) {
-            if (hasLogin()) {
-                exportarWebService();
-            } else
-                Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
-
-        }
-        if (id == R.id.importar) {
-            if (hasLogin()) {
-                RestaurarWebService();
-            } else
-                Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
-        }
         if (id == R.id.configuracion) {
             // TODO SEGUIR PARA EL CASO DE EDITAR
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
-            return true;
+
+            if (hasLogin()) {
+                Intent i = new Intent(this, LoginActivity.class);
+                i.putExtra("EDIT", true);
+                startActivity(i);
+                return true;
+            } else {
+                Intent i = new Intent(this, LoginActivity.class);
+                startActivity(i);
+                return true;
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 

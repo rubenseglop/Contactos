@@ -1,14 +1,10 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -34,7 +30,7 @@ galeriaCompartir=new ArrayList<>();
 
     private void actualizarGaleriadeSQL() {
         galeriaCompartir.clear();
-        galeriaCompartir = BDExterna.devuelveGaleria(this);
+        galeriaCompartir = BDExterna.devuelveGaleriaCompleta(this);
         usuarios = BDExterna.devuelveUsuarios(this);
 
         actualizarAdapter();
@@ -45,7 +41,7 @@ galeriaCompartir=new ArrayList<>();
         verCompartidos.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         verCompartidos.setLayoutManager(llm);
-        adapter = new VERAdapter(galeriaCompartir,usuarios);
+        adapter = new VERAdapter(galeriaCompartir,usuarios, this);
         verCompartidos.setAdapter(adapter);
     }
 
