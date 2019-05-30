@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
         if (id == R.id.configuracion) {
-            // TODO SEGUIR PARA EL CASO DE EDITAR
 
             if (hasLogin()) {
                 Intent i = new Intent(this, LoginActivity.class);

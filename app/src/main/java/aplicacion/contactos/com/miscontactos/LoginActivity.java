@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     ImageView fotoUsuario;
     Button bt_fotoUsuario;
     Button bt_aceptaConfig;
-
-    BDInterna bdInterna;
     MetodoFTP myftp;
 
     private Bitmap bitmap;
@@ -67,7 +65,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (!bdInterna.leerUUID()) {  // intenta generar un UUID
                     bdInterna.crearUUID();
                 }
-                String url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                String url="";
+                if (imageStoragePath.length() != 0) {
+                    url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                }
+
+                //TODO COMPRUEBA INTERNET
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
@@ -77,7 +80,9 @@ public class LoginActivity extends AppCompatActivity {
                         LoginActivity.this
                 );
 
-                if (imageStoragePath!=null){
+                if (imageStoragePath.length()!=0){
+
+                    //TODO verificar que tengo internet
                     myftp.uploadFile(new File(imageStoragePath),"perfil");
                 }
                 Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
@@ -101,7 +106,11 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
+
+                //TODO SEGUIR POR AQUI
                 tv_nombreUsuario.setText("EDITADO");
+                tv_emailUsuario.setText();
+                fotoUsuario
             }
             ;
         } catch (NullPointerException e) {

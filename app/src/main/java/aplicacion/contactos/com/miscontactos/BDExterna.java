@@ -22,8 +22,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-
-// TODO MANUAL http://www.sauronsoftware.it/projects/ftp4j/manual.php#2
 public class BDExterna {
 
     /**
