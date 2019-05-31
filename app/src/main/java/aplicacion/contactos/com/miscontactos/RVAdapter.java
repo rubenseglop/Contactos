@@ -137,9 +137,16 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @return Bitmap con la imagen
      */
     private Bitmap recogerImagen(String c){
-        Bitmap bitmapImage = BitmapFactory.decodeFile(c);
-        int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
-        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
+        Bitmap bitmapImage;
+        Bitmap scaled=null;
+        try {
+            bitmapImage = BitmapFactory.decodeFile(c);
+            int nh = (int) (bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()));
+            scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         //antes de devolverlo, le redondeo las esquinas
         return CameraUtils.redondearEsquinas(scaled, 20);
     }

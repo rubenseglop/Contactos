@@ -20,13 +20,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +54,11 @@ public class Anadir extends AppCompatActivity {
     // Bitmap sampling size
     public static final int BITMAP_SAMPLE_SIZE = 8;
     // Gallery directory name to store the imagenes or videos
-    public static final String GALLERY_DIRECTORY_NAME = "Hello_Camera", IMAGE_EXTENSION = "jpg";
+    public static final String GALLERY_DIRECTORY_NAME = "MisContactos_fotos", IMAGE_EXTENSION = "jpg";
     private static String imageStoragePath;
 
     private Bitmap bitmap;
     private Contacto editContacto;
-
     private String editImagePath;
 
     @Override
@@ -141,7 +138,7 @@ public class Anadir extends AppCompatActivity {
                 }
             }
         } catch (NullPointerException e) {
-            //No hay nada que editar aqui
+            e.printStackTrace();
         }
 
         // Chequea si tu dispositivo tiene incorporada una cámara

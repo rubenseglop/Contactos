@@ -34,11 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
-    TextView tv_nombreUsuario;
-    TextView tv_emailUsuario;
+    TextView tv_nombreUsuario,tv_emailUsuario;
     ImageView fotoUsuario;
-    Button bt_fotoUsuario;
-    Button bt_aceptaConfig;
+    Button bt_fotoUsuario,bt_aceptaConfig;
     MetodoFTP myftp;
 
     BDInterna bdInterna;
@@ -69,42 +67,52 @@ public class LoginActivity extends AppCompatActivity {
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!bdInterna.leerUUID()) {  // intenta generar un UUID
-                    bdInterna.crearUUID();
+
+                Boolean error = false;
+                if (tv_nombreUsuario.length()==0){
+                    Toast.makeText(LoginActivity.this, "Debes introducir un nombre", Toast.LENGTH_SHORT).show();
+                    error = true;
                 }
-                String url="";
-                try {
-                    imageStoragePath.length();
-                    url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
-                } catch (NullPointerException e) {
-                    url = "NO";
+                if (tv_emailUsuario.length()==0 && error==false){
+                    Toast.makeText(LoginActivity.this, "Debes introducir un email", Toast.LENGTH_SHORT).show();
                 }
 
-                //TODO COMPRUEBA INTERNET
-
-
-                //TODO COMPRUEBA DATOS INTERNET
-
-                if ((Boolean) getIntent().getSerializableExtra("EDIT")){bdExterna.borrarUsuario(BDInterna.getUniqueID());}
-
-                bdExterna.insertarUsuario(
-                        tv_nombreUsuario.getText(),
-                        tv_emailUsuario.getText(),
-                        url,
-                        fotoUsuario,
-                        bdInterna.getUniqueID(),
-                        LoginActivity.this
-                );
-
-                //TODO verificar que tengo internet
-                try {
-                    imageStoragePath.length();
-                    if (!imageStoragePath.equals("NO")) {
-                        myftp.uploadFile(new File(imageStoragePath), "perfil");
-                        Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                if (error == false){
+                    if (!bdInterna.leerUUID()) {  // intenta generar un UUID
+                        bdInterna.crearUUID();
                     }
-                } catch (NullPointerException e) {
-                    // va sin imagen
+                    String url="";
+                    try {
+                        imageStoragePath.length();
+                        url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                    } catch (NullPointerException e) {
+                        url = "NO";
+                    }
+
+                    //TODO COMPRUEBA INTERNET
+                    //TODO COMPRUEBA DATOS INTERNET
+
+                    if ((Boolean) getIntent().getSerializableExtra("EDIT")){bdExterna.borrarUsuario(BDInterna.getUniqueID());}
+
+                    bdExterna.insertarUsuario(
+                            tv_nombreUsuario.getText(),
+                            tv_emailUsuario.getText(),
+                            url,
+                            fotoUsuario,
+                            bdInterna.getUniqueID(),
+                            LoginActivity.this
+                    );
+                    //TODO verificar que tengo internet
+                    try {
+                        imageStoragePath.length();
+                        if (!imageStoragePath.equals("NO")) {
+                            myftp.uploadFile(new File(imageStoragePath), "perfil");
+                            Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (NullPointerException e) {
+                        // va sin imagen
+                    }
+                    finish();
                 }
             }
         });
@@ -121,11 +129,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         try {
             if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
-
-
                 ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(this);
                 for (int i = 0; i < usuarios.size() ; i++) {
                     if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())){
@@ -136,19 +141,12 @@ public class LoginActivity extends AppCompatActivity {
                                     .load(usuarios.get(i).getPath())
                                     .into(fotoUsuario);
                         }
-
                     }
-
                 }
-
             }
-            ;
         } catch (NullPointerException e) {
-            //es nuevo usuario
+            //es nuevo usuario, no hago nada mas
         }
-
-
-
     }
 
     /**
@@ -166,6 +164,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(intent, 100);
     }
 
+    /**
+     * Revisa los permisos de la cámara (en caso de no tener permiso
+     * hacia la cámara, dexter nos preguntará si deseamos abrirlos)
+     * @param type
+     */
     private void requestCameraPermission(final int type) {
         Dexter.withActivity(this)
                 .withPermissions(Manifest.permission.CAMERA,
@@ -181,6 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                             // En caso de todos los permisos estén bien, capturar una foto
                             if (type == MEDIA_TYPE_IMAGE) captureImage();
 
+                            // En el caso de que no estén, los preguntamos por un dialog
                         } else if (report.isAnyPermissionPermanentlyDenied()) {
                             dialogPermisos();
                         }
@@ -194,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }).check();
     }
+
     /**
      * Muestra un dialog con los requisitos a activar en caso de no tener acceso a la cámara
      */
@@ -211,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }).show();
     }
+
     /**
      * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o rotar la pantalla)
      */
@@ -220,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
 
         outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
     }
+
     /**
      * Restaura la ruta de la imagen tomada (URI)
      */
@@ -254,6 +261,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Muestra la foto en el layout
+     */
     private void previewCapturedImage() {
         try {
             fotoUsuario.setVisibility(View.VISIBLE);

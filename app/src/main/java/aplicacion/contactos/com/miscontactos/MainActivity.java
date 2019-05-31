@@ -46,8 +46,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private BDInterna bdinterna;
-    private BDExterna bdexterna;
+    private BDInterna bdInterna;
+    private BDExterna bdExterna;
     private ArrayList<Contacto> contactos;
     private ArrayList<Galeria> galerias;
     private ArrayList<Domicilio> domicilios;
@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
-        bdinterna = new BDInterna(this);
-        bdexterna = new BDExterna();
+        bdInterna = new BDInterna(this);
+        bdExterna = new BDExterna();
 
         orderby ="Nombre";
         tv_orden = findViewById(R.id.ordenadopor);
@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
-        bdinterna.actualizaContactos(orderby, ordertype);
-        contactos = bdinterna.devuelveContactos();
+        bdInterna.actualizaContactos(orderby, ordertype);
+        contactos = bdInterna.devuelveContactos();
 
         rv = findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -186,14 +186,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (hasLogin()) {
                     exportarWebService();
                 }
-
             }
             if (id == R.id.importar) {
                 if (hasLogin()) {
                     RestaurarWebService();
                 }
             }
-        } else Toast.makeText(this, "Debes entrar antes a configuración", Toast.LENGTH_SHORT).show();
+        } else if (id != R.id.configuracion) { Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();}
         if (id == R.id.configuracion) {
 
             if (hasLogin()) {
@@ -229,17 +228,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 error_conexion = false;
 
                 // en el caso de aceptar el dialog
-                if (bdexterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
-                    bdinterna.borrarTodo();
+                if (bdExterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
+                    bdInterna.borrarTodo();
 
-                    String UUID = bdinterna.getUniqueID();
+                    String UUID = bdInterna.getUniqueID();
 
                     if (UUID.length() != 0) {
                         WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
                         WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
                         WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                     } else {
-                        Toast.makeText(MainActivity.this, "Para acceder a la base de datos externa, previamente debes configurar un perfil", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, R.string.error_configurar_perfil, Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
                     // add to list
-                    bdinterna.insertarContacto(
+                    bdInterna.insertarContacto(
                             json_data.getInt("ID"),
                             json_data.getString("FOTO"),
                             json_data.getString("NOMBRE"),
@@ -319,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
                     // add to list
-                    bdinterna.insertarGaleria(
+                    bdInterna.insertarGaleria(
                             json_data.getInt("ID"),
                             json_data.getString("PATH")
                     );
@@ -334,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
                     // add to list
-                    bdinterna.insertarDomicilio(
+                    bdInterna.insertarDomicilio(
                             json_data.getInt("ID"),
                             json_data.getString("DIRECCION")
                     );
@@ -349,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 0; i < jArray.length(); i++) {
                     JSONObject json_data = jArray.getJSONObject(i);
                     // add to list
-                    bdinterna.insertarTelefono(
+                    bdInterna.insertarTelefono(
                             json_data.getInt("ID"),
                             json_data.getString("NUMERO")
                     );
@@ -369,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private boolean hasLogin() {
-        if (bdinterna.leerUUID()) {
+        if (bdInterna.leerUUID()) {
             return true;
         } else {
             return false;
@@ -381,8 +380,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         error_conexion = false;
         String error;
-        System.out.println("DEBUG " + bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error"));
-        //error_conexion = bdexterna.borrartodo(bdinterna.getUniqueID()).equals("Error");
+
+        System.out.println("DEBUG " + bdExterna.borrartodo(BDInterna.getUniqueID()));
+        //error_conexion = bdExterna.borrartodo(bdInterna.getUniqueID()).equals("Error");
         if (error_conexion) {
             error_conexion = true;
         }
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int varDireccion = contacto.getDireccion_id();
                 int varTelefono = contacto.getTelefono_id();
                 String varCorreo = contacto.getCorreo();
-                String varUUID = bdinterna.getUniqueID();
+                String varUUID = bdInterna.getUniqueID();
                 galerias = contacto.getGalerias();
                 domicilios = contacto.getDomicilios();
                 telefonos = contacto.getTelefonos();
@@ -417,10 +417,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     varCorreo = "";
                 }
 
-                error = bdexterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
+
+                 error = bdExterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
                         varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
 
-                if (error.equals("ERROR") || error.isEmpty()) {
+                if (error.equals("ERROR") || error==null) {
                     error_conexion = true;
                 }
 
@@ -433,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             varDireccionDOM = "";
                         }
 
-                        error = bdexterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
+                        error = bdExterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
                         if (error.equals("ERROR") || error.isEmpty()) {
                             error_conexion = true;
                         }
@@ -449,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             varNumeroTel = "";
                         }
 
-                        error = bdexterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
+                        error = bdExterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
                         if (error.equals("ERROR") || error.isEmpty()) {
                             error_conexion = true;
                         }
@@ -490,10 +491,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
              * Diálogo que muestra si deseamos o no borrar a un contacto
              */
             new AlertDialog.Builder(viewHolder.itemView.getContext())
-                    .setMessage("¿Deseas eliminar este contacto?")
-                    .setPositiveButton("Si", (dialog, which) -> {
-
-
+                    .setMessage(R.string.borrarcontacto)
+                    .setPositiveButton(R.string.boton_si, (dialog, which) -> {
 
                         /* Al tener la lista desordenada, utilizo un HashMap con (Posicion, ID)
                          * para descubrir la ID de la posición eliminada con Swipe
@@ -501,11 +500,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         HashMap deId_Posicion;
                         deId_Posicion = RVAdapter.deId_Posicion;
                         int id = (int) deId_Posicion.get(viewHolder.getAdapterPosition());
-                        bdinterna.borraContacto(id);
+                        bdInterna.borraContacto(id);
                         Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
                         actualizar();
                     })
-                    .setNegativeButton("No", (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
+                    .setNegativeButton(R.string.boton_no, (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
 
                     /*Bug que presentaba si no escogía ninguna opción (pulsando fuera del dialog)
                     con .setCancelable impide que se pueda presionar en otra parte de la pantalla*/

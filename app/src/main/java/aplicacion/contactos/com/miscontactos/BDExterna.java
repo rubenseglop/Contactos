@@ -99,7 +99,6 @@ public class BDExterna {
      * @return Devuelve la cadena String "Error" (determinado en el php) si algo falla
      */
     public String borrartodo(String uuid) {
-
         String url = BDExternaLinks.eliminatodo + uuid;
         return leerUrl(url);
     }
@@ -120,9 +119,9 @@ public class BDExterna {
             inputLine += inputLine;
             in.close();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            return "ERROR";
         } catch (IOException e) {
-            e.printStackTrace();
+            return "ERROR";
         }
         return inputLine;
     }

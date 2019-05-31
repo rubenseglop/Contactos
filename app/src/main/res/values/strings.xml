@@ -73,4 +73,9 @@
     <string name="configuracion">Configuración</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_ver_compartidos">verCompartidos</string>
+    <string name="borrarcontacto">¿Deseas eliminar este contacto?</string>
+    <string name="boton_si">Si</string>
+    <string name="boton_no">No</string>
+    <string name="error_configurar_perfil">Para acceder a la base de datos externa, previamente debes configurar un perfil</string>
+    <string name="entrar_config">Debes entrar antes a configuración</string>
 </resources>
