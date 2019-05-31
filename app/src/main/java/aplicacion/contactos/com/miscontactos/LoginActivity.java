@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -23,6 +24,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,18 +41,23 @@ public class LoginActivity extends AppCompatActivity {
     Button bt_aceptaConfig;
     MetodoFTP myftp;
 
+    BDInterna bdInterna;
+    BDExterna bdExterna;
+
     private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        BDInterna bdInterna = new BDInterna(this);
-        BDExterna bdExterna = new BDExterna();
+        bdInterna = new BDInterna(this);
+        bdExterna = new BDExterna();
+
         myftp = new MetodoFTP(this);
 
         tv_nombreUsuario = (TextView) findViewById(R.id.tv_nombreUsuario);
@@ -66,11 +73,20 @@ public class LoginActivity extends AppCompatActivity {
                     bdInterna.crearUUID();
                 }
                 String url="";
-                if (imageStoragePath.length() != 0) {
+                try {
+                    imageStoragePath.length();
                     url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                } catch (NullPointerException e) {
+                    url = "NO";
                 }
 
                 //TODO COMPRUEBA INTERNET
+
+
+                //TODO COMPRUEBA DATOS INTERNET
+
+                if ((Boolean) getIntent().getSerializableExtra("EDIT")){bdExterna.borrarUsuario(BDInterna.getUniqueID());}
+
                 bdExterna.insertarUsuario(
                         tv_nombreUsuario.getText(),
                         tv_emailUsuario.getText(),
@@ -80,14 +96,16 @@ public class LoginActivity extends AppCompatActivity {
                         LoginActivity.this
                 );
 
-                if (imageStoragePath.length()!=0){
-
-                    //TODO verificar que tengo internet
-                    myftp.uploadFile(new File(imageStoragePath),"perfil");
+                //TODO verificar que tengo internet
+                try {
+                    imageStoragePath.length();
+                    if (!imageStoragePath.equals("NO")) {
+                        myftp.uploadFile(new File(imageStoragePath), "perfil");
+                        Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (NullPointerException e) {
+                    // va sin imagen
                 }
-                Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
-
-
             }
         });
 
@@ -107,10 +125,22 @@ public class LoginActivity extends AppCompatActivity {
         try {
             if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
 
-                //TODO SEGUIR POR AQUI
-                tv_nombreUsuario.setText("EDITADO");
-                tv_emailUsuario.setText();
-                fotoUsuario
+
+                ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(this);
+                for (int i = 0; i < usuarios.size() ; i++) {
+                    if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())){
+                        tv_nombreUsuario.setText(usuarios.get(i).getNombre());
+                        tv_emailUsuario.setText(usuarios.get(i).getEmail());
+                        if (!usuarios.get(i).getPath().equals("NO")){
+                            Glide.with(this)
+                                    .load(usuarios.get(i).getPath())
+                                    .into(fotoUsuario);
+                        }
+
+                    }
+
+                }
+
             }
             ;
         } catch (NullPointerException e) {

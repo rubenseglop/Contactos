@@ -31,12 +31,18 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
         View itemView=inflater.inflate(groupid,parent,false);
         ImageView imageView= itemView.findViewById(R.id.img);
 
-        Glide.with(mContext)
-                .load(list.get(position).getImageId())
-                .into(imageView);
+        if (list.get(position).getImageId().equals("NO")) {
+            imageView.setImageResource(R.drawable.perfil);
+        } else {
+            Glide.with(mContext)
+                    .load(list.get(position).getImageId())
+                    .into(imageView);
+        }
 
-        TextView textView= itemView.findViewById(R.id.txt);
-        textView.setText(list.get(position).getText());
+        TextView tv_nombre= itemView.findViewById(R.id.spinner_nombre);
+        TextView tv_email = itemView.findViewById(R.id.spinneremail);
+        tv_nombre.setText(list.get(position).getNombre());
+        tv_email.setText(list.get(position).getemail());
         return itemView;
     }
 
@@ -47,16 +53,21 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
 
 }
 class SpinnerContactosData {
-    String text;
+    String nombre;
+    String email;
     String imageId;
-    public SpinnerContactosData(String text, String imageId){
-        this.text=text;
+    public SpinnerContactosData(String nombre, String email, String imageId){
+        this.nombre = nombre;
         this.imageId=imageId;
+        this.email=email;
     }
-    public String getText(){
-        return text;
+    public String getNombre(){
+        return nombre;
     }
     public String getImageId(){
         return imageId;
+    }
+    public String getemail(){
+        return email;
     }
 }

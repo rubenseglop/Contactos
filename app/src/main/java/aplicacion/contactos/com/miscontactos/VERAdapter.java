@@ -57,13 +57,13 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
                     .into(galleryViewHolder.fotogaleria);
 
             //galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
-            String nombre = "";
+            String nombrecompleto = "";
             for (int j = 0; j < usuarios.size(); j++) {
                 if (galeriaCompartida.get(i).getId().equals(usuarios.get(j).getUUID())) {
-                    nombre = usuarios.get(j).getNombre();
+                    nombrecompleto = usuarios.get(j).getNombre() + "<" + usuarios.get(j).getEmail()+">";
                 }
             }
-            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(nombre));
+            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(nombrecompleto));
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }

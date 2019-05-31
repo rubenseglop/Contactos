@@ -117,19 +117,15 @@ public class BDExterna {
             URL url = new URL(pagina);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((inputLine = in.readLine()) != null)
-                System.out.println("DEBUG URL++ " + inputLine);
             inputLine += inputLine;
-
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return inputLine;
     }
-
 
     /**
      * Método que genera un nuevo Usuario de telefono
@@ -190,6 +186,14 @@ public class BDExterna {
             System.out.println("DEBUG ERROR " + e.getMessage());
         }
         return "";
+    }
+
+
+    public void borrarUsuario(String uuid) {
+        String url = BDExternaLinks.borrarUsuario + uuid;
+        url = url.replace(" ", "%20");
+        System.out.println("DEBUG BORRATE " + url);
+        leerUrl(url);
     }
 
     public static ArrayList<UsuariosGaleria> devuelveUsuarios(Context mContext) {

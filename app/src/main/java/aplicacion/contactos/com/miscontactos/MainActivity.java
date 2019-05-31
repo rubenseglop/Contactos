@@ -198,11 +198,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (hasLogin()) {
                 Intent i = new Intent(this, LoginActivity.class);
+
+                System.out.println("DEBUG EDITTTTTT");
                 i.putExtra("EDIT", true);
                 startActivity(i);
                 return true;
             } else {
                 Intent i = new Intent(this, LoginActivity.class);
+                System.out.println("DEBUG PRIEMRRRRAS");
                 startActivity(i);
                 return true;
             }

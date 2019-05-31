@@ -2,7 +2,6 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,23 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,6 +46,10 @@ public class Compartir extends AppCompatActivity {
     private BDExterna bdExterna;
 
     private COAdapter adapter;
+
+    private Button bt_anadirGaleria;
+    private ImageButton bt_verCompartidos;
+    private ImageButton bt_share;
 
     MetodoFTP myftp = new MetodoFTP(this);
 
@@ -90,6 +82,10 @@ public class Compartir extends AppCompatActivity {
         bdInterna.actualizaContactos("NOMBRE", "ASC");
         contactos = bdInterna.contactos;
 
+        bt_anadirGaleria = (Button) findViewById(R.id.bt_anadirGaleria);
+        bt_verCompartidos = (ImageButton) findViewById(R.id.bt_vercompartido);
+        bt_share = (ImageButton) findViewById(R.id.bt_share);
+
         galeriaCompartir.clear();
 
 
@@ -99,8 +95,18 @@ public class Compartir extends AppCompatActivity {
         for (int i = 0; i < usuarios.size(); i++) {
 
                 idSpinner.add(usuarios.get(i).getUUID());
-                spinnerContactosData.add(i, new SpinnerContactosData(usuarios.get(i).getNombre(), usuarios.get(i).getPath()));
+                spinnerContactosData.add(i, new SpinnerContactosData(usuarios.get(i).getNombre(), usuarios.get(i).getEmail(), usuarios.get(i).getPath()));
 
+        }
+        //Si hay menos de dos usuarios (no es posible compartir nada)
+        if (spinnerContactosData.size()<2) {
+            bt_anadirGaleria.setEnabled(false);
+            bt_verCompartidos.setEnabled(false);
+            bt_share.setEnabled(false);
+        } else {
+            bt_anadirGaleria.setEnabled(true);
+            bt_verCompartidos.setEnabled(true);
+            bt_share.setEnabled(true);
         }
 
         //Elimino el usuario del movil
@@ -119,7 +125,7 @@ public class Compartir extends AppCompatActivity {
         }*/
 
         spinner = findViewById(R.id.spinner);
-        SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.txt, spinnerContactosData);
+        SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.spinner_nombre, spinnerContactosData);
         spinner.setAdapter(adapterSpinner);
 
         actualizarSpinner();
