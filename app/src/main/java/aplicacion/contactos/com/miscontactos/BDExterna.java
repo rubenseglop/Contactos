@@ -3,6 +3,8 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -65,7 +67,6 @@ public class BDExterna {
                 "&PATH=" + path +
                 "&UUIDUNIQUE=" + uuid;
 
-        System.out.println("DEBUG URL " + url);
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
 
@@ -78,7 +79,7 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        //System.out.println("DEBUG EXPORTAR " + url);
+
         return leerUrl(url);
     }
 
@@ -88,7 +89,7 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG Telefono " + url);
+
         return leerUrl(url);
     }
 
@@ -115,14 +116,17 @@ public class BDExterna {
         try {
             URL url = new URL(pagina);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            while ((inputLine = in.readLine()) != null)
-            inputLine += inputLine;
+
+            while ((inputLine = in.readLine()) != null);
+            inputLine = inputLine + inputLine;
+
             in.close();
         } catch (MalformedURLException e) {
-            return "ERROR";
+            e.printStackTrace();
         } catch (IOException e) {
-            return "ERROR";
+            e.printStackTrace();
         }
+
         return inputLine;
     }
 
@@ -191,7 +195,6 @@ public class BDExterna {
     public void borrarUsuario(String uuid) {
         String url = BDExternaLinks.borrarUsuario + uuid;
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG BORRATE " + url);
         leerUrl(url);
     }
 
@@ -260,7 +263,6 @@ public class BDExterna {
                             json_data.getString("PATH"),
                             json_data.getString("UUIDUNIQUE")
                     ));
-
                 }
             } catch (JSONException e) {
                 Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
@@ -276,7 +278,6 @@ public class BDExterna {
         }
         return devuelta;
     }
-
 
 
     public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
@@ -328,11 +329,23 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
 
         url = url.replace(" ", "%20");
-        System.out.println("DEBUG BORRATE " + url);
         return leerUrl(url);
     }
+
+    public static boolean compruebaConexion(Context context)
+    {
+        boolean connected = false;
+        ConnectivityManager connec = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Recupera todas las redes (tanto móviles como wifi)
+        NetworkInfo[] redes = connec.getAllNetworkInfo();
+
+        for (int i = 0; i < redes.length; i++) {
+            // Si alguna red tiene conexión, se devuelve true
+            if (redes[i].getState() == NetworkInfo.State.CONNECTED) {
+                connected = true;
+            }
+        }
+        return connected;
+    }
 }
-
-
-
-

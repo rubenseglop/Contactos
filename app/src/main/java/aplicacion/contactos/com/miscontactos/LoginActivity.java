@@ -92,7 +92,11 @@ public class LoginActivity extends AppCompatActivity {
                     //TODO COMPRUEBA INTERNET
                     //TODO COMPRUEBA DATOS INTERNET
 
-                    if ((Boolean) getIntent().getSerializableExtra("EDIT")){bdExterna.borrarUsuario(BDInterna.getUniqueID());}
+                    if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
+
+
+                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
+                    }
 
                     bdExterna.insertarUsuario(
                             tv_nombreUsuario.getText(),
