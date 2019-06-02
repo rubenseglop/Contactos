@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         bdInterna = new BDInterna(this);
-        bdExterna = new BDExterna();
+        bdExterna = new BDExterna(this);
 
         myftp = new MetodoFTP(this);
 
@@ -64,61 +64,91 @@ public class LoginActivity extends AppCompatActivity {
         bt_fotoUsuario = (Button) findViewById(R.id.bt_fotoUsuario);
         bt_aceptaConfig = (Button) findViewById(R.id.bt_aceptaConfig);
 
+
+        boolean intent_edit = false;
+        try {
+            intent_edit = (boolean) getIntent().getSerializableExtra("EDIT");
+        } catch (NullPointerException e) {
+            intent_edit = false;
+        }
+
+        if (intent_edit) {
+            ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
+
+            for (int i = 0; i < usuarios.size(); i++) {
+                if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
+                    tv_nombreUsuario.setText(usuarios.get(i).getNombre());
+                    tv_emailUsuario.setText(usuarios.get(i).getEmail());
+                    if (!usuarios.get(i).getPath().equals("NO")) {
+                        Glide.with(LoginActivity.this)
+                                .load(usuarios.get(i).getPath())
+                                .into(fotoUsuario);
+                    }
+                }
+            }
+        }
+
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Boolean error = false;
-                if (tv_nombreUsuario.length()==0){
-                    Toast.makeText(LoginActivity.this, "Debes introducir un nombre", Toast.LENGTH_SHORT).show();
-                    error = true;
-                }
-                if (tv_emailUsuario.length()==0 && error==false){
-                    Toast.makeText(LoginActivity.this, "Debes introducir un email", Toast.LENGTH_SHORT).show();
-                }
-
-                if (error == false){
-                    if (!bdInterna.leerUUID()) {  // intenta generar un UUID
-                        bdInterna.crearUUID();
-                    }
-                    String url="";
-                    try {
-                        imageStoragePath.length();
-                        url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
-                    } catch (NullPointerException e) {
-                        url = "NO";
-                    }
-
-                    //TODO COMPRUEBA INTERNET
-                    //TODO COMPRUEBA DATOS INTERNET
-
-                    if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
-
-
-                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
-                    }
-
-                    bdExterna.insertarUsuario(
-                            tv_nombreUsuario.getText(),
-                            tv_emailUsuario.getText(),
-                            url,
-                            fotoUsuario,
-                            bdInterna.getUniqueID(),
-                            LoginActivity.this
-                    );
-                    //TODO verificar que tengo internet
-                    try {
-                        imageStoragePath.length();
-                        if (!imageStoragePath.equals("NO")) {
-                            myftp.uploadFile(new File(imageStoragePath), "perfil");
-                            Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                if (tv_nombreUsuario.length() != 0) {
+                    if (tv_emailUsuario.length() != 0) {
+                        if (!bdInterna.hayUUID()) {  // intenta generar un UUID
+                            bdInterna.crearUUID();
                         }
-                    } catch (NullPointerException e) {
-                        // va sin imagen
+                        String url = "";
+                        try {
+                            imageStoragePath.length();
+                            url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                        } catch (NullPointerException e) {
+                            url = "NO";
+                        }
+                        //TODO COMPRUEBA INTERNET
+                        if (BDExterna.hayconexion(LoginActivity.this)) {
+                            if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+
+                                try {
+                                    if ((boolean) getIntent().getSerializableExtra("EDIT")) {
+                                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
+                                    }
+                                } catch (NullPointerException e) {
+                                    // No esta siendo editado, no lo borro
+                                } finally {
+
+                                    System.out.println("DEBUG INSERTA " + tv_nombreUsuario.getText() + url + BDInterna.getUniqueID());
+                                    bdExterna.insertarUsuario(
+                                            tv_nombreUsuario.getText(),
+                                            tv_emailUsuario.getText(),
+                                            url,
+                                            fotoUsuario,
+                                            BDInterna.getUniqueID(),
+                                            LoginActivity.this
+                                    );
+                                }
+
+                                //TODO verificar que tengo internet
+                                try {
+                                    imageStoragePath.length();
+                                    if (!imageStoragePath.equals("NO")) {
+                                        myftp.uploadFile(new File(imageStoragePath), "perfil");
+                                        Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (NullPointerException e) {
+                                    // va sin imagen
+                                }
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Debes introducir un email", Toast.LENGTH_SHORT).show();
                     }
-                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Debes introducir un nombre", Toast.LENGTH_SHORT).show();
                 }
             }
+
         });
 
         bt_fotoUsuario.setOnClickListener(new View.OnClickListener() {
@@ -132,25 +162,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-        try {
-            if ((Boolean) getIntent().getSerializableExtra("EDIT")) {
-                ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(this);
-                for (int i = 0; i < usuarios.size() ; i++) {
-                    if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())){
-                        tv_nombreUsuario.setText(usuarios.get(i).getNombre());
-                        tv_emailUsuario.setText(usuarios.get(i).getEmail());
-                        if (!usuarios.get(i).getPath().equals("NO")){
-                            Glide.with(this)
-                                    .load(usuarios.get(i).getPath())
-                                    .into(fotoUsuario);
-                        }
-                    }
-                }
-            }
-        } catch (NullPointerException e) {
-            //es nuevo usuario, no hago nada mas
-        }
     }
 
     /**

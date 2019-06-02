@@ -21,8 +21,8 @@ public class BDInterna extends SQLiteOpenHelper {
     // Creación de tabla para la BD en formato SQL en caso de no tenerla
     private static final String UNIQUE_UUID =
             "CREATE TABLE UNIQUE_UUID(ID VARCHAR(30));";
-    private static final String TABLA_USUARIOS =
-            "CREATE TABLE USUARIOS (" +
+    private static final String TABLA_CONTACTOS =
+            "CREATE TABLE CONTACTOS (" +
                     "ID INTEGER PRIMARY KEY autoincrement," +
                     "FOTO VARCHAR(400)," +
                     "NOMBRE VARCHAR(100)," +
@@ -54,11 +54,12 @@ public class BDInterna extends SQLiteOpenHelper {
     // Constructor de la clase
     public BDInterna(Context context) {
         super(context, NOMBRE_BASEDATOS, null, VERSION_BASEDATOS);
+        uniqueID=null;
     }
 
     /**
      * Lee todos los contactos de la BDInterna y los guarda en ArrayLists de Contactos
-     * @param orderby Columna de la tabla USUARIOS a ordenar
+     * @param orderby Columna de la tabla CONTACTOS a ordenar
      * @param order Debes indicar si es ASC o DESC
      */
     public void actualizaContactos(String orderby, String order) {
@@ -66,7 +67,7 @@ public class BDInterna extends SQLiteOpenHelper {
         //limpio todos los ArrayLists
         contactos.clear();
 
-        datosId = recuperaIds("USUARIOS", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
+        datosId = recuperaIds("CONTACTOS", null);  // recorro todos los ID's de Usuario y guardo los ID's en un array (datosID)
         int id;
         //Leo todos los contactos leyendo desde la ID de datosID
         for (int i = 0; i < datosId.length; i++) {
@@ -139,20 +140,20 @@ public class BDInterna extends SQLiteOpenHelper {
         db.execSQL(TABLA_GALERIA);
         db.execSQL(TABLA_DOMICILIO);
         db.execSQL(TABLA_TELEFONO);
-        db.execSQL(TABLA_USUARIOS);
+        db.execSQL(TABLA_CONTACTOS);
         db.execSQL(UNIQUE_UUID);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS USUARIOS");
+        db.execSQL("DROP TABLE IF EXISTS CONTACTOS");
         onCreate(db);
     }
 
     /**
-     * Inserta el identificador unico a la BD
+     * Inserta el identificador unico a la BD y devuelve true si tenemos una UUID almacenada
      */
-    public boolean leerUUID() {
+    public boolean hayUUID() {
 
         SQLiteDatabase db = getWritableDatabase();
         Boolean result = false;
@@ -163,7 +164,12 @@ public class BDInterna extends SQLiteOpenHelper {
             //Recorremos el cursor hasta que no haya más registros
             do {
                 id = c.getString(0);
-                if (id != null) { uniqueID = id; result = true;}
+                if (id != null) {
+
+                    System.out.println("DEBUG INTERNA id" + id);
+                    uniqueID = id;
+                    result = true;
+                }
             } while(c.moveToNext());
         }
 
@@ -224,7 +230,7 @@ public class BDInterna extends SQLiteOpenHelper {
         if (db != null) {
             // Creamos el registro a insertarContacto
             ContentValues valores = new ContentValues();
-            int id = ultimo_id("USUARIOS");
+            int id = ultimo_id("CONTACTOS");
             valores.put("ID", id);
             valores.put("FOTO", foto);
             valores.put("NOMBRE", nombre);
@@ -235,7 +241,7 @@ public class BDInterna extends SQLiteOpenHelper {
             valores.put("EMAIL", email);
 
             //insertamos el registro en la Base de Datos
-            db.insert("USUARIOS", null, valores);
+            db.insert("CONTACTOS", null, valores);
         }
         db.close();
     }
@@ -269,7 +275,7 @@ public class BDInterna extends SQLiteOpenHelper {
             valores.put("EMAIL", email);
 
             //insertamos el registro en la Base de Datos
-            db.insert("USUARIOS", null, valores);
+            db.insert("CONTACTOS", null, valores);
         }
 
         db.close();
@@ -362,11 +368,13 @@ public class BDInterna extends SQLiteOpenHelper {
      * @param id
      */
     public void borraContacto(int id) {
+
+        // Van con ON DELETE CASCADE, pero por si acaso borro una a una todas las tablas
         SQLiteDatabase db = getWritableDatabase();
         db.delete("GALERIA", "ID=" + id, null);
         db.delete("DOMICILIO", "ID=" + id, null);
         db.delete("TELEFONO", "ID=" + id, null);
-        db.delete("USUARIOS", "ID=" + id, null);
+        db.delete("CONTACTOS", "ID=" + id, null);
         db.close();
     }
 
@@ -384,7 +392,7 @@ public class BDInterna extends SQLiteOpenHelper {
         db.delete("GALERIA", null, null);
         db.delete("DOMICILIO", null, null);
         db.delete("TELEFONO", null, null);
-        db.delete("USUARIOS", null, null);
+        db.delete("CONTACTOS", null, null);
         db.close();
     }
 
@@ -412,7 +420,7 @@ public class BDInterna extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String[] valores_recuperar = {"ID", "FOTO", "NOMBRE", "APELLIDOS", "GALERIA_ID", "DOMICILIO_ID", "TELEFONO_ID", "EMAIL"};
         String[] args = new String[] {id};
-        Cursor c = db.query("USUARIOS", valores_recuperar, "ID=?", args, null, null,
+        Cursor c = db.query("CONTACTOS", valores_recuperar, "ID=?", args, null, null,
                 "NOMBRE ASC",null);
         return c;
     }

@@ -26,6 +26,14 @@ import java.util.ArrayList;
 
 public class BDExterna {
 
+    BDInterna bdInterna;
+    Context mContext;
+
+    public BDExterna(Context mContext) {
+        this.mContext = mContext;
+        bdInterna = new BDInterna(mContext);
+    }
+
     /**
      * Método para insertar un contacto en la BD Externa
      *
@@ -52,6 +60,9 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
+
+
+        System.out.println("DEBUG " + url);
         return leerUrl(url);
     }
 
@@ -60,7 +71,7 @@ public class BDExterna {
      *
      * @param path String con la url
      * @param uuid String con el numero de uuid
-     * @return devuelve un String con el resultado en JSON
+     * @return devuelve "OK o "ERROR"
      */
     public String insertarGaleria(String idusuario, String path, String uuid) {
         String url = BDExternaLinks.insertargaleria + idusuario +
@@ -73,6 +84,13 @@ public class BDExterna {
         return leerUrl(url);
     }
 
+    /**
+     * Método que inserta un domicilio en la base de datos externa
+     * @param id
+     * @param direccion
+     * @param uuid
+     * @return devuelve "OK o "ERROR"
+     */
     public String insertarDomicilio(int id, String direccion, String uuid) {
         String url = BDExternaLinks.insertardomicilio + id +
                 "&DIRECCION=" + direccion +
@@ -83,6 +101,13 @@ public class BDExterna {
         return leerUrl(url);
     }
 
+    /**
+     * Método que inserta un telefono en la base de datos externa
+     * @param id
+     * @param numero
+     * @param uuid
+     * @return devuelve "OK o "ERROR"
+     */
     public String insertarTelefono(int id, String numero, String uuid) {
         String url = BDExternaLinks.insertartelefono + id +
                 "&NUMERO=" + numero.replace("+", "%2B") +
@@ -97,10 +122,10 @@ public class BDExterna {
      * Método que elimina toda la base de datos externa del usuario UUID escogido
      *
      * @param uuid
-     * @return Devuelve la cadena String "Error" (determinado en el php) si algo falla
+     * @return devuelve "OK o "ERROR"
      */
     public String borrartodo(String uuid) {
-        String url = BDExternaLinks.eliminatodo + uuid;
+        String url = BDExternaLinks.eliminacontacto + uuid;
         return leerUrl(url);
     }
 
@@ -112,21 +137,25 @@ public class BDExterna {
      */
     public String leerUrl(String pagina) {
 
-        String inputLine = "";
+        String inputLine = "OK";
         try {
             URL url = new URL(pagina);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-            while ((inputLine = in.readLine()) != null);
-            inputLine = inputLine + inputLine;
+     /*       while ((inputLine = in.readLine()) != null);
+            System.out.println("DEBUG input " + inputLine + " url " + url);
+            inputLine = inputLine + inputLine;*/
 
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            inputLine = "ERROR";
         } catch (IOException e) {
             e.printStackTrace();
+            inputLine= "ERROR";
         }
 
+        System.out.println("DEBUG SALIDA INPUTLINE " + inputLine);
         return inputLine;
     }
 
@@ -141,7 +170,7 @@ public class BDExterna {
      * @param imagen
      * @param uuid
      * @param mContext
-     * @return
+     * @return devuelve "OK o "ERROR"
      */
     public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid, Context mContext) {
 
@@ -192,12 +221,23 @@ public class BDExterna {
     }
 
 
+    /**
+     * Método que elimina a un usuario
+     * @param uuid
+     */
     public void borrarUsuario(String uuid) {
         String url = BDExternaLinks.borrarUsuario + uuid;
         url = url.replace(" ", "%20");
+
+        System.out.println("DEBUG ELIMINA " + url);
         leerUrl(url);
     }
 
+    /**
+     * Mñetodo statico que devuelve un ArrayList de UsuariosGaleria
+     * @param mContext
+     * @return
+     */
     public static ArrayList<UsuariosGaleria> devuelveUsuarios(Context mContext) {
 
         ArrayList<UsuariosGaleria> devuelta = new ArrayList<>();
@@ -240,6 +280,11 @@ public class BDExterna {
         return devuelta;
     }
 
+    /**
+     * Método statico que devuelve un ArrayList de GaleriaCompartir
+     * @param mContext
+     * @return
+     */
     public static ArrayList<GaleriaCompartir> devuelveGaleriaCompleta(Context mContext) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
@@ -332,7 +377,7 @@ public class BDExterna {
         return leerUrl(url);
     }
 
-    public static boolean compruebaConexion(Context context)
+    public static boolean hayconexion(Context context)
     {
         boolean connected = false;
         ConnectivityManager connec = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -347,5 +392,20 @@ public class BDExterna {
             }
         }
         return connected;
+    }
+
+    public static boolean hayservidor(String servidorping){
+        boolean servidor = false;
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + servidorping);
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

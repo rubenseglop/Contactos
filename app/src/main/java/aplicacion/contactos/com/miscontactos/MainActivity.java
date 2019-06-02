@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
         bdInterna = new BDInterna(this);
-        bdExterna = new BDExterna();
+        bdExterna = new BDExterna(this);
 
         orderby ="Nombre";
         tv_orden = findViewById(R.id.ordenadopor);
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param item
      * @return
      */
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -175,40 +175,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (hasLogin()) {
-            if (id == R.id.action_compartir) {
-                Intent i = new Intent(this, Compartir.class);
-                startActivity(i);
-                return true;
-            }
-            if (id == R.id.exportar) {
-                if (hasLogin()) {
-                    exportarWebService();
-                }
-            }
-            if (id == R.id.importar) {
-                if (hasLogin()) {
-                    RestaurarWebService();
-                }
-            }
-        } else if (id != R.id.configuracion) { Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();}
-        if (id == R.id.configuracion) {
 
-            if (hasLogin()) {
-                Intent i = new Intent(this, LoginActivity.class);
-
-                System.out.println("DEBUG EDITTTTTT");
-                i.putExtra("EDIT", true);
-                startActivity(i);
-                return true;
-            } else {
-                Intent i = new Intent(this, LoginActivity.class);
-                System.out.println("DEBUG PRIEMRRRRAS");
-                startActivity(i);
-                return true;
-            }
+        if (id == R.id.action_compartir) {
+            Intent i = new Intent(this, Compartir.class);
+            startActivity(i);
+            return true;
+        }
+        if (id == R.id.exportar) {
+            ExportarWebService();
+        }
+        if (id == R.id.importar) {
+            RestaurarWebService();
         }
 
+        if (id == R.id.configuracion) {
+            if (BDExterna.hayconexion(this)){
+                if (bdInterna.hayUUID()) {
+
+                    // Si tiene identificador, ya fue creado previamente, por lo tanto edito
+                    Intent i = new Intent(this, LoginActivity.class);
+                    i.putExtra("EDIT", true);
+                    startActivity(i);
+                    return true;
+                } else {
+
+                    // No tiene un identificador, por lo tanto es nuevo.
+                    Intent i = new Intent(this, LoginActivity.class);
+                    startActivity(i);
+                    return true;
+                }
+            } else {
+                Toast.makeText(this, "No hay conexion a internet", Toast.LENGTH_SHORT).show();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -216,45 +215,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Método que lee la base de datos externa y la clona en la interna SQLITE
      */
     private void RestaurarWebService() {
-        // muestra un dialogo con aceptar o cancelar
-        Boolean error_conexion = BDExterna.compruebaConexion(this);
-        if (error_conexion){
-            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-            dialogo1.setTitle(R.string.importante);
-            dialogo1.setMessage(R.string.mensaje_restaurar);
-            dialogo1.setCancelable(false);
-            dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
-                public void onClick(DialogInterface dialogo1, int id) {
+        if (BDExterna.hayconexion(this)) {
+            if (bdInterna.hayUUID() == true) {
+                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
 
-                    // en el caso de aceptar el dialog
-                    if (bdExterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
-                        bdInterna.borrarTodo();
+                    // muestra un dialogo con aceptar o cancelar
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+                    dialogo1.setTitle(R.string.importante);
+                    dialogo1.setMessage(R.string.mensaje_restaurar);
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
-                        String UUID = bdInterna.getUniqueID();
+                        public void onClick(DialogInterface dialogo1, int id) {
 
-                        if (UUID.length() != 0) {
-                            WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
-                            WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
-                            WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
-                        } else {
-                            Toast.makeText(MainActivity.this, R.string.error_configurar_perfil, Toast.LENGTH_SHORT).show();
+                            // en el caso de aceptar el dialog
+                            if (bdExterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
+                                bdInterna.borrarTodo();
+
+                                String UUID = bdInterna.getUniqueID();
+
+                                if (UUID.length() != 0) {
+                                    WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                                    WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                                    WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.error_configurar_perfil, Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
+                            }
                         }
+                    });
+                    dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            // en el caso de cancelar (no hago nada)
+                        }
+                    });
+                    dialogo1.show();// fin muestra dialog aceptar o cancelar}
 
-                    } else {
-                        Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
-                    }
+
                 }
-            });
-            dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogo1, int id) {
-                    // en el caso de cancelar (no hago nada)
-                }
-            });
-            dialogo1.show();// fin muestra dialog aceptar o cancelar}
+            } else {
+                Toast.makeText(this, "Debes entrar a CONFIGURACION", Toast.LENGTH_SHORT).show();
 
-        } else Toast.makeText(this, R.string.errorconex, Toast.LENGTH_SHORT).show();
+            }
 
+        } else {
+            Toast.makeText(this, "No hay conexion", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     /**
@@ -290,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void StringToBaseDatosInterna(String tabla, String jsonString) {
 
-        Boolean error_conexion=false;
+        boolean error_conexion=false;
         if (tabla == "CON") {
             try {
                 JSONArray jArray = new JSONArray(jsonString);
@@ -370,10 +381,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private boolean hasLogin() {
+    /*private boolean hasLogin() {
 
         if (BDExterna.compruebaConexion(this)){
-            if (bdInterna.leerUUID()) {
+            if (bdInterna.hayUUID()) {
                 return true;
             } else {
                 Toast.makeText(this, "Error, servidor base de datos caido. Inténtelo más adelante", Toast.LENGTH_SHORT).show();
@@ -383,95 +394,113 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "No tienes conexión internet", Toast.LENGTH_SHORT).show();
             return false;
         }
-    }
+    }*/
 
-    private void exportarWebService() {
+    private void ExportarWebService() {
 
-        Boolean error_conexion = !hasLogin();
-        String error;
+        boolean conexion = true;
 
-        bdExterna.borrartodo(BDInterna.getUniqueID());
+        if (BDExterna.hayconexion(this)) {
+            if (bdInterna.hayUUID() == true) {
+                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                    bdExterna.borrarUsuario(BDInterna.getUniqueID());
 
-        if (!error_conexion) {
-            for (Contacto contacto : contactos) {
-                String varId = Integer.toString(contacto.getId()),
-                        varFoto = contacto.getFoto(),
-                        varNombre = contacto.getNombre(),
-                        varApellidos = contacto.getApellidos(),
-                        varCorreo = contacto.getCorreo(),
-                        varUUID = bdInterna.getUniqueID();
-                int varGaleria = contacto.getGaleria_id(),
-                        varDireccion = contacto.getDireccion_id(),
-                        varTelefono = contacto.getTelefono_id();
-                galerias = contacto.getGalerias();
-                domicilios = contacto.getDomicilios();
-                telefonos = contacto.getTelefonos();
+                    for (Contacto contacto : contactos) {
+                        String varId = Integer.toString(contacto.getId()),
+                                varFoto = contacto.getFoto(),
+                                varNombre = contacto.getNombre(),
+                                varApellidos = contacto.getApellidos(),
+                                varCorreo = contacto.getCorreo(),
+                                varUUID = bdInterna.getUniqueID();
+                        int varGaleria = contacto.getGaleria_id(),
+                                varDireccion = contacto.getDireccion_id(),
+                                varTelefono = contacto.getTelefono_id();
+                        galerias = contacto.getGalerias();
+                        domicilios = contacto.getDomicilios();
+                        telefonos = contacto.getTelefonos();
 
-                if (varId == null || varId.length() == 0) {
-                    varId = "";
-                }
-                if (varFoto == null || varFoto.length() == 0) {
-                    varFoto = "";
-                }
-                if (varNombre == null || varNombre.length() == 0) {
-                    varNombre = "";
-                }
-                if (varApellidos == null || varApellidos.length() == 0) {
-                    varApellidos = "";
-                }
-                if (varCorreo == null || varCorreo.length() == 0) {
-                    varCorreo = "";
-                }
-
-                 error = bdExterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
-                        varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
-
-                if (error.equals("ERROR") || error==null || error.isEmpty()) {
-                    error_conexion = true;
-                }
-
-                if (error_conexion == false) {
-                    for (Domicilio domicilio : domicilios) {
-
-                        int varIdDOM = domicilio.getId();
-                        String varDireccionDOM = domicilio.getDireccion();
-                        if (varDireccionDOM == null || varDireccionDOM.length() == 0) {
-                            varDireccionDOM = "";
+                        if (varId == null || varId.length() == 0) {
+                            varId = "";
+                        }
+                        if (varFoto == null || varFoto.length() == 0) {
+                            varFoto = "";
+                        }
+                        if (varNombre == null || varNombre.length() == 0) {
+                            varNombre = "";
+                        }
+                        if (varApellidos == null || varApellidos.length() == 0) {
+                            varApellidos = "";
+                        }
+                        if (varCorreo == null || varCorreo.length() == 0) {
+                            varCorreo = "";
                         }
 
-                        error = bdExterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
-                        if (error.equals("ERROR") || error.isEmpty()) {
-                            error_conexion = true;
+                        String error = bdExterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
+                                varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
+
+                        String drbug = error;
+                        if (error.equals("OK")) {
+                            conexion = true;
+                        } else {
+                            Toast.makeText(this, "Se produjo un error al introducir un contacto", Toast.LENGTH_SHORT).show();
+                            conexion = false;
+                        }
+
+                        if (conexion == true) {
+                            for (Domicilio domicilio : domicilios) {
+
+                                int varIdDOM = domicilio.getId();
+                                String varDireccionDOM = domicilio.getDireccion();
+                                if (varDireccionDOM == null || varDireccionDOM.length() == 0) {
+                                    varDireccionDOM = "";
+                                }
+
+                                error = bdExterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
+                                if (error.equals("OK")) {
+                                    conexion = true;
+                                } else {
+                                    Toast.makeText(this, "Se produjo un error al introducir un domicilio", Toast.LENGTH_SHORT).show();
+                                    conexion = false;
+                                }
+                            }
+                        }
+
+                        if (conexion == true) {
+                            for (Telefono telefono : telefonos) {
+                                int varIdTel = telefono.getId();
+                                String varNumeroTel = telefono.getNumero();
+
+                                if (varNumeroTel == null || varNumeroTel.length() == 0) {
+                                    varNumeroTel = "";
+                                }
+
+                                error = bdExterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
+                                if (error.equals("OK")) {
+                                    conexion = true;
+                                } else {
+                                    Toast.makeText(this, "Se produjo un error al introducir un telefono", Toast.LENGTH_SHORT).show();
+                                    conexion = false;
+                                }
+                            }
                         }
                     }
-                }
-
-                if (error_conexion == false) {
-                    for (Telefono telefono : telefonos) {
-                        int varIdTel = telefono.getId();
-                        String varNumeroTel = telefono.getNumero();
-
-                        if (varNumeroTel == null || varNumeroTel.length() == 0) {
-                            varNumeroTel = "";
-                        }
-
-                        error = bdExterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
-                        if (error.equals("ERROR") || error.isEmpty()) {
-                            error_conexion = true;
-                        }
+                    if (contactos.size() != 0) {
+                        Toast.makeText(this, "Contactos exportados", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "No habia contactos que exportar. Se inicializó tu copia de seguridad externa", Toast.LENGTH_SHORT).show();
                     }
                 }
+            } else {
+                Toast.makeText(this, "Debes entrar a CONFIGURACION", Toast.LENGTH_SHORT).show();
+                conexion = false;
             }
+
+        } else {
+            Toast.makeText(this, "No hay conexion", Toast.LENGTH_SHORT).show();
+            conexion = false;
         }
 
-        if (error_conexion == false) {
-            if (contactos.size()==0){
-                Toast.makeText(this, "No hubo ningún contacto a exportar. Se eliminó la copia previa de seguridad", Toast.LENGTH_SHORT).show();
-            } else
-            Toast.makeText(MainActivity.this, R.string.contactos_export, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
-        }
+
     }
 
 

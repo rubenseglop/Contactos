@@ -78,7 +78,7 @@ public class Compartir extends AppCompatActivity {
 
 
         bdInterna = new BDInterna(this);
-        bdExterna = new BDExterna();
+        bdExterna = new BDExterna(this);
         bdInterna.actualizaContactos("NOMBRE", "ASC");
         contactos = bdInterna.contactos;
 

@@ -315,7 +315,7 @@ public class Anadir extends AppCompatActivity {
             bdInterna = new BDInterna(this);
 
             //Última ID de la tabla Usuarios (para generar un nuevo contacto)
-            int last_id = bdInterna.ultimo_id("USUARIOS");
+            int last_id = bdInterna.ultimo_id("CONTACTOS");
 
 
             //EDITO un contacto con sus ID's
