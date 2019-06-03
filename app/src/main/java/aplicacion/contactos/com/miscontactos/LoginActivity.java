@@ -115,8 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                                 } catch (NullPointerException e) {
                                     // No esta siendo editado, no lo borro
                                 } finally {
-
-                                    System.out.println("DEBUG INSERTA " + tv_nombreUsuario.getText() + url + BDInterna.getUniqueID());
                                     bdExterna.insertarUsuario(
                                             tv_nombreUsuario.getText(),
                                             tv_emailUsuario.getText(),
@@ -127,12 +125,11 @@ public class LoginActivity extends AppCompatActivity {
                                     );
                                 }
 
-                                //TODO verificar que tengo internet
                                 try {
                                     imageStoragePath.length();
                                     if (!imageStoragePath.equals("NO")) {
                                         myftp.uploadFile(new File(imageStoragePath), "perfil");
-                                        Toast.makeText(LoginActivity.this, "Guardada la configuracion", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, R.string.guardada, Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (NullPointerException e) {
                                     // va sin imagen
@@ -140,13 +137,13 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }
                         } else {
-                            Toast.makeText(LoginActivity.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Debes introducir un email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.introducir_email, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Debes introducir un nombre", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.introducir_nombre, Toast.LENGTH_SHORT).show();
                 }
             }
 

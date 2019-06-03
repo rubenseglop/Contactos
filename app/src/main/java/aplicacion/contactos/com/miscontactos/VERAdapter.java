@@ -1,8 +1,10 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +66,17 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
                 }
             }
             galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(nombrecompleto));
+
+
+
+            galleryViewHolder.fotogaleria.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickDialog(mContext, galeriaCompartida.get(i).getPathFoto());
+                }
+            });
+
+
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
         }
@@ -95,5 +108,25 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     private String nombreArchivo(String path) {
         File f = new File(path);
         return f.getName();
+    }
+
+    private void clickDialog(Context mContext, String imagen) {
+        AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
+        LayoutInflater factory = LayoutInflater.from(mContext);
+        final View view = factory.inflate(R.layout.imagen_dialog, null);
+        ImageView imageView = view.findViewById(R.id.dialog_imageview);
+
+        Glide.with(mContext)
+                .load(imagen)
+                .into(imageView);
+
+        alertadd.setView(view);
+        alertadd.setNeutralButton(R.string.cerrar, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+
+            }
+        });
+
+        alertadd.show();
     }
 }

@@ -1,14 +1,17 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -55,10 +58,17 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
                     .load(galeriaCompartida.get(i).getPathFoto())
                     .into(galleryViewHolder.fotogaleria);
 
-            //galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
             galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(galeriaCompartida.get(i).getPathFoto()));
+            selectedUsuarioGaleriaRecyclerView = new GaleriaCompartir(galeriaCompartida.get(i).getId(),
+                    galeriaCompartida.get(i).getPathFoto(),galeriaCompartida.get(i).getUuid());
 
-            selectedUsuarioGaleriaRecyclerView = new GaleriaCompartir(galeriaCompartida.get(i).getId(),galeriaCompartida.get(i).getPathFoto(),galeriaCompartida.get(i).getUuid());
+
+            galleryViewHolder.fotogaleria.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickDialog(mContext, galeriaCompartida.get(i).getPathFoto());
+                }
+            });
 
             selected.put(i,selectedUsuarioGaleriaRecyclerView);
         } catch (Exception e) {
@@ -92,6 +102,26 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     private String nombreArchivo(String path) {
         File f = new File(path);
         return f.getName();
+    }
+
+    private void clickDialog(Context mContext, String imagen) {
+        AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
+        LayoutInflater factory = LayoutInflater.from(mContext);
+        final View view = factory.inflate(R.layout.imagen_dialog, null);
+        ImageView imageView = view.findViewById(R.id.dialog_imageview);
+
+        Glide.with(mContext)
+                .load(imagen)
+                .into(imageView);
+
+        alertadd.setView(view);
+        alertadd.setNeutralButton(R.string.cerrar, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+
+            }
+        });
+
+        alertadd.show();
     }
 }
 

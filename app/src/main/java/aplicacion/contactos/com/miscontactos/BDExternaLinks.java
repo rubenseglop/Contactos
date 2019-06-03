@@ -4,7 +4,7 @@ public class BDExternaLinks {
 
 
     //static String SERVIDOR = "iesayala.ddns.net";
-    static String SERVIDOR = "miscontactosrsl.webcindario.com";
+    static String SERVIDOR = "webcindario.com";
 
     //static String LINKS = "http://iesayala.ddns.net/BDSegura/misContactos/";   //1 IESAyala
     static String LINKS = "https://miscontactosrsl.webcindario.com/MisContactos/";   //2 Miarroba
@@ -24,8 +24,6 @@ public class BDExternaLinks {
     protected static String insertartelefono = LINKS + "insertartelefono.php?ID=";
     protected static String eliminacontacto = LINKS + "eliminacontacto.php?UUIDUNIQUE=";
     protected static String eliminaGaleria = LINKS + "eliminagaleria.php?IDUSUARIO=";
-    protected static String verUUID = LINKS + "verUUID.php";
-    protected static String uploadgaleria = LINKS + "GALERIA/uploadgaleria.php";
 
     //FTP
     static final String FTP_HOST= "ftp.webcindario.com";

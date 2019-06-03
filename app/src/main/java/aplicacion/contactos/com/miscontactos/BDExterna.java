@@ -228,8 +228,6 @@ public class BDExterna {
     public void borrarUsuario(String uuid) {
         String url = BDExternaLinks.borrarUsuario + uuid;
         url = url.replace(" ", "%20");
-
-        System.out.println("DEBUG ELIMINA " + url);
         leerUrl(url);
     }
 
@@ -398,6 +396,7 @@ public class BDExterna {
         boolean servidor = false;
         Runtime runtime = Runtime.getRuntime();
         try {
+            System.out.println("DEBUG ping a " + servidorping);
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + servidorping);
             int exitValue = ipProcess.waitFor();
             return (exitValue == 0);

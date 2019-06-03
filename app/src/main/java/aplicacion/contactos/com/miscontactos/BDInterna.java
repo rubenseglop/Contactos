@@ -1,6 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -165,8 +164,6 @@ public class BDInterna extends SQLiteOpenHelper {
             do {
                 id = c.getString(0);
                 if (id != null) {
-
-                    System.out.println("DEBUG INTERNA id" + id);
                     uniqueID = id;
                     result = true;
                 }
@@ -192,16 +189,16 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
             } while (c.moveToNext());
         }
-        if (id.length() == 0) {
-            if (db != null) {
-                // Creamos el registro a insertarContacto
-                uniqueID = UUID.randomUUID().toString(); // creo un identificador unico
-                ContentValues valores = new ContentValues();
-                valores.put("ID", uniqueID);
-                //insertamos el registro en la Base de Datos
-                db.insert("UNIQUE_UUID", null, valores);
-            }
+
+        if (db != null) {
+            // Creamos el registro a insertarContacto
+            uniqueID = UUID.randomUUID().toString(); // creo un identificador unico
+            ContentValues valores = new ContentValues();
+            valores.put("ID", uniqueID);
+            //insertamos el registro en la Base de Datos
+            db.insert("UNIQUE_UUID", null, valores);
         }
+
         db.close();
     }
 
@@ -493,7 +490,6 @@ public class BDInterna extends SQLiteOpenHelper {
         } else datosId = new int[0];
         cursor.close();
         return datosId;
-
     }
 
     /**

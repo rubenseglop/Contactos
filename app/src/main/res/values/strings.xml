@@ -71,11 +71,21 @@
     <string name="rellenartelefono">Debes rellenar un número antes de crear otro</string>
     <string name="errorfoto">Error. Fallo al capturar una foto</string>
     <string name="configuracion">Configuración</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Login Activity</string>
     <string name="title_activity_ver_compartidos">verCompartidos</string>
     <string name="borrarcontacto">¿Deseas eliminar este contacto?</string>
     <string name="boton_si">Si</string>
     <string name="boton_no">No</string>
     <string name="error_configurar_perfil">Para acceder a la base de datos externa, previamente debes configurar un perfil</string>
     <string name="entrar_config">Debes entrar antes a configuración</string>
+    <string name="cerrar">Cerrar</string>
+    <string name="problema_servidor">Hubo un problema con el servidor</string>
+    <string name="guardada">Guardada la configuración</string>
+    <string name="no_conexion">No hay conexion</string>
+    <string name="introducir_email">Debes introducir un email</string>
+    <string name="introducir_nombre">Debes introducir un nombre</string>
+    <string name="error_contacto">Se produjo un error al introducir un contacto</string>
+    <string name="error_domicilio">Se produjo un error al introducir un domicilio</string>
+    <string name="error_telefono">Se produjo un error al introducir un telefono</string>
+    <string name="no_contactos">No habia contactos que exportar. Se inicializó tu copia de seguridad externa</string>
 </resources>

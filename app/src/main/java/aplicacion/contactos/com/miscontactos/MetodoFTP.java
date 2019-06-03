@@ -1,7 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -26,6 +25,9 @@ public class MetodoFTP {
 
     public void uploadFile(File fileName, String carpeta){
 
+        File reducido = new File(ComprimeFoto.reducirfoto(String.valueOf(fileName), mContext));
+
+
         FTPClient client = new FTPClient();
         try {
             client.connect(FTP_HOST,21);
@@ -39,7 +41,7 @@ public class MetodoFTP {
 
             client.changeDirectory("/web/uploads/"+carpeta);
 
-            client.upload(fileName);
+            client.upload(reducido);
         } catch (Exception e) {
             e.printStackTrace();
             try {
@@ -50,30 +52,32 @@ public class MetodoFTP {
         }
     }
 
+
+
     private boolean comprobarCarpeta(FTPClient client, String carpeta) throws IOException, FTPIllegalReplyException, FTPException, FTPDataTransferException, FTPAbortedException, FTPListParseException {
         Boolean result = false;
         FTPFile[] list = client.list();
         for (int i = 0; i < list.length; i++) {
-            if (list[i].getName().equals(carpeta) && list[i].getSize()==0 && list[i].getType()==1 ){ result = true;}
+            if (list[i].getName().equals(carpeta) && list[i].getSize() == 0 && list[i].getType() == 1) {
+                result = true;
+            }
 
         }
-        System.out.println("DEBUG CARPETAS " + result);
         return result;
     }
 
-    public void deleteFile(File fileName, String carpeta){
+    public void deleteFile(File fileName, String carpeta) {
 
         FTPClient client = new FTPClient();
         try {
-            client.connect(FTP_HOST,21);
+            client.connect(FTP_HOST, 21);
             client.login(FTP_USER, FTP_PASS);
             client.setType(FTPClient.TYPE_BINARY);
             client.changeDirectory("/web/uploads/");
 
             if (comprobarCarpeta(client, carpeta)) {
 
-                System.out.println("DEBUG CARPETA BORRADO " + carpeta + " - " + fileName.getName());
-                client.changeDirectory("/web/uploads/"+carpeta);
+                client.changeDirectory("/web/uploads/" + carpeta);
                 client.deleteFile(fileName.getName());
             }
 

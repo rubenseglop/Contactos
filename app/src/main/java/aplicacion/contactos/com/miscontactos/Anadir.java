@@ -130,11 +130,15 @@ public class Anadir extends AppCompatActivity {
                 }
                 StringDomicilio.clear();
                 for (int i = 0; i < editContacto.getDomicilios().size() ; i++) {
-                    StringDomicilio.add(editContacto.getDomicilios().get(i).getDireccion());
+                    if (!editContacto.getDomicilios().get(i).getDireccion().trim().equals("") || editContacto.getDomicilios().get(i).getDireccion().length() != 0) {
+                        StringDomicilio.add(editContacto.getDomicilios().get(i).getDireccion());
+                    }
                 }
                 StringTelefono.clear();
-                for (int i = 0; i < editContacto.getTelefonos().size() ; i++) {
-                    StringTelefono.add(editContacto.getTelefonos().get(i).getNumero());
+                for (int i = 0; i < editContacto.getTelefonos().size(); i++) {
+                    if (editContacto.getTelefonos().get(i).getNumero().trim().equals("") || editContacto.getTelefonos().get(i).getNumero().length() != 0) {
+                        StringTelefono.add(editContacto.getTelefonos().get(i).getNumero());
+                    }
                 }
             }
         } catch (NullPointerException e) {

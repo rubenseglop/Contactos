@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Instancio la clase BDInterna y BDExterna para crear una BD  en caso de no tenerla y tener los métodos para manejarla
+        //Instancio la clase BDInterna y BDExterna
         bdInterna = new BDInterna(this);
         bdExterna = new BDExterna(this);
 
@@ -177,9 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.action_compartir) {
-            Intent i = new Intent(this, Compartir.class);
-            startActivity(i);
-            return true;
+           IrCompartir();
         }
         if (id == R.id.exportar) {
             ExportarWebService();
@@ -205,10 +203,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     return true;
                 }
             } else {
-                Toast.makeText(this, "No hay conexion a internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.errorconex, Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void IrCompartir() {
+        Intent i = new Intent(this, Compartir.class);
+        startActivity(i);
     }
 
     /**
@@ -225,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dialogo1.setTitle(R.string.importante);
                     dialogo1.setMessage(R.string.mensaje_restaurar);
                     dialogo1.setCancelable(false);
-                    dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialogo1, int id) {
                             // en el caso de aceptar el dialog
@@ -236,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                         }
                     });
-                    dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogo1, int id) {
                             // en el caso de cancelar (no hago nada)
                         }
@@ -246,12 +249,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             } else {
-                Toast.makeText(this, "Debes entrar a CONFIGURACION", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
 
             }
 
         } else {
-            Toast.makeText(this, "No hay conexion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -430,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (error.equals("OK")) {
                             conexion = true;
                         } else {
-                            Toast.makeText(this, "Se produjo un error al introducir un contacto", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, R.string.error_contacto, Toast.LENGTH_SHORT).show();
                             conexion = false;
                         }
 
@@ -447,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (error.equals("OK")) {
                                     conexion = true;
                                 } else {
-                                    Toast.makeText(this, "Se produjo un error al introducir un domicilio", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, R.string.error_domicilio, Toast.LENGTH_SHORT).show();
                                     conexion = false;
                                 }
                             }
@@ -466,29 +469,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (error.equals("OK")) {
                                     conexion = true;
                                 } else {
-                                    Toast.makeText(this, "Se produjo un error al introducir un telefono", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, R.string.error_telefono, Toast.LENGTH_SHORT).show();
                                     conexion = false;
                                 }
                             }
                         }
                     }
                     if (contactos.size() != 0) {
-                        Toast.makeText(this, "Contactos exportados", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.contactos_export, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "No habia contactos que exportar. Se inicializó tu copia de seguridad externa", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.no_contactos, Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
-                Toast.makeText(this, "Debes entrar a CONFIGURACION", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
                 conexion = false;
             }
 
         } else {
-            Toast.makeText(this, "No hay conexion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
             conexion = false;
         }
-
-
     }
 
 

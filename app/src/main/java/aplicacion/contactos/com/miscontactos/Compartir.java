@@ -131,8 +131,8 @@ public class Compartir extends AppCompatActivity {
                         Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
                         intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
                         startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-                    } else Toast.makeText(Compartir.this, "Hubo un problema con el servidor", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(Compartir.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(Compartir.this, R.string.problema_servidor, Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -143,8 +143,8 @@ public class Compartir extends AppCompatActivity {
                     if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
                         Intent intent = new Intent(Compartir.this, verCompartidos.class);
                         startActivity(intent);
-                    } else Toast.makeText(Compartir.this, "Hubo un problema con el servidor", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(Compartir.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(Compartir.this, R.string.problema_servidor, Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_SHORT).show();
             }
         });
 

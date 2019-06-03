@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_login">
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,44 +21,47 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/nombre"
                 app:layout_constraintBottom_toTopOf="@+id/tv_emailUsuario"
-                app:layout_constraintEnd_toStartOf="@+id/tv_nombreUsuario"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/tv_nombreUsuario"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView3"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:text="Email"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_emailUsuario"
-                app:layout_constraintEnd_toStartOf="@+id/tv_emailUsuario"
+                app:layout_constraintEnd_toEndOf="@+id/textView3"
                 app:layout_constraintTop_toTopOf="@+id/tv_emailUsuario" />
 
             <EditText
                 android:id="@+id/tv_emailUsuario"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/tv_nombreUsuario" />
 
             <TextView
@@ -89,23 +93,28 @@
 
             <Button
                 android:id="@+id/bt_fotoUsuario"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/BotonEstilo"
+                android:layout_width="83dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="8dp"
                 android:text="Foto"
+                app:layout_constraintBottom_toTopOf="@+id/bt_aceptaConfig"
                 app:layout_constraintEnd_toEndOf="@+id/fotoUsuario"
                 app:layout_constraintStart_toStartOf="@+id/fotoUsuario"
                 app:layout_constraintTop_toBottomOf="@+id/fotoUsuario" />
 
             <Button
                 android:id="@+id/bt_aceptaConfig"
+                style="@style/BotonEstilo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/aceptar"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bt_fotoUsuario" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
