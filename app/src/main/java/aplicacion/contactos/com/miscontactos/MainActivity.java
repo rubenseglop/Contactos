@@ -228,24 +228,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialogo1, int id) {
-
                             // en el caso de aceptar el dialog
-                            if (bdExterna.leerUrl(BDExternaLinks.conexion) != null) { //comprobar conexion
-                                bdInterna.borrarTodo();
-
-                                String UUID = bdInterna.getUniqueID();
-
-                                if (UUID.length() != 0) {
-                                    WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
-                                    WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
-                                    WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
-                                } else {
-                                    Toast.makeText(MainActivity.this, R.string.error_configurar_perfil, Toast.LENGTH_SHORT).show();
-                                }
-
-                            } else {
-                                Toast.makeText(MainActivity.this, R.string.cancelconex, Toast.LENGTH_LONG).show();
-                            }
+                            bdInterna.borrarTodo();
+                            String UUID = bdInterna.getUniqueID();
+                            WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                            WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                            WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                         }
                     });
                     dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

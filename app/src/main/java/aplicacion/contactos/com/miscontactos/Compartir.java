@@ -34,7 +34,6 @@ public class Compartir extends AppCompatActivity {
 
     private Spinner spinner; //Declaro un Spinner
     private RecyclerView co; //Declaro un RecyclerView
-
     private ArrayList idSpinner = new ArrayList(); //Copia del ArrayList anterior, pero almacenando las ids
     private String selectedIdSpinner; //Contendrá la id del Spinner seleccionado en el adaptador
 
@@ -46,13 +45,11 @@ public class Compartir extends AppCompatActivity {
     private BDExterna bdExterna;
 
     private COAdapter adapter;
-
     private Button bt_anadirGaleria;
     private ImageButton bt_verCompartidos;
     private ImageButton bt_share;
 
-    MetodoFTP myftp = new MetodoFTP(this);
-
+    private MetodoFTP myftp = new MetodoFTP(this);
 
     public Compartir() {
         if (galeriaCompartir == null) {
@@ -75,41 +72,40 @@ public class Compartir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
         bdInterna = new BDInterna(this);
         bdExterna = new BDExterna(this);
         bdInterna.actualizaContactos("NOMBRE", "ASC");
+        bdInterna.hayUUID();
         contactos = bdInterna.contactos;
 
         bt_anadirGaleria = (Button) findViewById(R.id.bt_anadirGaleria);
         bt_verCompartidos = (ImageButton) findViewById(R.id.bt_vercompartido);
-        bt_share = (ImageButton) findViewById(R.id.bt_share);
+        /*bt_share = (ImageButton) findViewById(R.id.bt_share);*/
 
         galeriaCompartir.clear();
-
 
         // Carga un ArrayList para el Spinner de usuarios cogidos de la BDExterna (los toma a todos excepto al del móvil propietario)
         usuarios = BDExterna.devuelveUsuarios(this);
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
 
-                idSpinner.add(usuarios.get(i).getUUID());
-                spinnerContactosData.add(i, new SpinnerContactosData(usuarios.get(i).getNombre(), usuarios.get(i).getEmail(), usuarios.get(i).getPath()));
+            idSpinner.add(usuarios.get(i).getUUID());
+            spinnerContactosData.add(i, new SpinnerContactosData(usuarios.get(i).getNombre(), usuarios.get(i).getEmail(), usuarios.get(i).getPath()));
 
         }
         //Si hay menos de dos usuarios (no es posible compartir nada)
         if (spinnerContactosData.size()<2) {
             bt_anadirGaleria.setEnabled(false);
             bt_verCompartidos.setEnabled(false);
-            bt_share.setEnabled(false);
+            /*bt_share.setEnabled(false);*/
         } else {
             bt_anadirGaleria.setEnabled(true);
             bt_verCompartidos.setEnabled(true);
-            bt_share.setEnabled(true);
+            /*bt_share.setEnabled(true);*/
         }
 
         //Elimino el usuario del movil
+
         for (int i = 0; i < usuarios.size(); i++) {
             if (BDInterna.getUniqueID().equals(usuarios.get(i).getUUID())) {
                 idSpinner.remove(i);
@@ -117,18 +113,59 @@ public class Compartir extends AppCompatActivity {
             }
         }
 
-
-/*        ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
-        for (int i = 0; i < contactos.size(); i++) {
-            idSpinner.add(contactos.get(i).getId());
-            spinnerContactosData.add(i, new SpinnerContactosData(contactos.get(i).getNombre(), contactos.get(i).getFoto()));
-        }*/
-
         spinner = findViewById(R.id.spinner);
         SpinnerAdapter adapterSpinner = new SpinnerAdapter(this, R.layout.spinner_layout, R.id.spinner_nombre, spinnerContactosData);
         spinner.setAdapter(adapterSpinner);
 
         actualizarSpinner();
+
+
+        bt_anadirGaleria.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (BDExterna.hayconexion(Compartir.this)) {
+                    if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                        // https://github.com/myinnos/AwesomeImagePicker
+                        Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
+                        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
+                        startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                    } else Toast.makeText(Compartir.this, "Hubo un problema con el servidor", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(Compartir.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        bt_verCompartidos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BDExterna.hayconexion(Compartir.this)) {
+                    if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                        Intent intent = new Intent(Compartir.this, verCompartidos.class);
+                        startActivity(intent);
+                    } else Toast.makeText(Compartir.this, "Hubo un problema con el servidor", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(Compartir.this, "No hay conexion", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*bt_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Uri> arrayUri = new ArrayList<>();
+
+                for (int i = 0; i < galeriaCompartir.size(); i++) {
+                    Uri uri = Uri.fromFile(new File(galeriaCompartir.get(i).getPathFoto()));
+                    // start play with image uri
+                    System.out.println("DEBUG URI " + uri.getPath());
+                    arrayUri.add(uri);
+                }
+                Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
+                intentShareFile.setType("text/plain");
+                startActivity(intentShareFile);
+                actualizarGaleriadeSQL();
+            }
+        });*/
 
     }
 
@@ -150,11 +187,6 @@ public class Compartir extends AppCompatActivity {
         galeriaCompartir.clear();
 
         galeriaCompartir = BDExterna.devuelveGaleria(this, selectedIdSpinner);
-
-        /*Cursor c = bdInterna.busquedaGaleria(selectedIdSpinner);
-        while (c.moveToNext()) {
-            galeriaCompartir.add(new GaleriaCompartir(c.getString(1)));
-        }*/
 
         actualizarAdapter();
     }
@@ -194,35 +226,6 @@ public class Compartir extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(co);
     }
 
-    public void clickGaleria(View v) {
-        // https://github.com/myinnos/AwesomeImagePicker
-        Intent intent = new Intent(this, AlbumSelectActivity.class);
-        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
-        startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-    }
-
-    public void clickVerCompartido(View v) {
-        Intent intent = new Intent(this, verCompartidos.class);
-        startActivity(intent);
-    }
-
-    public void clickCompartirAndroid(View v){
-
-        ArrayList<Uri> arrayUri = new ArrayList<>();
-
-        for (int i = 0; i < galeriaCompartir.size(); i++) {
-            Uri uri = Uri.fromFile(new File(galeriaCompartir.get(i).getPathFoto()));
-            // start play with image uri
-            System.out.println("DEBUG URI " + uri.getPath());
-            arrayUri.add(uri);
-        }
-        Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
-        intentShareFile.setType("text/plain");
-        startActivity(intentShareFile);
-        actualizarGaleriadeSQL();
-    }
-
     /**
      * Al regresar de la activity de la cámara, recojo las fotos seleccionadas y las añado a galeriaCompartir
      * @param requestCode
@@ -232,9 +235,6 @@ public class Compartir extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
-
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected imagenes
@@ -269,7 +269,6 @@ public class Compartir extends AppCompatActivity {
             }
         }
         actualizarGaleriadeSQL();
-
     }
 
 
@@ -287,15 +286,9 @@ public class Compartir extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
             HashMap selected = COAdapter.selected;
-            //galeriaCompartir.remove(viewHolder.getAdapterPosition());
-            //bdInterna.borraGaleria((String) deIdGaleria_Path.get(viewHolder.getAdapterPosition()));
-
             GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
-
             bdExterna.borraGaleria(sel.getId(),sel.getPathFoto(),sel.getUuid());
-
             myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
-
             Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
             actualizarGaleriadeSQL();
             //actualizarAdapter();

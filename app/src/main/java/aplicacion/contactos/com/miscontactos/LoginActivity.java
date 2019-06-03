@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
 
             for (int i = 0; i < usuarios.size(); i++) {
+                bdInterna.hayUUID();
                 if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
                     tv_nombreUsuario.setText(usuarios.get(i).getNombre());
                     tv_emailUsuario.setText(usuarios.get(i).getEmail());
@@ -103,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                         } catch (NullPointerException e) {
                             url = "NO";
                         }
-                        //TODO COMPRUEBA INTERNET
+
                         if (BDExterna.hayconexion(LoginActivity.this)) {
                             if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
 
