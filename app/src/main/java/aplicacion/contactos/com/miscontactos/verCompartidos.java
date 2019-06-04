@@ -21,7 +21,6 @@ public class verCompartidos extends AppCompatActivity {
         setContentView(R.layout.activity_ver_compartidos);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 galeriaCompartir=new ArrayList<>();

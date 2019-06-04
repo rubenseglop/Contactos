@@ -56,13 +56,10 @@ public class CameraUtils {
         BitmapFactory.Options options = new BitmapFactory.Options();
 
         // downsizing image as it throws OutOfMemory Exception for larger
-        // imagenes
+        // images
         options.inSampleSize = sampleSize;
 
-        Bitmap imagen = BitmapFactory.decodeFile(filePath, options);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        imagen.compress(Bitmap.CompressFormat.JPEG, 40, out);
-        return imagen;
+        return BitmapFactory.decodeFile(filePath, options);
     }
 
     /**

@@ -202,6 +202,24 @@ public class BDInterna extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void crearUUID(String uuid) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("UNIQUE_UUID", null, null);
+
+        if (db != null) {
+            // Creamos el registro a insertarContacto
+            uniqueID = uuid;
+            ContentValues valores = new ContentValues();
+            valores.put("ID", uniqueID);
+            //insertamos el registro en la Base de Datos
+            db.insert("UNIQUE_UUID", null, valores);
+        }
+
+        db.close();
+    }
+
+
+
     /**
      * Método que lee el UUID almacenado
      * @return Devuelvo el UUID
@@ -498,6 +516,10 @@ public class BDInterna extends SQLiteOpenHelper {
      */
     public ArrayList<Contacto> devuelveContactos() {
         return contactos;
+    }
+
+    public static void clearUUID(){
+        uniqueID = null;
     }
 
 }

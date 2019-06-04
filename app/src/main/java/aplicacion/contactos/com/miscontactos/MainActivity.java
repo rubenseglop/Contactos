@@ -188,21 +188,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.configuracion) {
-            if (BDExterna.hayconexion(this)){
-                if (bdInterna.hayUUID()) {
+            if (BDExterna.hayconexion(this)) {
+                Intent i = new Intent(this, LoginActivity.class);
+                startActivity(i);
+                return true;
 
-                    // Si tiene identificador, ya fue creado previamente, por lo tanto edito
-                    Intent i = new Intent(this, LoginActivity.class);
-                    i.putExtra("EDIT", true);
-                    startActivity(i);
-                    return true;
-                } else {
-
-                    // No tiene un identificador, por lo tanto es nuevo.
-                    Intent i = new Intent(this, LoginActivity.class);
-                    startActivity(i);
-                    return true;
-                }
             } else {
                 Toast.makeText(this, R.string.errorconex, Toast.LENGTH_SHORT).show();
             }
@@ -402,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (BDExterna.hayconexion(this)) {
             if (bdInterna.hayUUID() == true) {
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-                    bdExterna.borrarUsuario(BDInterna.getUniqueID());
+                    bdExterna.borrartodo(BDInterna.getUniqueID());
 
                     for (Contacto contacto : contactos) {
                         String varId = Integer.toString(contacto.getId()),

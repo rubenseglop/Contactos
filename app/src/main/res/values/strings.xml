@@ -90,4 +90,8 @@
     <string name="no_contactos">No habia contactos que exportar. Se inicializó tu copia de seguridad externa</string>
     <string name="salir">Vuelve a presionar para salir</string>
     <string name="noesemail">No corresponde con un email</string>
+    <string name="olvidada">Recuperar</string>
+    <string name="title_activity_recuperar_cuenta">RecuperarCuenta</string>
+    <string name="noexisteusuario">Ese usuario no existe, comprueba el email</string>
+    <string name="enviado_email">Se ha enviado un email con el código de respuesta</string>
 </resources>

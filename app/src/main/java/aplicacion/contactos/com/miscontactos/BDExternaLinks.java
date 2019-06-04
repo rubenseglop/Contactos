@@ -24,6 +24,7 @@ public class BDExternaLinks {
     protected static String insertartelefono = LINKS + "insertartelefono.php?ID=";
     protected static String eliminacontacto = LINKS + "eliminacontacto.php?UUIDUNIQUE=";
     protected static String eliminaGaleria = LINKS + "eliminagaleria.php?IDUSUARIO=";
+    protected static String enviaemail = LINKS + "email.php?EMAIL=";
 
     //FTP
     static final String FTP_HOST= "ftp.webcindario.com";

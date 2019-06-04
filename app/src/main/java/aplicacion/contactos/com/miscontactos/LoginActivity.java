@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     TextView tv_nombreUsuario,tv_emailUsuario;
     ImageView fotoUsuario;
-    Button bt_fotoUsuario,bt_aceptaConfig;
+    Button bt_fotoUsuario,bt_aceptaConfig, bt_cuentaOlvidada;
     MetodoFTP myftp;
 
     BDInterna bdInterna;
@@ -65,31 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         fotoUsuario = (ImageView) findViewById(R.id.fotoUsuario);
         bt_fotoUsuario = (Button) findViewById(R.id.bt_fotoUsuario);
         bt_aceptaConfig = (Button) findViewById(R.id.bt_aceptaConfig);
-
-
-        boolean intent_edit = false;
-        try {
-            intent_edit = (boolean) getIntent().getSerializableExtra("EDIT");
-        } catch (NullPointerException e) {
-            intent_edit = false;
-        }
-
-        if (intent_edit) {
-            ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
-
-            for (int i = 0; i < usuarios.size(); i++) {
-                bdInterna.hayUUID();
-                if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
-                    tv_nombreUsuario.setText(usuarios.get(i).getNombre());
-                    tv_emailUsuario.setText(usuarios.get(i).getEmail());
-                    if (!usuarios.get(i).getPath().equals("NO")) {
-                        Glide.with(LoginActivity.this)
-                                .load(usuarios.get(i).getPath())
-                                .into(fotoUsuario);
-                    }
-                }
-            }
-        }
+        bt_cuentaOlvidada = (Button) findViewById(R.id.bt_cuentaOlvidada);
 
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,9 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
 
                                     try {
-                                        if ((boolean) getIntent().getSerializableExtra("EDIT")) {
-                                            bdExterna.borrarUsuario(BDInterna.getUniqueID());
-                                        }
+                                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
+
                                     } catch (NullPointerException e) {
                                         // No esta siendo editado, no lo borro
                                     } finally {
@@ -165,6 +140,14 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     requestCameraPermission(MEDIA_TYPE_IMAGE);
                 }
+            }
+        });
+
+        bt_cuentaOlvidada.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,RecuperarCuenta.class));
             }
         });
     }
@@ -297,6 +280,37 @@ public class LoginActivity extends AppCompatActivity {
     private boolean esEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
+    }
+
+    @Override
+    public void onResume() {
+        boolean intent_edit=false;
+
+        try {
+            intent_edit = bdInterna.hayUUID();
+        } catch (NullPointerException e) {
+            intent_edit = true;
+        }
+
+        if (intent_edit==true) {
+            bt_cuentaOlvidada.setEnabled(false);
+            ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
+
+            for (int i = 0; i < usuarios.size(); i++) {
+                bdInterna.hayUUID();
+                if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
+                    tv_nombreUsuario.setText(usuarios.get(i).getNombre());
+                    tv_emailUsuario.setText(usuarios.get(i).getEmail());
+                    if (!usuarios.get(i).getPath().equals("NO")) {
+                        Glide.with(LoginActivity.this)
+                                .load(usuarios.get(i).getPath())
+                                .into(fotoUsuario);
+                    }
+                }
+            }
+        }
+
+        super.onResume();
     }
 
 }

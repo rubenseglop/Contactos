@@ -221,11 +221,23 @@ public class BDExterna {
     }
 
 
+
+    public String insertarClave(CharSequence email,Context mContext) {
+
+        String url = BDExternaLinks.enviaemail + email;
+        // Solución a los espacios (reemplazar por su valor hex)
+        url = url.replace(" ", "%20");
+        return leerUrl(url);
+    }
+
+
     /**
      * Método que elimina a un usuario
      * @param uuid
      */
     public void borrarUsuario(String uuid) {
+
+        System.out.println("DEBUG BORRADO USUARIO " + uuid);
         String url = BDExternaLinks.borrarUsuario + uuid;
         url = url.replace(" ", "%20");
         leerUrl(url);
@@ -258,7 +270,8 @@ public class BDExterna {
                             json_data.getString("NOMBRE"),
                             json_data.getString("EMAIL"),
                             json_data.getString("FOTO"),
-                            json_data.getString("UUIDUNIQUE")
+                            json_data.getString("UUIDUNIQUE"),
+                            json_data.getString("CLAVE")
                             ));
 
 

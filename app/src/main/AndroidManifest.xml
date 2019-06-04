@@ -23,6 +23,15 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+            android:name=".RecuperarCuenta"
+            android:label="@string/title_activity_recuperar_cuenta"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="aplicacion.contactos.com.miscontactos.LoginActivity" />
+        </activity>
+        <activity
             android:name=".verCompartidos"
             android:label="@string/title_activity_ver_compartidos"
             android:parentActivityName=".Compartir"
@@ -34,8 +43,8 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

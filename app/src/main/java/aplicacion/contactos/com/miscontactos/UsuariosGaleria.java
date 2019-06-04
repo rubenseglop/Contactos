@@ -5,13 +5,14 @@ public class UsuariosGaleria {
     String email;
     String path;
     String UUID;
+    String clave;
 
-    public UsuariosGaleria(String nombre, String email, String path, String UUID) {
+    public UsuariosGaleria(String nombre, String email, String path, String UUID, String clave) {
         this.nombre = nombre;
         this.email = email;
         this.path = path;
         this.UUID = UUID;
-
+        this.clave = clave;
     }
 
     public String getNombre() {
@@ -45,4 +46,8 @@ public class UsuariosGaleria {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public String getClave() { return clave;    }
+
+    public void setClave(String clave) { this.clave = clave;  }
 }
