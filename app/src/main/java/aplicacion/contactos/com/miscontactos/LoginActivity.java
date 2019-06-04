@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -94,50 +96,55 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (tv_nombreUsuario.length() != 0) {
                     if (tv_emailUsuario.length() != 0) {
-                        if (!bdInterna.hayUUID()) {  // intenta generar un UUID
-                            bdInterna.crearUUID();
-                        }
-                        String url = "";
-                        try {
-                            imageStoragePath.length();
-                            url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
-                        } catch (NullPointerException e) {
-                            url = "NO";
-                        }
 
-                        if (BDExterna.hayconexion(LoginActivity.this)) {
-                            if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-
-                                try {
-                                    if ((boolean) getIntent().getSerializableExtra("EDIT")) {
-                                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
-                                    }
-                                } catch (NullPointerException e) {
-                                    // No esta siendo editado, no lo borro
-                                } finally {
-                                    bdExterna.insertarUsuario(
-                                            tv_nombreUsuario.getText(),
-                                            tv_emailUsuario.getText(),
-                                            url,
-                                            fotoUsuario,
-                                            BDInterna.getUniqueID(),
-                                            LoginActivity.this
-                                    );
-                                }
-
-                                try {
-                                    imageStoragePath.length();
-                                    if (!imageStoragePath.equals("NO")) {
-                                        myftp.uploadFile(new File(imageStoragePath), "perfil");
-                                        Toast.makeText(LoginActivity.this, R.string.guardada, Toast.LENGTH_SHORT).show();
-                                    }
-                                } catch (NullPointerException e) {
-                                    // va sin imagen
-                                }
-                                finish();
+                        if (esEmail(String.valueOf(tv_emailUsuario.getText()))) {
+                            if (!bdInterna.hayUUID()) {  // intenta generar un UUID
+                                bdInterna.crearUUID();
                             }
+                            String url = "";
+                            try {
+                                imageStoragePath.length();
+                                url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                            } catch (NullPointerException e) {
+                                url = "NO";
+                            }
+
+                            if (BDExterna.hayconexion(LoginActivity.this)) {
+                                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+
+                                    try {
+                                        if ((boolean) getIntent().getSerializableExtra("EDIT")) {
+                                            bdExterna.borrarUsuario(BDInterna.getUniqueID());
+                                        }
+                                    } catch (NullPointerException e) {
+                                        // No esta siendo editado, no lo borro
+                                    } finally {
+                                        bdExterna.insertarUsuario(
+                                                tv_nombreUsuario.getText(),
+                                                tv_emailUsuario.getText(),
+                                                url,
+                                                fotoUsuario,
+                                                BDInterna.getUniqueID(),
+                                                LoginActivity.this
+                                        );
+                                    }
+
+                                    try {
+                                        imageStoragePath.length();
+                                        if (!imageStoragePath.equals("NO")) {
+                                            myftp.uploadFile(new File(imageStoragePath), "perfil");
+                                            Toast.makeText(LoginActivity.this, R.string.guardada, Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (NullPointerException e) {
+                                        // va sin imagen
+                                    }
+                                    finish();
+                                }
+                            } else  Toast.makeText(LoginActivity.this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
+
+
                         } else {
-                            Toast.makeText(LoginActivity.this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.noesemail, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, R.string.introducir_email, Toast.LENGTH_SHORT).show();
@@ -285,6 +292,11 @@ public class LoginActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean esEmail(String email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
     }
 
 }

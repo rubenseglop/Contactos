@@ -72,7 +72,7 @@
     <string name="errorfoto">Error. Fallo al capturar una foto</string>
     <string name="configuracion">Configuración</string>
     <string name="title_activity_login">Login Activity</string>
-    <string name="title_activity_ver_compartidos">verCompartidos</string>
+    <string name="title_activity_ver_compartidos">ver Compartidos</string>
     <string name="borrarcontacto">¿Deseas eliminar este contacto?</string>
     <string name="boton_si">Si</string>
     <string name="boton_no">No</string>
@@ -88,4 +88,6 @@
     <string name="error_domicilio">Se produjo un error al introducir un domicilio</string>
     <string name="error_telefono">Se produjo un error al introducir un telefono</string>
     <string name="no_contactos">No habia contactos que exportar. Se inicializó tu copia de seguridad externa</string>
+    <string name="salir">Vuelve a presionar para salir</string>
+    <string name="noesemail">No corresponde con un email</string>
 </resources>

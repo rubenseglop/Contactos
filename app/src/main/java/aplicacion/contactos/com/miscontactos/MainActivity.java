@@ -53,11 +53,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Domicilio> domicilios;
     private ArrayList<Telefono> telefonos;
 
-    private String orderby;
-    private String ordertype;
+    private String orderby, ordertype;
     private RVAdapter adapter;
     private RecyclerView rv;
     private TextView tv_orden;
+
+    private long inicio_tiempo;  // Usado en el método sobrescrito onBackPressed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,8 +211,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void IrCompartir() {
-        Intent i = new Intent(this, Compartir.class);
-        startActivity(i);
+        if (BDExterna.hayconexion(this)) {
+            if (bdInterna.hayUUID() == true) {
+                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                    Intent i = new Intent(this, Compartir.class);
+                    startActivity(i);
+                }
+            } else Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
+
     }
 
     /**
@@ -600,5 +608,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actualizar();
         super.onResume();
     }
+
+    @Override
+    public void onBackPressed(){
+
+        final int duracion = 2000; //2 seg
+        if (inicio_tiempo + duracion > System.currentTimeMillis()){
+            super.onBackPressed();
+            return;
+        }else {
+            Toast.makeText(this, R.string.salir, Toast.LENGTH_SHORT).show();
+        }
+        inicio_tiempo = System.currentTimeMillis();
+    }
+
 }
 
