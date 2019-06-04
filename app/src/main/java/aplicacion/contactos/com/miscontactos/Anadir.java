@@ -122,6 +122,7 @@ public class Anadir extends AppCompatActivity {
                 } else {
                     try {
                         fotoperfil.setImageBitmap(BitmapFactory.decodeFile(editContacto.getFoto()));
+                        imageStoragePath = editContacto.getFoto();
                     } catch (Exception e) {
                         System.out.println("DEBUG - Problema al leer la foto " + editContacto.getFoto());
                         // Muestro una foto en blanco

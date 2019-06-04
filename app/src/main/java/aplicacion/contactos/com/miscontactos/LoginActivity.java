@@ -302,10 +302,11 @@ public class LoginActivity extends AppCompatActivity {
                     tv_nombreUsuario.setText(usuarios.get(i).getNombre());
                     tv_emailUsuario.setText(usuarios.get(i).getEmail());
                     if (!usuarios.get(i).getPath().equals("NO")) {
+                        imageStoragePath = usuarios.get(i).getPath();
                         Glide.with(LoginActivity.this)
                                 .load(usuarios.get(i).getPath())
                                 .into(fotoUsuario);
-                    }
+                    } else imageStoragePath = "NO";
                 }
             }
         }

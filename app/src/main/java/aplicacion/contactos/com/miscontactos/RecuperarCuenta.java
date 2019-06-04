@@ -46,7 +46,6 @@ public class RecuperarCuenta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //todo confirmar correo
 
                 boolean existe = false;
                 ArrayList<UsuariosGaleria> usuarios = BDExterna.devuelveUsuarios(RecuperarCuenta.this);
@@ -57,15 +56,12 @@ public class RecuperarCuenta extends AppCompatActivity {
                     }
                 }
                 if (existe==true){
-                    //todo enviar email
 
                     bdExterna.insertarClave(String.valueOf(et_email_respuesta.getText()).trim(),RecuperarCuenta.this);
 
                     Toast.makeText(RecuperarCuenta.this, R.string.enviado_email, Toast.LENGTH_SHORT).show();
                     bt_enviarRespuesta.setEnabled(true);
                     et_respuesta.setEnabled(true);
-
-
 
 
                 } else
