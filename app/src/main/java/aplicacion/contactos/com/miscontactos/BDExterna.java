@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -277,16 +276,12 @@ public class BDExterna {
 
                 }
             } catch (JSONException e) {
-                Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(mContext, R.string.error_metodo);
             }
-        } catch (
-                MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorserver, Toast.LENGTH_LONG).show();
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorconex, Toast.LENGTH_LONG).show();
+        } catch (MalformedURLException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorserver);
+        } catch (IOException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorconex);
         }
         return devuelta;
     }
@@ -321,16 +316,12 @@ public class BDExterna {
                     ));
                 }
             } catch (JSONException e) {
-                Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(mContext, R.string.error_metodo);
             }
-        } catch (
-                MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorserver, Toast.LENGTH_LONG).show();
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorconex, Toast.LENGTH_LONG).show();
+        } catch (MalformedURLException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorserver);
+        } catch (IOException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorconex);
         }
         return devuelta;
     }
@@ -364,16 +355,12 @@ public class BDExterna {
 
                 }
             } catch (JSONException e) {
-                Toast.makeText(mContext, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(mContext, R.string.error_metodo);
             }
-        } catch (
-                MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorserver, Toast.LENGTH_LONG).show();
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-            Toast.makeText(mContext, R.string.errorconex, Toast.LENGTH_LONG).show();
+        } catch (MalformedURLException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorserver);
+        } catch (IOException e) {
+            ToastCustomizado.tostada(mContext, R.string.errorconex);
         }
         return devuelta;
     }

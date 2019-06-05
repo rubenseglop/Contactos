@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             } else {
-                Toast.makeText(this, R.string.errorconex, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(this, R.string.errorconex);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -207,9 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Intent i = new Intent(this, Compartir.class);
                     startActivity(i);
                 }
-            } else Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
-        } else Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
-
+            } else ToastCustomizado.tostada(this, R.string.entrar_config);
+        } else ToastCustomizado.tostada(this, R.string.no_conexion);
     }
 
     /**
@@ -247,13 +245,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             } else {
-                Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
-
+                ToastCustomizado.tostada(this, R.string.entrar_config);
             }
 
         } else {
-            Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
-
+            ToastCustomizado.tostada(this, R.string.no_conexion);
         }
     }
 
@@ -275,11 +271,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             StringToBaseDatosInterna(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this, R.string.errorserver, Toast.LENGTH_LONG).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.errorserver);
         } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.errorconex);
         }
     }
 
@@ -311,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (JSONException e) {
-                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
 
@@ -327,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (Exception e) {
-                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "DOM") {
@@ -342,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (JSONException e) {
-                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         } else if (error_conexion == false && tabla == "TEL") {
@@ -357,33 +351,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (JSONException e) {
-                Toast.makeText(this, R.string.error_metodo, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         }
 
         if (error_conexion == false) {
-            Toast.makeText(MainActivity.this, R.string.contactos_import, Toast.LENGTH_LONG).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.contactos_import);
             if (tabla == "TEL") actualizar();
         } else {
-            Toast.makeText(MainActivity.this, R.string.errorconex, Toast.LENGTH_LONG).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.errorconex);
         }
     }
-
-    /*private boolean hasLogin() {
-
-        if (BDExterna.compruebaConexion(this)){
-            if (bdInterna.hayUUID()) {
-                return true;
-            } else {
-                Toast.makeText(this, "Error, servidor base de datos caido. Inténtelo más adelante", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        } else {
-            Toast.makeText(this, "No tienes conexión internet", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }*/
 
     private void ExportarWebService() {
 
@@ -431,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (error.equals("OK")) {
                             conexion = true;
                         } else {
-                            Toast.makeText(this, R.string.error_contacto, Toast.LENGTH_SHORT).show();
+                            ToastCustomizado.tostada(MainActivity.this, R.string.error_contacto);
                             conexion = false;
                         }
 
@@ -448,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (error.equals("OK")) {
                                     conexion = true;
                                 } else {
-                                    Toast.makeText(this, R.string.error_domicilio, Toast.LENGTH_SHORT).show();
+                                    ToastCustomizado.tostada(MainActivity.this, R.string.error_domicilio);
                                     conexion = false;
                                 }
                             }
@@ -467,29 +446,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (error.equals("OK")) {
                                     conexion = true;
                                 } else {
-                                    Toast.makeText(this, R.string.error_telefono, Toast.LENGTH_SHORT).show();
+                                    ToastCustomizado.tostada(MainActivity.this, R.string.error_telefono);
                                     conexion = false;
                                 }
                             }
                         }
                     }
                     if (contactos.size() != 0) {
-                        Toast.makeText(this, R.string.contactos_export, Toast.LENGTH_SHORT).show();
+                        ToastCustomizado.tostada(MainActivity.this, R.string.contactos_export);
                     } else {
-                        Toast.makeText(this, R.string.no_contactos, Toast.LENGTH_SHORT).show();
+                        ToastCustomizado.tostada(MainActivity.this, R.string.no_contactos);
                     }
                 }
             } else {
-                Toast.makeText(this, R.string.entrar_config, Toast.LENGTH_SHORT).show();
+                ToastCustomizado.tostada(MainActivity.this, R.string.entrar_config);
                 conexion = false;
             }
 
         } else {
-            Toast.makeText(this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.no_conexion);
             conexion = false;
         }
     }
-
 
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
@@ -497,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            Toast.makeText(MainActivity.this, R.string.moveswype, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.moveswype);
             return false;
         }
 
@@ -513,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
              * Diálogo que muestra si deseamos o no borrar a un contacto
              */
             new AlertDialog.Builder(viewHolder.itemView.getContext())
-                    .setMessage(R.string.borrarcontacto)
+                    .setMessage(R.string.borrar_contacto)
                     .setPositiveButton(R.string.boton_si, (dialog, which) -> {
 
                         /* Al tener la lista desordenada, utilizo un HashMap con (Posicion, ID)
@@ -523,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         deId_Posicion = RVAdapter.deId_Posicion;
                         int id = (int) deId_Posicion.get(viewHolder.getAdapterPosition());
                         bdInterna.borraContacto(id);
-                        Toast.makeText(MainActivity.this, R.string.delswype, Toast.LENGTH_SHORT).show();
+                        ToastCustomizado.tostada(MainActivity.this, R.string.delswype);
                         actualizar();
                     })
                     .setNegativeButton(R.string.boton_no, (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
@@ -559,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     paint.setColor(Color.RED);
                     c.drawRoundRect(rightButton, corners, corners, paint);
-                    drawText(getString(R.string.borrado), c, rightButton, paint);
+                    drawText(getString(R.string.borrar), c, rightButton, paint);
                 }else {
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
@@ -607,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
             return;
         }else {
-            Toast.makeText(this, R.string.salir, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(MainActivity.this, R.string.salir);
         }
         inicio_tiempo = System.currentTimeMillis();
     }

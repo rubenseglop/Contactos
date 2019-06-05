@@ -16,8 +16,8 @@
 
             <ImageView
                 android:id="@+id/fotogaleria"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/ThumbnailFilasCompartir"
+                android:layout_height="@dimen/ThumbnailFilasCompartir"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="16dp" />
@@ -32,7 +32,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_toEndOf="@+id/fotogaleria"
                 android:layout_toRightOf="@+id/fotogaleria"
-                android:textSize="12sp" />
+                android:textSize="@dimen/texto_pequeno" />
 
         </RelativeLayout>
 

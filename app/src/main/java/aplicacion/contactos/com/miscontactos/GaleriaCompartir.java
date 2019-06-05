@@ -1,10 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-
-
 public class GaleriaCompartir{
 
     String id;

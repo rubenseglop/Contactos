@@ -29,12 +29,14 @@
             android:id="@+id/spinner_nombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/texto_normal" />
 
         <TextView
             android:id="@+id/spinneremail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/texto_pequeno" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

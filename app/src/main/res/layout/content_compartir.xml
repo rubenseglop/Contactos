@@ -70,7 +70,7 @@
         <Button
             android:id="@+id/bt_anadirGaleria"
 
-            style="@style/BotonEstilo"
+            style="@style/BotonEstiloNormal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -81,7 +81,7 @@
 
         <ImageButton
             android:id="@+id/bt_vercompartido"
-            style="@style/BotonEstilo"
+            style="@style/BotonEstiloNormal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"

@@ -5,6 +5,16 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">8dp</dimen>
-    <dimen name="texto_nombre">15sp</dimen>
-    <dimen name="texto_normal">12sp</dimen>
+    <dimen name="texto_botones">15sp</dimen>
+    <dimen name="texto_grande">18sp</dimen>
+    <dimen name="texto_normal">13sp</dimen>
+    <dimen name="texto_pequeno">12sp</dimen>
+    <dimen name="ThumbnailAnadirAncho">83dp</dimen>
+    <dimen name="ThumbnailAnadirAlto">110dp</dimen>
+    <dimen name="ThumbnailLoginAncho">200dp</dimen>
+    <dimen name="ThumbnailLoginAlto">200dp</dimen>
+    <dimen name="ThumbnailFilasCompartir">100dp</dimen>
+    <dimen name="ThumbnailFilasContactosAncho">58dp</dimen>
+    <dimen name="ThumbnailFilasContactosAlto">76dp</dimen>
+    <dimen name="ThumbailEditarLapiz">25dp</dimen>
 </resources>

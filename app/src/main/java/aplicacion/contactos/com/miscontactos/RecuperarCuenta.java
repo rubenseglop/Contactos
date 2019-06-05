@@ -2,14 +2,11 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,13 +56,13 @@ public class RecuperarCuenta extends AppCompatActivity {
 
                     bdExterna.insertarClave(String.valueOf(et_email_respuesta.getText()).trim(),RecuperarCuenta.this);
 
-                    Toast.makeText(RecuperarCuenta.this, R.string.enviado_email, Toast.LENGTH_SHORT).show();
+                    ToastCustomizado.tostada(RecuperarCuenta.this, R.string.enviado_email);
                     bt_enviarRespuesta.setEnabled(true);
                     et_respuesta.setEnabled(true);
 
 
                 } else
-                    Toast.makeText(RecuperarCuenta.this, R.string.noexisteusuario, Toast.LENGTH_SHORT).show();
+                    ToastCustomizado.tostada(RecuperarCuenta.this, R.string.noexisteusuario);
             }
         });
 
@@ -84,13 +81,13 @@ public class RecuperarCuenta extends AppCompatActivity {
                     }
                 }
                 if (recuperada == true) {
-                    Toast.makeText(RecuperarCuenta.this, "RECUPERADA!!", Toast.LENGTH_SHORT).show();
+                    ToastCustomizado.tostada(RecuperarCuenta.this, R.string.recuperada);
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("EDIT",true);
-                    setResult(RESULT_OK,returnIntent);
+                    returnIntent.putExtra("EDIT", true);
+                    setResult(RESULT_OK, returnIntent);
                     finish();
                 } else
-                    Toast.makeText(RecuperarCuenta.this, "Contraseña erronea", Toast.LENGTH_SHORT).show();
+                    ToastCustomizado.tostada(RecuperarCuenta.this, R.string.error_contrasena);
             }
         });
     }

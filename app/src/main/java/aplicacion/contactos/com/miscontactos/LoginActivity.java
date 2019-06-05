@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
@@ -108,24 +107,24 @@ public class LoginActivity extends AppCompatActivity {
                                         imageStoragePath.length();
                                         if (!imageStoragePath.equals("NO")) {
                                             myftp.uploadFile(new File(imageStoragePath), "perfil");
-                                            Toast.makeText(LoginActivity.this, R.string.guardada, Toast.LENGTH_SHORT).show();
+                                            ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
                                         }
                                     } catch (NullPointerException e) {
                                         // va sin imagen
                                     }
                                     finish();
                                 }
-                            } else  Toast.makeText(LoginActivity.this, R.string.no_conexion, Toast.LENGTH_SHORT).show();
-
+                            } else
+                                ToastCustomizado.tostada(LoginActivity.this, R.string.no_conexion);
 
                         } else {
-                            Toast.makeText(LoginActivity.this, R.string.noesemail, Toast.LENGTH_SHORT).show();
+                            ToastCustomizado.tostada(LoginActivity.this, R.string.noesemail);
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, R.string.introducir_email, Toast.LENGTH_SHORT).show();
+                        ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_email);
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, R.string.introducir_nombre, Toast.LENGTH_SHORT).show();
+                    ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_nombre);
                 }
             }
 
@@ -253,14 +252,12 @@ public class LoginActivity extends AppCompatActivity {
             previewCapturedImage();
         } else if (resultCode == RESULT_CANCELED) {
             // Foto cancelada, muestro un Toast
-            Toast.makeText(getApplicationContext(),
-                    R.string.canceladoFoto, Toast.LENGTH_SHORT)
-                    .show();
+            ToastCustomizado.tostada(LoginActivity.this, R.string.foto_cancelada);
+
         } else {
             // Fallo al tomar la foto, muestro un Toast
-            Toast.makeText(getApplicationContext(),
-                    R.string.errorfoto, Toast.LENGTH_SHORT)
-                    .show();
+            ToastCustomizado.tostada(LoginActivity.this, R.string.errorfoto);
+
         }
     }
 

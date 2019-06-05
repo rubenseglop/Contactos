@@ -17,7 +17,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="BotonEstilo">
+    <style name="BotonEstiloNormal">
         <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">38dp</item>
         <item name="android:capitalize">characters</item>
@@ -27,12 +27,34 @@
         <item name="android:shadowRadius">2</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
-        <item name="android:textSize">8pt</item>
-        <item name="android:background">#86B667</item>
+        <item name="android:textSize">@dimen/texto_botones</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@drawable/boton_normal</item>
         <item name="android:radius">25dp</item>
-        <item name="android:startColor">#f1f1f2</item>
-        <item name="android:centerColor">#e7e7e8</item>
-        <item name="android:endColor">#f1f1f2</item>
+    </style>
+
+
+    <style name="BotonEstiloRedondo">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:capitalize">characters</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:shadowDx">1.2</item>
+        <item name="android:shadowDy">1.2</item>
+        <item name="android:shadowRadius">2</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textSize">@dimen/texto_botones</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:shape">@drawable/boton_redondo</item>
+        <item name="android:background">@drawable/boton_redondo</item>
+        <item name="android:radius">25dp</item>
+    </style>
+
+    <style name="TextoPantalla">
+        <item name="android:capitalize">characters</item>
+
+        <item name="android:typeface">monospace</item>
     </style>
 
 </resources>

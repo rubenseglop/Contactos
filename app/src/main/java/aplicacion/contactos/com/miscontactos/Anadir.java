@@ -14,17 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,9 +147,7 @@ public class Anadir extends AppCompatActivity {
 
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
-            Toast.makeText(getApplicationContext(),
-                    R.string.error_camara,
-                    Toast.LENGTH_LONG).show();
+            ToastCustomizado.tostada(Anadir.this, R.string.error_camara);
             finish();
         }
         /**
@@ -180,19 +177,14 @@ public class Anadir extends AppCompatActivity {
                             StringDomicilio.add("");
                             actualizarAdaptador();
                         } else {
-                            Toast toast = Toast.makeText(Anadir.this,R.string.rellenardomicilio, Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
-
+                            ToastCustomizado.tostada(Anadir.this, R.string.rellenardomicilio);
                         }
                     } else {
                         StringDomicilio.add("");
                         actualizarAdaptador();
                     }
                 }
-                else
-                    Toast.makeText(Anadir.this, R.string.limite5,
-                            Toast.LENGTH_LONG).show();
+                else ToastCustomizado.tostada(Anadir.this,R.string.limite5);
             }
         });
 
@@ -208,10 +200,7 @@ public class Anadir extends AppCompatActivity {
                             StringTelefono.add("");
                             actualizarAdaptador();
                         } else {
-                            Toast toast = Toast.makeText(Anadir.this,R.string.rellenartelefono, Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
-
+                            ToastCustomizado.tostada(Anadir.this, R.string.rellenartelefono);
                         }
                     } else {
                         StringTelefono.add("");
@@ -219,8 +208,7 @@ public class Anadir extends AppCompatActivity {
                     }
                 }
                 else
-                    Toast.makeText(Anadir.this, R.string.limite3,
-                            Toast.LENGTH_LONG).show();
+                    ToastCustomizado.tostada(Anadir.this, R.string.limite3);
             }
         });
     }
@@ -306,7 +294,7 @@ public class Anadir extends AppCompatActivity {
 
         boolean error = false;
         if (tv_nombre.getText().length() == 0) {
-            Toast.makeText(this, R.string.minimo_nombre, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(Anadir.this, R.string.minimo_nombre);
             error = true;
         }
         //guardar
@@ -397,14 +385,10 @@ public class Anadir extends AppCompatActivity {
             previewCapturedImage();
         } else if (resultCode == RESULT_CANCELED) {
             // Foto cancelada, muestro un Toast
-            Toast.makeText(getApplicationContext(),
-                    R.string.canceladoFoto, Toast.LENGTH_SHORT)
-                    .show();
+            ToastCustomizado.tostada(Anadir.this, R.string.foto_cancelada);
         } else {
             // Fallo al tomar la foto, muestro un Toast
-            Toast.makeText(getApplicationContext(),
-                    R.string.errorfoto, Toast.LENGTH_SHORT)
-                    .show();
+            ToastCustomizado.tostada(Anadir.this, R.string.errorfoto);
         }
     }
 

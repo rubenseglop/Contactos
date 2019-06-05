@@ -9,7 +9,7 @@
     <string name="add_telefono">Add Phone</string>
     <string name="apellidos">Surname</string>
     <string name="cancel">Cancel</string>
-    <string name="cancelconex">" The process has been canceled due to a connection problem"</string>
+    <string name="cancel_conex">" The process has been canceled due to a connection problem"</string>
     <string name="compartir_foto">" Are you going to share these photos?"</string>
     <string name="confirmar">Confirm</string>
     <string name="contactos_export">Exported Contacts</string>
@@ -42,7 +42,7 @@
     <string name="permisos_camara">Permissions required!</string>
     <string name="permission_denied">Permission denied!</string>
     <string name="pic">Photos</string>
-    <string name="recupeseg">" Recover copy"</string>
+    <string name="recupeseg">Recover copy</string>
     <string name="saved_message">Image Saved at %1$s</string>
     <string name="start_camera">Start Camera</string>
     <string name="subiendo">Uploading photo...</string>
@@ -56,8 +56,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_domicilio">by Street</string>
     <string name="menu_telefono">by Phone</string>
-    <string name="borrado">DELETE!!</string>
-    <string name="nav_header_title" translatable="false">My Contacts</string>
+    <string name="borrar">DELETE!!</string>
     <string name="movegale">Moving photo</string>
     <string name="title_activity_compartir">Share</string>
     <string name="swypefoto">Shared gallery updated</string>
@@ -65,9 +64,9 @@
     <string name="errorfoto">Sorry! Failed to capture image</string>
     <string name="rellenardomicilio">You must fill in your address before creating a new one</string>
     <string name="rellenartelefono">" You must fill in a number before creating another"</string>
-    <string name="canceladoFoto">User cancelled image capture</string>
+    <string name="foto_cancelada">User cancelled image capture</string>
     <string name="configuracion">Setup</string>
-    <string name="borrarcontacto">" Do you want to delete this contact?"</string>
+    <string name="borrar_contacto">" Do you want to delete this contact?"</string>
     <string name="boton_no">No</string>
     <string name="boton_si">Yes</string>
     <string name="cerrar">Close</string>
@@ -84,4 +83,19 @@
     <string name="problema_servidor">" There was a problem with the server"</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_ver_compartidos">" see Shared"</string>
+    <string name="boton_recu_email">Send email</string>
+    <string name="boton_recu_respuesta">Confirm password</string>
+    <string name="correo">Email</string>
+    <string name="enviado_email">" An email has been sent with the response code"</string>
+    <string name="error_contrasena">"Bad password "</string>
+    <string name="nav_header_title">My Contatcs</string>
+    <string name="noesemail">"Incorrect email format "</string>
+    <string name="noexisteusuario">" That user does not exist, check the email"</string>
+    <string name="olvidada">Recovery</string>
+    <string name="recuperada">"Account recovered !! "</string>
+    <string name="recupera_cuenta">Recover your account:</string>
+    <string name="respuesta">Answer</string>
+    <string name="salir">"Press again to exit "</string>
+    <string name="title_activity_recuperar_cuenta">Recover Account</string>
+    <string name="iniciar_id">Create ID</string>
 </resources>

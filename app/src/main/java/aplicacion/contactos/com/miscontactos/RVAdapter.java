@@ -71,7 +71,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      */
     @Override
     public PersonViewHolder onCreateViewHolder (ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_usuarios, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_contactos, viewGroup, false);
         PersonViewHolder personViewHolder = new PersonViewHolder(view);
         return personViewHolder;
     }

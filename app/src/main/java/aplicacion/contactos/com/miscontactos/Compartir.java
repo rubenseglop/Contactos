@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -131,8 +130,8 @@ public class Compartir extends AppCompatActivity {
                         Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
                         intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
                         startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-                    } else Toast.makeText(Compartir.this, R.string.problema_servidor, Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_SHORT).show();
+                    } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
+                } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
             }
         });
 
@@ -143,12 +142,15 @@ public class Compartir extends AppCompatActivity {
                     if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
                         Intent intent = new Intent(Compartir.this, verCompartidos.class);
                         startActivity(intent);
-                    } else Toast.makeText(Compartir.this, R.string.problema_servidor, Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(Compartir.this, R.string.errorconex, Toast.LENGTH_SHORT).show();
+                    } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
+                } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
             }
         });
 
-        /*bt_share.setOnClickListener(new View.OnClickListener() {
+        /*
+        YA NO ME SIRVE PUESTO QUE LEO URL HTTP EN LUGAR DE DIRECCIONES URI
+
+        bt_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<Uri> arrayUri = new ArrayList<>();
@@ -278,7 +280,7 @@ public class Compartir extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            Toast.makeText(Compartir.this, R.string.movegale, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(Compartir.this, R.string.movegale);
             return false;
         }
 
@@ -289,9 +291,8 @@ public class Compartir extends AppCompatActivity {
             GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
             bdExterna.borraGaleria(sel.getId(),sel.getPathFoto(),sel.getUuid());
             myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
-            Toast.makeText(Compartir.this, R.string.swypefoto, Toast.LENGTH_SHORT).show();
+            ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
             actualizarGaleriadeSQL();
-            //actualizarAdapter();
         }
 
         @Override
@@ -312,7 +313,7 @@ public class Compartir extends AppCompatActivity {
                     RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     paint.setColor(Color.RED);
                     c.drawRoundRect(rightButton, corners, corners, paint);
-                    drawText(getString(R.string.borrado), c, rightButton, paint);
+                    drawText(getString(R.string.borrar), c, rightButton, paint);
                 } else {
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
