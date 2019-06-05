@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">20dp</dimen>
+    <dimen name="activity_vertical_margin">20dp</dimen>
+    <dimen name="nav_header_vertical_spacing">18dp</dimen>
+    <dimen name="nav_header_height">340dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="texto_botones">30sp</dimen>
+    <dimen name="texto_grande">36sp</dimen>
+    <dimen name="texto_normal">23sp</dimen>
+    <dimen name="texto_pequeno">24sp</dimen>
+    <dimen name="thumbnail_anadir_ancho">160dp</dimen>
+    <dimen name="thumbnail_anadir_alto">220dp</dimen>
+    <dimen name="thumbnail_login_ancho">400dp</dimen>
+    <dimen name="thumbnail_login_alto">400dp</dimen>
+    <dimen name="thumbnail_filas_compartir">200dp</dimen>
+    <dimen name="thumbnail_filas_contactos_ancho">118dp</dimen>
+    <dimen name="thumbnail_filas_contactos_alto">145dp</dimen>
+    <dimen name="thumbail_editar_lapiz">50dp</dimen>
+    <dimen name="layout_margin_start">32dp</dimen>
+    <dimen name="layout_margin_botton">16dp</dimen>
+
+</resources>

@@ -36,8 +36,8 @@
 
             <ImageView
                 android:id="@+id/menosTelefono"
-                android:layout_width="@dimen/ThumbailEditarLapiz"
-                android:layout_height="@dimen/ThumbailEditarLapiz"
+                android:layout_width="@dimen/thumbail_editar_lapiz"
+                android:layout_height="@dimen/thumbail_editar_lapiz"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_clear" />

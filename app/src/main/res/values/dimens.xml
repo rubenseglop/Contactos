@@ -9,12 +9,14 @@
     <dimen name="texto_grande">18sp</dimen>
     <dimen name="texto_normal">13sp</dimen>
     <dimen name="texto_pequeno">12sp</dimen>
-    <dimen name="ThumbnailAnadirAncho">83dp</dimen>
-    <dimen name="ThumbnailAnadirAlto">110dp</dimen>
-    <dimen name="ThumbnailLoginAncho">200dp</dimen>
-    <dimen name="ThumbnailLoginAlto">200dp</dimen>
-    <dimen name="ThumbnailFilasCompartir">100dp</dimen>
-    <dimen name="ThumbnailFilasContactosAncho">58dp</dimen>
-    <dimen name="ThumbnailFilasContactosAlto">76dp</dimen>
-    <dimen name="ThumbailEditarLapiz">25dp</dimen>
+    <dimen name="thumbnail_anadir_ancho">83dp</dimen>
+    <dimen name="thumbnail_anadir_alto">110dp</dimen>
+    <dimen name="thumbnail_login_ancho">200dp</dimen>
+    <dimen name="thumbnail_login_alto">200dp</dimen>
+    <dimen name="thumbnail_filas_compartir">100dp</dimen>
+    <dimen name="thumbnail_filas_contactos_ancho">58dp</dimen>
+    <dimen name="thumbnail_filas_contactos_alto">76dp</dimen>
+    <dimen name="thumbail_editar_lapiz">25dp</dimen>
+    <dimen name="layout_margin_start">8dp</dimen>
+    <dimen name="layout_margin_botton">8dp</dimen>
 </resources>
