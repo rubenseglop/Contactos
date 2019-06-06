@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
-    private static String imageStoragePath;
+    private String imageStoragePath;
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     public static final int BITMAP_SAMPLE_SIZE = 8;
 
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     BDExterna bdExterna;
 
     private Bitmap bitmap;
+    private String imageTempo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         bt_fotoUsuario = (Button) findViewById(R.id.bt_fotoUsuario);
         bt_aceptaConfig = (Button) findViewById(R.id.bt_aceptaConfig);
         bt_cuentaOlvidada = (Button) findViewById(R.id.bt_cuentaOlvidada);
+        imageStoragePath= null;
 
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,8 +80,10 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             String url = "";
                             try {
-                                imageStoragePath.length();
-                                url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                                if (!imageStoragePath.equals("NO")) {
+                                    url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                                } else url = "NO";
+
                             } catch (NullPointerException e) {
                                 url = "NO";
                             }
@@ -107,11 +111,12 @@ public class LoginActivity extends AppCompatActivity {
                                         imageStoragePath.length();
                                         if (!imageStoragePath.equals("NO")) {
                                             myftp.uploadFile(new File(imageStoragePath), "perfil");
-                                            ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
                                         }
                                     } catch (NullPointerException e) {
                                         // va sin imagen
                                     }
+                                    ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
+                                    imageStoragePath = null;
                                     finish();
                                 }
                             } else
@@ -160,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
         File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
         if (file != null) {
             imageStoragePath = file.getAbsolutePath();
+            imageTempo = imageStoragePath;
         }
         Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -220,25 +226,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o rotar la pantalla)
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
-    }
-
-    /**
-     * Restaura la ruta de la imagen tomada (URI)
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
-    }
-
-    /**
      * Método que se ejecuta al tomar una foto
      * @param requestCode
      * @param resultCode
@@ -268,7 +255,8 @@ public class LoginActivity extends AppCompatActivity {
         try {
             fotoUsuario.setVisibility(View.VISIBLE);
             bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
-            fotoUsuario.setImageBitmap(CameraUtils.redondearEsquinas(bitmap,50));
+
+            fotoUsuario.setImageBitmap(CameraUtils.redondearEsquinas(bitmap, 50));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -290,6 +278,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (intent_edit==true) {
+
             bt_cuentaOlvidada.setEnabled(false);
             ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
 
@@ -300,15 +289,20 @@ public class LoginActivity extends AppCompatActivity {
                     tv_emailUsuario.setText(usuarios.get(i).getEmail());
                     if (!usuarios.get(i).getPath().equals("NO")) {
                         imageStoragePath = usuarios.get(i).getPath();
+                        try {
+                            if (imageTempo != null) {
+                                imageStoragePath = imageTempo;
+                                imageTempo = null;
+                            }
+                        } catch (NullPointerException e) {
+                        }
                         Glide.with(LoginActivity.this)
-                                .load(usuarios.get(i).getPath())
+                                .load(imageStoragePath)
                                 .into(fotoUsuario);
-                    } else imageStoragePath = "NO";
+                    }
                 }
             }
         }
-
         super.onResume();
     }
-
 }

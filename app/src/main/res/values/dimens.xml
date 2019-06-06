@@ -19,4 +19,5 @@
     <dimen name="thumbail_editar_lapiz">25dp</dimen>
     <dimen name="layout_margin_start">8dp</dimen>
     <dimen name="layout_margin_botton">8dp</dimen>
+    <dimen name="layout_margin_end">8dp</dimen>
 </resources>

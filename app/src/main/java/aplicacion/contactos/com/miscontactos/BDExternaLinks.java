@@ -32,4 +32,5 @@ public class BDExternaLinks {
     static final String FTP_PASS  ="probando";
 
     static final String URLFTP = "https://miscontactosrsl.webcindario.com/uploads/";
+
 }

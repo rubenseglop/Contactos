@@ -21,5 +21,6 @@
     <dimen name="thumbail_editar_lapiz">50dp</dimen>
     <dimen name="layout_margin_start">32dp</dimen>
     <dimen name="layout_margin_botton">16dp</dimen>
+    <dimen name="layout_margin_end">16dp</dimen>
 
 </resources>

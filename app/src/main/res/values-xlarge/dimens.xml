@@ -19,5 +19,6 @@
     <dimen name="thumbnail_filas_contactos_alto">300dp</dimen>
     <dimen name="thumbail_editar_lapiz">100dp</dimen>
     <dimen name="layout_margin_start">24dp</dimen>
-    <dimen name="layout_margin_botton">8dp</dimen>
+    <dimen name="layout_margin_botton">20dp</dimen>
+    <dimen name="layout_margin_end">20dp</dimen>
 </resources>
