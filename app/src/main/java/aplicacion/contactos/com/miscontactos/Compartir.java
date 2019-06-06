@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -146,29 +147,6 @@ public class Compartir extends AppCompatActivity {
                 } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
             }
         });
-
-        /*
-        YA NO ME SIRVE PUESTO QUE LEO URL HTTP EN LUGAR DE DIRECCIONES URI
-
-        bt_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Uri> arrayUri = new ArrayList<>();
-
-                for (int i = 0; i < galeriaCompartir.size(); i++) {
-                    Uri uri = Uri.fromFile(new File(galeriaCompartir.get(i).getPathFoto()));
-                    // start play with image uri
-                    System.out.println("DEBUG URI " + uri.getPath());
-                    arrayUri.add(uri);
-                }
-                Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayUri);
-                intentShareFile.setType("text/plain");
-                startActivity(intentShareFile);
-                actualizarGaleriadeSQL();
-            }
-        });*/
-
     }
 
     private void actualizarSpinner() {
@@ -287,12 +265,24 @@ public class Compartir extends AppCompatActivity {
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-            HashMap selected = COAdapter.selected;
-            GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
-            bdExterna.borraGaleria(sel.getId(),sel.getPathFoto(),sel.getUuid());
-            myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
-            ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
-            actualizarGaleriadeSQL();
+
+            new AlertDialog.Builder(viewHolder.itemView.getContext())
+                    .setMessage(R.string.borrar_galeria)
+                    .setPositiveButton(R.string.boton_si, (dialog, which) -> {
+                        HashMap selected = COAdapter.selected;
+                        GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
+                        bdExterna.borraGaleria(sel.getId(), sel.getPathFoto(), sel.getUuid());
+                        myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
+                        ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
+                        actualizarGaleriadeSQL();
+
+                    })
+                    .setNegativeButton(R.string.boton_no, (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
+
+                    /*Bug que presentaba si no escogía ninguna opción (pulsando fuera del dialog)
+                    con .setCancelable impide que se pueda presionar en otra parte de la pantalla*/
+                    .setCancelable(false)
+                    .create().show();
         }
 
         @Override

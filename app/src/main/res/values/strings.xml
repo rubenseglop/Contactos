@@ -102,4 +102,5 @@
     <string name="recuperada">Cuenta recuperada!!</string>
     <string name="error_contrasena">Contraseña errónea</string>
     <string name="iniciar_id">Crear ID</string>
+    <string name="borrar_galeria">¿Dejar de compartir esta foto?</string>
 </resources>

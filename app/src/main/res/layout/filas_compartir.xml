@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -9,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:padding="2dp">
@@ -18,23 +21,38 @@
                 android:id="@+id/fotogaleria"
                 android:layout_width="@dimen/thumbnail_filas_compartir"
                 android:layout_height="@dimen/thumbnail_filas_compartir"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="16dp" />
+                android:layout_marginRight="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="350"
+                tools:layout_conversion_wrapWidth="350" />
 
             <TextView
                 android:id="@+id/id_nombrefoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/fotogaleria"
-                android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_toEndOf="@+id/fotogaleria"
-                android:layout_toRightOf="@+id/fotogaleria"
-                android:textSize="@dimen/texto_pequeno" />
+                android:layout_marginTop="16dp"
+                android:textSize="@dimen/texto_pequeno"
+                app:layout_constraintLeft_toRightOf="@+id/fotogaleria"
+                app:layout_constraintStart_toEndOf="@+id/fotogaleria"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_wrapHeight="56"
+                tools:layout_conversion_wrapWidth="0" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/id_emailfoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:textSize="@dimen/texto_pequeno"
+                app:layout_constraintStart_toEndOf="@+id/fotogaleria"
+                app:layout_constraintTop_toBottomOf="@+id/id_nombrefoto"
+                tools:layout_conversion_wrapHeight="65"
+                tools:layout_conversion_wrapWidth="201" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Anadir extends AppCompatActivity {
 
@@ -313,10 +315,12 @@ public class Anadir extends AppCompatActivity {
 
             //EDITO un contacto con sus ID's
             //editContacto es la copia que hago al mandarme un "EDIT" el Bundle
-
             if (editContacto != null) {
-                imageStoragePath=editContacto.getFoto();
-                if (editImagePath !=null) {imageStoragePath = editImagePath;}
+                imageStoragePath = editContacto.getFoto();
+                if (editImagePath != null) {
+                    imageStoragePath = editImagePath;
+                }
+
                 //Si lo estaba editando, borro ese contacto
                 bdInterna.borraContacto(editContacto.getId());
 
@@ -362,12 +366,13 @@ public class Anadir extends AppCompatActivity {
 
             // Si estaba editando un contacto, cierro.
             // Si estaba añadiendo uno, abro nueva instancia y cierro la actual
-            if (editContacto !=null ){
+            if (editContacto != null) {
                 finish();
             } else {
                 startActivity(getIntent());
                 finish();
             }
+
         }
     }
 
@@ -423,6 +428,7 @@ public class Anadir extends AppCompatActivity {
                     }
                 }).show();
     }
+
 }
 
 

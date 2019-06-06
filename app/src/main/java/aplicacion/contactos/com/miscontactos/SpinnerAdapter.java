@@ -36,6 +36,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
         } else {
             Glide.with(mContext)
                     .load(list.get(position).getImageId())
+                    .thumbnail(0.1f)
                     .into(imageView);
         }
 

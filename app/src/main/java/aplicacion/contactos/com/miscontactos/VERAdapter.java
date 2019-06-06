@@ -27,11 +27,13 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         ImageView fotogaleria;
         TextView tv_nombrefoto;
+        TextView tv_emailfoto;
 
         GalleryViewHolder(View itemView) {
             super(itemView);
             fotogaleria = itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
+            tv_emailfoto = itemView.findViewById(R.id.id_emailfoto);
         }
     }
     public VERAdapter(ArrayList<GaleriaCompartir> galeriaCompartida, ArrayList<UsuariosGaleria> usuarios, Context mContext){
@@ -59,23 +61,19 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
                     .into(galleryViewHolder.fotogaleria);
 
             //galleryViewHolder.fotogaleria.setImageBitmap(recogerImagen(galeriaCompartida.get(i).getPathFoto()));
-            String nombrecompleto = "";
+
             for (int j = 0; j < usuarios.size(); j++) {
                 if (galeriaCompartida.get(i).getId().equals(usuarios.get(j).getUUID())) {
-                    nombrecompleto = usuarios.get(j).getNombre() + "<" + usuarios.get(j).getEmail()+">";
+                    galleryViewHolder.tv_nombrefoto.setText(usuarios.get(j).getNombre());
+                    galleryViewHolder.tv_emailfoto.setText("<" + usuarios.get(j).getEmail()+">");
                 }
             }
-            galleryViewHolder.tv_nombrefoto.setText(nombreArchivo(nombrecompleto));
-
-
-
             galleryViewHolder.fotogaleria.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     clickDialog(mContext, galeriaCompartida.get(i).getPathFoto());
                 }
             });
-
 
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());

@@ -59,9 +59,6 @@ public class BDExterna {
                 "&UUIDUNIQUE=" + uuid;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-
-
-        System.out.println("DEBUG " + url);
         return leerUrl(url);
     }
 
@@ -154,7 +151,6 @@ public class BDExterna {
             inputLine= "ERROR";
         }
 
-        System.out.println("DEBUG SALIDA INPUTLINE " + inputLine);
         return inputLine;
     }
 
@@ -219,8 +215,6 @@ public class BDExterna {
         return "";
     }
 
-
-
     public String insertarClave(CharSequence email,Context mContext) {
 
         String url = BDExternaLinks.enviaemail + email;
@@ -236,7 +230,6 @@ public class BDExterna {
      */
     public void borrarUsuario(String uuid) {
 
-        System.out.println("DEBUG BORRADO USUARIO " + uuid);
         String url = BDExternaLinks.borrarUsuario + uuid;
         url = url.replace(" ", "%20");
         leerUrl(url);
@@ -396,7 +389,6 @@ public class BDExterna {
         boolean servidor = false;
         Runtime runtime = Runtime.getRuntime();
         try {
-            System.out.println("DEBUG ping a " + servidorping);
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + servidorping);
             int exitValue = ipProcess.waitFor();
             return (exitValue == 0);
