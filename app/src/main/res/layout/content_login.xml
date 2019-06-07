@@ -95,8 +95,8 @@
             <Button
                 android:id="@+id/bt_fotoUsuario"
                 style="@style/BotonEstiloRedondo"
-                android:layout_width="184dp"
-                android:layout_height="21dp"
+                android:layout_width="@dimen/bt_foto_login_width"
+                android:layout_height="@dimen/bt_foto_login_height"
                 android:text="Foto"
                 android:textSize="@dimen/texto_pequeno"
                 app:layout_constraintEnd_toEndOf="@+id/fotoUsuario"
@@ -120,8 +120,8 @@
             <Button
                 android:id="@+id/bt_cuentaOlvidada"
                 style="@style/BotonEstiloRedondo"
-                android:layout_width="95dp"
-                android:layout_height="29dp"
+                android:layout_width="@dimen/bt_recuperar_width"
+                android:layout_height="@dimen/bt_recuperar_height"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="308dp"
                 android:padding="8dp"

@@ -7,14 +7,14 @@
     <dimen name="nav_header_vertical_spacing">18dp</dimen>
     <dimen name="nav_header_height">340dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="texto_botones">30sp</dimen>
-    <dimen name="texto_grande">36sp</dimen>
-    <dimen name="texto_normal">23sp</dimen>
-    <dimen name="texto_pequeno">24sp</dimen>
-    <dimen name="thumbnail_anadir_ancho">160dp</dimen>
-    <dimen name="thumbnail_anadir_alto">220dp</dimen>
-    <dimen name="thumbnail_login_ancho">400dp</dimen>
-    <dimen name="thumbnail_login_alto">400dp</dimen>
+    <dimen name="texto_botones">25sp</dimen>
+    <dimen name="texto_grande">25sp</dimen>
+    <dimen name="texto_normal">22sp</dimen>
+    <dimen name="texto_pequeno">18sp</dimen>
+    <dimen name="thumbnail_anadir_ancho">140dp</dimen>
+    <dimen name="thumbnail_anadir_alto">200dp</dimen>
+    <dimen name="thumbnail_login_ancho">250dp</dimen>
+    <dimen name="thumbnail_login_alto">250dp</dimen>
     <dimen name="thumbnail_filas_compartir">200dp</dimen>
     <dimen name="thumbnail_filas_contactos_ancho">118dp</dimen>
     <dimen name="thumbnail_filas_contactos_alto">145dp</dimen>
@@ -22,5 +22,12 @@
     <dimen name="layout_margin_start">32dp</dimen>
     <dimen name="layout_margin_botton">16dp</dimen>
     <dimen name="layout_margin_end">16dp</dimen>
+    <dimen name="bt_recuperar_width">170dp</dimen>
+    <dimen name="bt_recuperar_height">65dp</dimen>
+    <dimen name="bt_foto_login_width">250dp</dimen>
+    <dimen name="bt_foto_login_height">55dp</dimen>
+    <dimen name="bt_foto_anadir_width">110dp</dimen>
+    <dimen name="bt_foto_anadir_height">25dp</dimen>
+    <dimen name="layout_margin_top">8dp</dimen>
 
 </resources>

@@ -20,4 +20,11 @@
     <dimen name="layout_margin_start">8dp</dimen>
     <dimen name="layout_margin_botton">8dp</dimen>
     <dimen name="layout_margin_end">8dp</dimen>
+    <dimen name="bt_recuperar_width">95dp</dimen>
+    <dimen name="bt_recuperar_height">40dp</dimen>
+    <dimen name="bt_foto_login_width">184dp</dimen>
+    <dimen name="bt_foto_login_height">40dp</dimen>
+    <dimen name="bt_foto_anadir_width">87dp</dimen>
+    <dimen name="bt_foto_anadir_height">17dp</dimen>
+    <dimen name="layout_margin_top">8dp</dimen>
 </resources>
