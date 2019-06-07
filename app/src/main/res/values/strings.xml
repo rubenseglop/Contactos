@@ -27,7 +27,7 @@
     <string name="errorserver">Hubo un problema con el servidor</string>
     <string name="errorconex">Hubo un problema con la conexión</string>
     <string name="contactos_export">Contactos exportados</string>
-    <string name="error_metodo">No se pudo realizar el metodo StringToBaseDatosInterna</string>
+    <string name="error_metodo">No se pudo completar el proceso, error</string>
     <string name="contactos_import">Contactos importados</string>
     <string name="error_io">Hubo un error de entrada/salida!!!</string>
     <string name="moveswype">Moviendo contacto</string>

@@ -51,6 +51,9 @@ public class Compartir extends AppCompatActivity {
 
     private MetodoFTP myftp = new MetodoFTP(this);
 
+    /**
+     * Constructor de la clase Compartir
+     */
     public Compartir() {
         if (galeriaCompartir == null) {
             galeriaCompartir = new ArrayList<GaleriaCompartir>();
@@ -60,7 +63,6 @@ public class Compartir extends AppCompatActivity {
 
     /**
      * Método de la clase Activity que se ejecuta al iniciar una actividad (por un Intent)
-     *
      * @param savedInstanceState
      */
     @Override
@@ -80,8 +82,8 @@ public class Compartir extends AppCompatActivity {
 
         bt_anadirGaleria = (Button) findViewById(R.id.bt_anadirGaleria);
         bt_verCompartidos = (ImageButton) findViewById(R.id.bt_vercompartido);
-        /*bt_share = (ImageButton) findViewById(R.id.bt_share);*/
 
+        //Limpio la galeria
         galeriaCompartir.clear();
 
         // Carga un ArrayList para el Spinner de usuarios cogidos de la BDExterna (los toma a todos excepto al del móvil propietario)
@@ -97,15 +99,12 @@ public class Compartir extends AppCompatActivity {
         if (spinnerContactosData.size()<2) {
             bt_anadirGaleria.setEnabled(false);
             bt_verCompartidos.setEnabled(false);
-            /*bt_share.setEnabled(false);*/
         } else {
             bt_anadirGaleria.setEnabled(true);
             bt_verCompartidos.setEnabled(true);
-            /*bt_share.setEnabled(true);*/
         }
 
-        //Elimino el usuario del movil
-
+        //Elimino el usuario del movil (aparecerán el resto de usuarios en mi spinner)
         for (int i = 0; i < usuarios.size(); i++) {
             if (BDInterna.getUniqueID().equals(usuarios.get(i).getUUID())) {
                 idSpinner.remove(i);
@@ -119,7 +118,9 @@ public class Compartir extends AppCompatActivity {
 
         actualizarSpinner();
 
-
+        /**
+         * Botón de añadir imagenes para compartir
+         */
         bt_anadirGaleria.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -136,6 +137,9 @@ public class Compartir extends AppCompatActivity {
             }
         });
 
+        /**
+         * Botón de ver las imágenes compartidas
+         */
         bt_verCompartidos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +153,9 @@ public class Compartir extends AppCompatActivity {
         });
     }
 
+    /**
+     * Método que actualiza la selección de mi spinner en pantalla
+     */
     private void actualizarSpinner() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -161,29 +168,39 @@ public class Compartir extends AppCompatActivity {
         });
     }
 
+    /**
+     * Método que actualiza la galeria y luego lo paso al adaptador
+     */
     private void actualizarGaleriadeSQL() {
         // Actualiza la galeriaCompartir con el contenido de la SQLite
 
         galeriaCompartir.clear();
-
         galeriaCompartir = BDExterna.devuelveGaleria(this, selectedIdSpinner);
-
         actualizarAdapter();
     }
 
     /**
-     * Método de la clase Activity que se ejecuta al finalizar / rotar
+     * Método de la clase Activity que se ejecuta al finalizar
      */
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
+    /**
+     * Método que se ejecuta al cerrar / girar la pantalla
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         actualizarGaleriadeSQL();
         super.onSaveInstanceState(outState);
     }
+
+    /**
+     * Método que se ejecuta al restaurar la pantalla (o despues de un giro)
+     * @param outState
+     */
     @Override
     protected void onRestoreInstanceState(Bundle outState) {
         actualizarGaleriadeSQL();
@@ -236,14 +253,9 @@ public class Compartir extends AppCompatActivity {
                 if (repetido == false) {
                     arrayUri.add(uri);
                     // Guardo la informacion IDUSUARIO - PATH - USUARIOALQUECOMPARTO
-                    // https://miscontactosrsl.webcindario.com/uploads/ee158af8-7798-4463-b48e-3dcc6224c22f/IMG-20190529-WA0003.jpg
-
-                    // sacar la carpeta y nombrefichero
 
                     String url = BDExternaLinks.URLFTP + BDInterna.getUniqueID() + "/" + new File(uri.getPath()).getName();
-
                     bdExterna.insertarGaleria(BDInterna.getUniqueID(),url,selectedIdSpinner);
-
                     myftp.uploadFile(new File(uri.getPath()),BDInterna.getUniqueID());
                 }
             }
@@ -252,6 +264,9 @@ public class Compartir extends AppCompatActivity {
     }
 
 
+    /**
+     * Swype del RecyclerView
+     */
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
         private ColorDrawable background = null;
@@ -279,12 +294,22 @@ public class Compartir extends AppCompatActivity {
                     })
                     .setNegativeButton(R.string.boton_no, (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
 
-                    /*Bug que presentaba si no escogía ninguna opción (pulsando fuera del dialog)
+                    /*Bug que presentaba si no escogia ninguna opción (pulsando fuera del dialog)
                     con .setCancelable impide que se pueda presionar en otra parte de la pantalla*/
                     .setCancelable(false)
                     .create().show();
         }
 
+        /**
+         * Dibuja un rectángulo de color rojo
+         * @param c
+         * @param recyclerView
+         * @param viewHolder
+         * @param dX
+         * @param dY
+         * @param actionState
+         * @param isCurrentlyActive
+         */
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {

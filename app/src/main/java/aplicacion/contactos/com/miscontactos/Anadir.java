@@ -62,11 +62,18 @@ public class Anadir extends AppCompatActivity {
     private Contacto editContacto;
     private String editImagePath;
 
+    /**
+     * Método de la clase Activity que se ejecuta al iniciar la vista
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
+    /**
+     * Método de la clase Activity que se ejecuta al iniciar la vista
+     * @param savedInstanceState en el caso de tener un parámetro enviado desde otra actividad
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -153,7 +160,7 @@ public class Anadir extends AppCompatActivity {
             finish();
         }
         /**
-         * Capture image on button click
+         * Botón de capturar imagen
          */
         bt_imagen.setOnClickListener(new View.OnClickListener() {
 
@@ -167,6 +174,9 @@ public class Anadir extends AppCompatActivity {
             }
         });
 
+        /**
+         * Botón de añadir un domicilio
+         */
         masdomicilio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +200,9 @@ public class Anadir extends AppCompatActivity {
             }
         });
 
+        /**
+         * Botón de añadir un teléfono
+         */
         mastelefono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,6 +229,7 @@ public class Anadir extends AppCompatActivity {
     }
 
     /**
+     * Busco si necesito permisos (no activados) para el uso de la cámara con Dexter.
      * Dexter es una libreria que simplifica el proceso de requerir permisos en tiempo de ejecución
      */
     private void requestCameraPermission(final int type) {
@@ -262,7 +276,7 @@ public class Anadir extends AppCompatActivity {
     }
 
     /**
-     * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o rotar la pantalla)
+     * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o girar la pantalla)
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -372,7 +386,6 @@ public class Anadir extends AppCompatActivity {
                 startActivity(getIntent());
                 finish();
             }
-
         }
     }
 

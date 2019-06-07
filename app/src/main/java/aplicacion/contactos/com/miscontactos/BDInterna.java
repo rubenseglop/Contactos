@@ -50,7 +50,10 @@ public class BDInterna extends SQLiteOpenHelper {
 
     public ArrayList<Contacto> contactos = new ArrayList<>();
 
-    // Constructor de la clase
+    /**
+     * Constructor de la clase BDInterna
+     * @param context
+     */
     public BDInterna(Context context) {
         super(context, NOMBRE_BASEDATOS, null, VERSION_BASEDATOS);
         uniqueID=null;
@@ -63,6 +66,7 @@ public class BDInterna extends SQLiteOpenHelper {
      */
     public void actualizaContactos(String orderby, String order) {
         Cursor cContactos;
+
         //limpio todos los ArrayLists
         contactos.clear();
 
@@ -133,6 +137,10 @@ public class BDInterna extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Método para crear la base de datos interna
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Creamos todas las tablas internas en el caso de no existir
@@ -143,6 +151,12 @@ public class BDInterna extends SQLiteOpenHelper {
         db.execSQL(UNIQUE_UUID);
     }
 
+    /**
+     * Método que se ejecuta en el caso de actualizar la version de la base de datos
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS CONTACTOS");
@@ -151,6 +165,7 @@ public class BDInterna extends SQLiteOpenHelper {
 
     /**
      * Inserta el identificador unico a la BD y devuelve true si tenemos una UUID almacenada
+     * @return
      */
     public boolean hayUUID() {
 
@@ -169,11 +184,13 @@ public class BDInterna extends SQLiteOpenHelper {
                 }
             } while(c.moveToNext());
         }
-
         db.close();
         return result;
     }
 
+    /**
+     * Método para crear un Identificador universal
+     */
     public void crearUUID() {
         SQLiteDatabase db = getWritableDatabase();
         //Leemos la Tabla UUID
@@ -198,10 +215,13 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("UNIQUE_UUID", null, valores);
         }
-
         db.close();
     }
 
+    /**
+     * Método para crear un Identificador universal (pasándole una UUID)
+     * @param uuid
+     */
     public void crearUUID(String uuid) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("UNIQUE_UUID", null, null);
@@ -214,11 +234,8 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("UNIQUE_UUID", null, valores);
         }
-
         db.close();
     }
-
-
 
     /**
      * Método que lee el UUID almacenado
@@ -230,14 +247,14 @@ public class BDInterna extends SQLiteOpenHelper {
 
     /**
      * Inserta un contactos a la BD
-     * @param foto
-     * @param nombre
-     * @param apellidos
-     * @param galeria_id
-     * @param domicilio_id
-     * @param telefono_id
-     * @param email
-     * @param uuid
+     * @param foto - String de la foto
+     * @param nombre - Nombre del contacto
+     * @param apellidos - Apellidos del contacto
+     * @param galeria_id - id_galeria del contacto
+     * @param domicilio_id - id_domicilio del contacto
+     * @param telefono_id - id_telefono del contacto
+     * @param email - email del contacto
+     * @param uuid - Universal Unique ID
      */
     public void insertarContacto(String foto, String nombre, String apellidos, int galeria_id, int domicilio_id, int telefono_id, String email, String uuid) {
 
@@ -292,7 +309,6 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("CONTACTOS", null, valores);
         }
-
         db.close();
     }
 
@@ -331,7 +347,6 @@ public class BDInterna extends SQLiteOpenHelper {
             //insertamos el registro en la Base de Datos
             db.insert("DOMICILIO", null, valores);
         }
-
         db.close();
     }
 
@@ -364,17 +379,13 @@ public class BDInterna extends SQLiteOpenHelper {
      * @param mail
      */
     public void modificarContacto(int id, String nombre, String direccion,String movil,String mail){
-
         SQLiteDatabase db = getWritableDatabase();
-
         ContentValues valores = new ContentValues();
         valores.put("nombre", nombre);
         valores.put("direccion", direccion);
         valores.put("movil", movil);
         valores.put("mail", mail);
-
         db.update("contactos", valores, "_id=" + id, null);
-
         db.close();
     }
 
@@ -477,7 +488,11 @@ public class BDInterna extends SQLiteOpenHelper {
     }
 
 
-    // Devuelve el numero de filas de la tabla
+    /**
+     * Devuelve el numero de filas de la tabla
+     * @param tabla
+     * @return
+     */
     public int numerodeFilas(String tabla){
         int dato= (int) DatabaseUtils.queryNumEntries(this.getWritableDatabase(), tabla);
         //System.out.println("DEBUG FILAS " +tabla+" " + dato);
@@ -518,8 +533,10 @@ public class BDInterna extends SQLiteOpenHelper {
         return contactos;
     }
 
-    public static void clearUUID(){
+    /**
+     * Método que elimina (borra) el UUID
+     */
+    public static void clearUUID() {
         uniqueID = null;
     }
-
 }

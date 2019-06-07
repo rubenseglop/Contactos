@@ -39,7 +39,6 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         selectedUsuarioGaleriaRecyclerView = null;
         selected = new HashMap();
         this.mContext = mContext;
-
     }
 
     @Override

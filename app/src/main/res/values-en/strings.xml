@@ -22,7 +22,7 @@
     <string name="error">Error finding image</string>
     <string name="error_camara">Error! your device does not incorporate a camera</string>
     <string name="error_io">Error I/O</string>
-    <string name="error_metodo">" The StringToBaseDatosInterna method could not be performed"</string>
+    <string name="error_metodo">" The method could not be performed"</string>
     <string name="errorconex">There was a problem with the connection</string>
     <string name="errorserver">There was a problem with the server</string>
     <string name="exportar">Export</string>

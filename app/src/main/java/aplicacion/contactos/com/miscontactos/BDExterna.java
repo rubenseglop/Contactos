@@ -28,6 +28,10 @@ public class BDExterna {
     BDInterna bdInterna;
     Context mContext;
 
+    /**
+     * Constructor de BDExterna
+     * @param mContext
+     */
     public BDExterna(Context mContext) {
         this.mContext = mContext;
         bdInterna = new BDInterna(mContext);
@@ -35,16 +39,15 @@ public class BDExterna {
 
     /**
      * Método para insertar un contacto en la BD Externa
-     *
-     * @param id
-     * @param foto
-     * @param nombre
-     * @param apellidos
-     * @param galeria
-     * @param domicilio
-     * @param telefono
-     * @param email
-     * @param uuid
+     * @param id - La id no es necesaria (autoincrement sql)
+     * @param foto - String de la URI de la foto
+     * @param nombre - Nombre contacto
+     * @param apellidos - Apellidos contacto
+     * @param galeria - id_galeria de fotos de contacto
+     * @param domicilio - id_domicilio de contacto
+     * @param telefono - id_telefono de contacto
+     * @param email - Email de contacto
+     * @param uuid - Identificador Único Universal del usuario
      * @return devuelve un String con el resultado en JSON
      */
     public String insertarContacto(String id, String foto, String nombre, String apellidos, int galeria, int domicilio, int telefono, String email, String uuid) {
@@ -64,7 +67,6 @@ public class BDExterna {
 
     /**
      * Método para insertar en tabla Galeria
-     *
      * @param path String con la url
      * @param uuid String con el numero de uuid
      * @return devuelve "OK o "ERROR"
@@ -116,7 +118,6 @@ public class BDExterna {
 
     /**
      * Método que elimina toda la base de datos externa del usuario UUID escogido
-     *
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
@@ -126,22 +127,15 @@ public class BDExterna {
     }
 
     /**
-     * Método que convierte el resultado de una URL (http) en un String
-     *
+     * Método que ejecuta la sentencia en php en la ubicacion pasada por parámetro pagina
      * @param pagina
-     * @return Devuelve la cadena de texto proporcionado por el php
+     * @return Devuelve "OK" ó "ERROR"
      */
     public String leerUrl(String pagina) {
-
         String inputLine = "OK";
         try {
             URL url = new URL(pagina);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-
-     /*       while ((inputLine = in.readLine()) != null);
-            System.out.println("DEBUG input " + inputLine + " url " + url);
-            inputLine = inputLine + inputLine;*/
-
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -150,7 +144,6 @@ public class BDExterna {
             e.printStackTrace();
             inputLine= "ERROR";
         }
-
         return inputLine;
     }
 
@@ -158,7 +151,6 @@ public class BDExterna {
      * Método que genera un nuevo Usuario de telefono
      * Comprueba que no existe en la BDExtena y lo genera en caso de no hacerlo
      * Sube la foto tomada del perfil
-     *
      * @param nombre
      * @param email
      * @param path
@@ -198,8 +190,8 @@ public class BDExterna {
                 urlString = urlString.replace(" ", "%20");
                 leerUrl(urlString);
 
-                //reduzco la foto a lo minimo
-                try {
+                //reduzco la foto a lo mínimo
+                /*try {
                     BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
                     Bitmap bitmap = drawable.getBitmap();
                     bitmap = Bitmap.createScaledBitmap(bitmap, 70, 70, true);
@@ -207,7 +199,7 @@ public class BDExterna {
 
                 } catch (Exception e) {
 
-                }
+                }*/
             }
         } catch (JSONException e) {
             System.out.println("DEBUG ERROR " + e.getMessage());
@@ -215,6 +207,13 @@ public class BDExterna {
         return "";
     }
 
+    /**
+     * Método que busca al usuario dado su email y ejecuta un script en php
+     * que nos envia por email una contraseña de 4 digitos aleatorio.
+     * @param email
+     * @param mContext
+     * @return
+     */
     public String insertarClave(CharSequence email,Context mContext) {
 
         String url = BDExternaLinks.enviaemail + email;
@@ -222,7 +221,6 @@ public class BDExterna {
         url = url.replace(" ", "%20");
         return leerUrl(url);
     }
-
 
     /**
      * Método que elimina a un usuario
@@ -265,8 +263,6 @@ public class BDExterna {
                             json_data.getString("UUIDUNIQUE"),
                             json_data.getString("CLAVE")
                             ));
-
-
                 }
             } catch (JSONException e) {
                 ToastCustomizado.tostada(mContext, R.string.error_metodo);
@@ -280,7 +276,7 @@ public class BDExterna {
     }
 
     /**
-     * Método statico que devuelve un ArrayList de GaleriaCompartir
+     * Método estático que devuelve un ArrayList de GaleriaCompartir
      * @param mContext
      * @return
      */
@@ -319,7 +315,12 @@ public class BDExterna {
         return devuelta;
     }
 
-
+    /**
+     * Método estático que devuelve un ArrayList de GaleriaCompartir dada una UUID
+     * @param mContext
+     * @param selectUUID
+     * @return
+     */
     public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
@@ -344,8 +345,6 @@ public class BDExterna {
                                 json_data.getString("UUIDUNIQUE")
                         ));
                     }
-
-
                 }
             } catch (JSONException e) {
                 ToastCustomizado.tostada(mContext, R.string.error_metodo);
@@ -358,6 +357,13 @@ public class BDExterna {
         return devuelta;
     }
 
+    /**
+     * Método que borra una galeria compartida de fotos
+     * @param idusuario
+     * @param path
+     * @param uuid
+     * @return
+     */
     public String borraGaleria(String idusuario, String path, String uuid) {
 
         String url = BDExternaLinks.eliminaGaleria + idusuario +
@@ -368,6 +374,11 @@ public class BDExterna {
         return leerUrl(url);
     }
 
+    /**
+     * Método que verifica la conectividad de nuestro dispositivo
+     * @param context
+     * @return
+     */
     public static boolean hayconexion(Context context)
     {
         boolean connected = false;
@@ -385,6 +396,11 @@ public class BDExterna {
         return connected;
     }
 
+    /**
+     * Método que realiza un ping al servidor externo
+     * @param servidorping
+     * @return
+     */
     public static boolean hayservidor(String servidorping){
         boolean servidor = false;
         Runtime runtime = Runtime.getRuntime();
