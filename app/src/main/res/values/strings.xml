@@ -71,7 +71,7 @@
     <string name="rellenartelefono">Debes rellenar un número antes de crear otro</string>
     <string name="errorfoto">Error. Fallo al capturar una foto</string>
     <string name="configuracion">Configuración</string>
-    <string name="title_activity_login">Login Activity</string>
+    <string name="title_activity_login">Configuración</string>
     <string name="title_activity_ver_compartidos">Ver Compartidos</string>
     <string name="borrar_contacto">¿Deseas eliminar este contacto?</string>
     <string name="boton_si">Si</string>

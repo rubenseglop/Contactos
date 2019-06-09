@@ -65,7 +65,7 @@
     <string name="rellenardomicilio">You must fill in your address before creating a new one</string>
     <string name="rellenartelefono">" You must fill in a number before creating another"</string>
     <string name="foto_cancelada">User cancelled image capture</string>
-    <string name="configuracion">Setup</string>
+    <string name="configuracion">Settings</string>
     <string name="borrar_contacto">" Do you want to delete this contact?"</string>
     <string name="boton_no">No</string>
     <string name="boton_si">Yes</string>
@@ -81,7 +81,7 @@
     <string name="no_conexion">There is no connection</string>
     <string name="no_contactos">There were no contacts to export. Your external backup was initialized</string>
     <string name="problema_servidor">" There was a problem with the server"</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Settings</string>
     <string name="title_activity_ver_compartidos">" see Shared"</string>
     <string name="boton_recu_email">Send email</string>
     <string name="boton_recu_respuesta">Confirm password</string>
@@ -98,4 +98,5 @@
     <string name="salir">"Press again to exit "</string>
     <string name="title_activity_recuperar_cuenta">Recover Account</string>
     <string name="iniciar_id">Create ID</string>
+    <string name="borrar_galeria">"Stop sharing this photo? "</string>
 </resources>

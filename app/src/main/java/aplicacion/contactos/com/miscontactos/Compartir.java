@@ -288,7 +288,7 @@ public class Compartir extends AppCompatActivity {
                         GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
                         bdExterna.borraGaleria(sel.getId(), sel.getPathFoto(), sel.getUuid());
                         myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
-                        ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
+//                        ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
                         actualizarGaleriadeSQL();
 
                     })

@@ -63,7 +63,7 @@ class CompararDomicilio implements Comparator<Contacto> {
 
 
         //En el caso de no tener Domicilios (null) se vaya al fondo
-        if (a1.length()==0){ Domicilio=1; }
+        if (a1.length()==0){ Domicilio = 1; }
         if (a2.length()==0){ Domicilio = -1; }
 
         if (Nombres == 0) {
@@ -100,7 +100,7 @@ class CompararTelefono implements Comparator<Contacto> {
         Telefono = a1.compareTo(a2);
 
         //En el caso de no tener Telefonos (null) se vaya al fondo
-        if (a1.length()==0){ Telefono=1;   }
+        if (a1.length()==0){ Telefono = 1;}
         if (a2.length()==0){ Telefono = -1;}
 
         if (Nombres == 0) {
