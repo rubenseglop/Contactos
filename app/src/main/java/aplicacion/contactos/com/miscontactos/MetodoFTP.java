@@ -1,8 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -93,7 +91,7 @@ class MetodoFTP {
      * @param fileName
      * @param carpeta
      */
-    public void deleteFile(@NonNull File fileName, String carpeta) {
+    public void deleteFile(File fileName, String carpeta) {
 
         FTPClient client = new FTPClient();
         try {

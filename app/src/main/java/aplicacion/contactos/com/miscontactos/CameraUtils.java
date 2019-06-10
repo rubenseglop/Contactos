@@ -16,8 +16,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -41,7 +39,7 @@ class CameraUtils {
                 });
     }
 
-    public static boolean checkPermissions(@NonNull Context context) {
+    public static boolean checkPermissions(Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
@@ -81,7 +79,7 @@ class CameraUtils {
         context.startActivity(intent);
     }
 
-    public static Uri getOutputMediaFileUri(@NonNull Context context, @NonNull File file) {
+    public static Uri getOutputMediaFileUri(Context context, File file) {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
     }
 
@@ -126,8 +124,7 @@ class CameraUtils {
      * @param pixeles
      * @return devuelve un bitmap con las esquinas redondeadas
      */
-    @Nullable
-    public static Bitmap redondearEsquinas(@NonNull Bitmap bitmap, int pixeles) {
+    public static Bitmap redondearEsquinas(Bitmap bitmap, int pixeles) {
 
         Bitmap output=null;
         try {

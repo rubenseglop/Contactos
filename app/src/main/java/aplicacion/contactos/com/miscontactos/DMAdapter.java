@@ -1,6 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,9 +23,8 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         mDatasetDOM = myDataset;
     }
 
-    @NonNull
     @Override
-    public DMAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+    public DMAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.filas_domicilio, parent, false);
 
@@ -34,7 +32,7 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.myCustomEditTextListener.updatePosition(holder.getAdapterPosition());
         holder.mEditText.setText(mDatasetDOM.get(holder.getAdapterPosition()));
 
@@ -55,7 +53,7 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         final EditText mEditText;
         final MyCustomEditTextListener myCustomEditTextListener;
 
-        ViewHolder(@NonNull View v, MyCustomEditTextListener myCustomEditTextListener) {
+        ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
 
             this.menosDomicilio = v.findViewById(R.id.menosDomicilio);
@@ -77,7 +75,7 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
         }
 
         @Override
-        public void onTextChanged(@NonNull CharSequence charSequence, int i, int i2, int i3) {
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             mDatasetDOM.set(position, charSequence.toString());
         }
 

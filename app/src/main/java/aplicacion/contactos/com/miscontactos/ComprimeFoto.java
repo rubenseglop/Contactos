@@ -11,8 +11,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -29,8 +27,7 @@ class ComprimeFoto {
      * @param mContext
      * @return
      */
-    @NonNull
-    public static String reducirfoto(String imageUri, @NonNull Context mContext) {
+    public static String reducirfoto(String imageUri, Context mContext) {
 
         String filePath = getRealPathFromURI(imageUri, mContext);
         Bitmap scaledBitmap = null;
@@ -168,8 +165,7 @@ class ComprimeFoto {
      * @param mContext
      * @return devuelve un String con el resultado del cursor.
      */
-    @Nullable
-    private static String getRealPathFromURI(String contentURI, @NonNull Context mContext) {
+    private static String getRealPathFromURI(String contentURI, Context mContext) {
         Uri contentUri = Uri.parse(contentURI);
         try (Cursor cursor = mContext.getContentResolver().query(contentUri, null, null, null, null)) {
             if (cursor == null) {

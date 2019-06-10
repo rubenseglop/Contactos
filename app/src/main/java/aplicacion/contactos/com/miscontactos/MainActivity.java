@@ -9,8 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return
      */
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -160,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_compartir) {
@@ -484,7 +482,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
-        @Nullable
         private ColorDrawable background=null;
 
         @Override
@@ -537,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * @param isCurrentlyActive
          */
         @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
             try {
@@ -566,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * @param button
          * @param p
          */
-        private void escribe_texto(@NonNull String text, Canvas c, RectF button, Paint p) {
+        private void escribe_texto(String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);

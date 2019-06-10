@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,7 +44,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         final TextView tv_email;
         final ImageView ImagenEditContacto;
 
-        PersonViewHolder(@NonNull View itemView) {
+        PersonViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
             cv = itemView.findViewById(R.id.cv);
@@ -70,9 +69,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param i
      * @return
      */
-    @NonNull
     @Override
-    public PersonViewHolder onCreateViewHolder (@NonNull ViewGroup viewGroup, int i) {
+    public PersonViewHolder onCreateViewHolder (ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_contactos, viewGroup, false);
         return new PersonViewHolder(view);
     }
@@ -83,7 +81,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param i
      */
     @Override
-    public void onBindViewHolder(@NonNull PersonViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
 
         if (contactos.get(i).getFoto().equals("NO")){
             personViewHolder.personPhoto.setImageResource(R.drawable.perfil);
@@ -122,7 +120,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param recyclerView
      */
     @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 

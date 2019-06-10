@@ -10,8 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -214,7 +212,7 @@ public class Compartir extends AppCompatActivity {
      * @param data
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
@@ -253,7 +251,6 @@ public class Compartir extends AppCompatActivity {
      */
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
-        @Nullable
         private ColorDrawable background = null;
 
         /**
@@ -309,7 +306,7 @@ public class Compartir extends AppCompatActivity {
          * @param isCurrentlyActive
          */
         @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
             try {
@@ -342,7 +339,7 @@ public class Compartir extends AppCompatActivity {
          * @param button
          * @param p
          */
-        private void drawText(@NonNull String text, Canvas c, RectF button, Paint p) {
+        private void drawText(String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);

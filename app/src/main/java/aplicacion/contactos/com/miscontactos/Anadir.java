@@ -8,8 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,7 +48,6 @@ public class Anadir extends AppCompatActivity {
     private static final int BITMAP_SAMPLE_SIZE = 8;
     // Gallery directory name to store the imagenes or videos
     public static final String GALLERY_DIRECTORY_NAME = "MisContactos_fotos", IMAGE_EXTENSION = "jpg";
-    @Nullable
     private static String imageStoragePath;
 
     private Contacto editContacto;
@@ -217,7 +214,7 @@ public class Anadir extends AppCompatActivity {
                     private PermissionToken token;
 
                     @Override
-                    public void onPermissionsChecked(@NonNull MultiplePermissionsReport report) {
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
                             // En caso de todos los permisos estén bien, capturar una foto
@@ -255,7 +252,7 @@ public class Anadir extends AppCompatActivity {
      * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o girar la pantalla)
      */
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
@@ -264,7 +261,7 @@ public class Anadir extends AppCompatActivity {
      * Restaura la ruta de la imagen tomada (URI)
      */
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }

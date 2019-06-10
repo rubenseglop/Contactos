@@ -6,15 +6,12 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 class BDInterna extends SQLiteOpenHelper {
 
-    @Nullable
     private static String uniqueID;
     private static final int VERSION_BASEDATOS = 1;
     private static final String NOMBRE_BASEDATOS = "BDinterna.db";
@@ -150,7 +147,7 @@ class BDInterna extends SQLiteOpenHelper {
      * @param db
      */
     @Override
-    public void onCreate(@NonNull SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) {
         //Creamos todas las tablas internas en el caso de no existir
         db.execSQL(TABLA_GALERIA);
         db.execSQL(TABLA_DOMICILIO);
@@ -166,7 +163,7 @@ class BDInterna extends SQLiteOpenHelper {
      * @param newVersion
      */
     @Override
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS CONTACTOS");
         onCreate(db);
     }
@@ -251,7 +248,6 @@ class BDInterna extends SQLiteOpenHelper {
      * Método que lee el UUID almacenado
      * @return Devuelvo el UUID
      */
-    @Nullable
     static String getUniqueID(){
         return uniqueID;
     }
@@ -510,7 +506,6 @@ class BDInterna extends SQLiteOpenHelper {
      * @param orderby
      * @return Array de int[] con los numeros de ID (con .length sabemos su cantidad)
      */
-    @Nullable
     private int [] recuperaIds(String tabla, String orderby) {
         int[] datosId= null;
         int i;
@@ -535,7 +530,6 @@ class BDInterna extends SQLiteOpenHelper {
      * Método getter que devuelve el ArrayList de contactos
      * @return
      */
-    @NonNull
     public ArrayList<Contacto> devuelveContactos() {
         return contactos;
     }

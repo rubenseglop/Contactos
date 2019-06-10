@@ -3,7 +3,6 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -18,7 +17,7 @@ class ToastCustomizado {
      * @param mContext
      * @param texto
      */
-    public static void tostada(@NonNull Context mContext, int texto) {
+    public static void tostada(Context mContext, int texto) {
 
         View view;
         TextView text;

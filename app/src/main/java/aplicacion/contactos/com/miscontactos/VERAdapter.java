@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
         final TextView tv_nombrefoto;
         final TextView tv_emailfoto;
 
-        GalleryViewHolder(@NonNull View itemView) {
+        GalleryViewHolder(View itemView) {
             super(itemView);
             fotogaleria = itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
@@ -44,16 +43,15 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
 
     }
 
-    @NonNull
     @Override
-    public VERAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public VERAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
         return new GalleryViewHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull VERAdapter.GalleryViewHolder galleryViewHolder, int i) {
+    public void onBindViewHolder(VERAdapter.GalleryViewHolder galleryViewHolder, int i) {
         try {
 
             Glide.with(mContext)
@@ -103,7 +101,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
         return f.getName();
     }
 
-    private void clickDialog(@NonNull Context mContext, String imagen) {
+    private void clickDialog(Context mContext, String imagen) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
         LayoutInflater factory = LayoutInflater.from(mContext);
         final View view = factory.inflate(R.layout.imagen_dialog, null);

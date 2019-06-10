@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import java.util.HashMap;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
     public static HashMap selected;
-    @Nullable
     private static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
     private final ArrayList<GaleriaCompartir> galeriaCompartida;
     private final Context mContext;
@@ -31,7 +28,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         final ImageView fotogaleria;
         final TextView tv_nombrefoto;
 
-        GalleryViewHolder(@NonNull View itemView) {
+        GalleryViewHolder(View itemView) {
             super(itemView);
             fotogaleria = itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
@@ -44,15 +41,14 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         this.mContext = mContext;
     }
 
-    @NonNull
     @Override
-    public COAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public COAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
         return new GalleryViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull COAdapter.GalleryViewHolder galleryViewHolder, int i) {
+    public void onBindViewHolder(COAdapter.GalleryViewHolder galleryViewHolder, int i) {
 
         try {
             Glide.with(mContext)
@@ -100,7 +96,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         return f.getName();
     }
 
-    private void clickDialog(@NonNull Context mContext, String imagen) {
+    private void clickDialog(Context mContext, String imagen) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
         LayoutInflater factory = LayoutInflater.from(mContext);
         final View view = factory.inflate(R.layout.imagen_dialog, null);

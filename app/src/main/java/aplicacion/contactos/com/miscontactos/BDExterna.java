@@ -3,7 +3,6 @@ package aplicacion.contactos.com.miscontactos;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.NonNull;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 
 class BDExterna {
 
-    @NonNull
     private final BDInterna bdInterna;
     private final Context mContext;
 
@@ -49,7 +47,6 @@ class BDExterna {
      * @param uuid - Identificador Único Universal del usuario
      * @return devuelve un String con el resultado en JSON
      */
-    @NonNull
     public String insertarContacto(String id, String foto, String nombre, String apellidos, int galeria, int domicilio, int telefono, String email, String uuid) {
         String url = BDExternaLinks.insertarcontacto + id +
                 "&FOTO=" + foto +
@@ -89,7 +86,6 @@ class BDExterna {
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
-    @NonNull
     public String insertarDomicilio(int id, String direccion, String uuid) {
         String url = BDExternaLinks.insertardomicilio + id +
                 "&DIRECCION=" + direccion +
@@ -107,8 +103,7 @@ class BDExterna {
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
-    @NonNull
-    public String insertarTelefono(int id, @NonNull String numero, String uuid) {
+    public String insertarTelefono(int id, String numero, String uuid) {
         String url = BDExternaLinks.insertartelefono + id +
                 "&NUMERO=" + numero.replace("+", "%2B") +
                 "&UUIDUNIQUE=" + uuid;
@@ -133,7 +128,6 @@ class BDExterna {
      * @param pagina
      * @return Devuelve "OK" ó "ERROR"
      */
-    @NonNull
     private String leerUrl(String pagina) {
         String inputLine = "OK";
         try {
@@ -237,7 +231,6 @@ class BDExterna {
      * @param mContext
      * @return
      */
-    @NonNull
     public static ArrayList<UsuariosGaleria> devuelveUsuarios(Context mContext) {
 
         ArrayList<UsuariosGaleria> devuelta = new ArrayList<>();
@@ -280,7 +273,6 @@ class BDExterna {
      * @param mContext
      * @return
      */
-    @NonNull
     public static ArrayList<GaleriaCompartir> devuelveGaleriaCompleta(Context mContext) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
@@ -322,7 +314,6 @@ class BDExterna {
      * @param selectUUID
      * @return
      */
-    @NonNull
     public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();

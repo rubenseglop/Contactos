@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +30,6 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int MEDIA_TYPE_IMAGE = 1;
-    @Nullable
     private String imageStoragePath;
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     private static final int BITMAP_SAMPLE_SIZE = 8;
@@ -46,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
     private BDInterna bdInterna;
     private BDExterna bdExterna;
 
-    @Nullable
     private String imageTempo;
 
     @Override
@@ -175,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                     private PermissionToken token;
 
                     @Override
-                    public void onPermissionsChecked(@NonNull MultiplePermissionsReport report) {
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
                             // En caso de todos los permisos estén bien, capturar una foto
