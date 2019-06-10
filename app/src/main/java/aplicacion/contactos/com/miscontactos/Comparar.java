@@ -1,11 +1,13 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.support.annotation.NonNull;
+
 import java.util.Comparator;
 
 class CompararNombre implements Comparator<Contacto>{
 
     @Override
-    public int compare(Contacto c1, Contacto c2) {
+    public int compare(@NonNull Contacto c1, @NonNull Contacto c2) {
         int Nombres = c1.getNombre().compareTo(c2.getNombre());
         int Apellidos = c1.getApellidos().compareTo(c2.getApellidos());
         if (Nombres == 0) {
@@ -18,7 +20,7 @@ class CompararNombre implements Comparator<Contacto>{
 
 class CompararApellido implements Comparator<Contacto>{
     @Override
-    public int compare(Contacto c1, Contacto c2) {
+    public int compare(@NonNull Contacto c1, @NonNull Contacto c2) {
 
         int Nombres = c1.getNombre().compareTo(c2.getNombre());
         int Apellidos = c1.getApellidos().compareTo(c2.getApellidos());
@@ -38,7 +40,7 @@ class CompararApellido implements Comparator<Contacto>{
 
 class CompararDomicilio implements Comparator<Contacto> {
     @Override
-    public int compare(Contacto c1, Contacto c2) {
+    public int compare(@NonNull Contacto c1, @NonNull Contacto c2) {
         int Nombres = c1.getNombre().compareTo(c2.getNombre());
         int Domicilio;
         String a1, a2;
@@ -77,7 +79,7 @@ class CompararDomicilio implements Comparator<Contacto> {
 
 class CompararTelefono implements Comparator<Contacto> {
     @Override
-    public int compare(Contacto c1, Contacto c2) {
+    public int compare(@NonNull Contacto c1, @NonNull Contacto c2) {
         int Nombres = c1.getNombre().compareTo(c2.getNombre());
         int Telefono;
         String a1, a2;

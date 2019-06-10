@@ -1,11 +1,9 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.ImageView;
+import android.support.annotation.NonNull;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -23,10 +21,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class BDExterna {
+class BDExterna {
 
-    BDInterna bdInterna;
-    Context mContext;
+    @NonNull
+    private final BDInterna bdInterna;
+    private final Context mContext;
 
     /**
      * Constructor de BDExterna
@@ -50,6 +49,7 @@ public class BDExterna {
      * @param uuid - Identificador Único Universal del usuario
      * @return devuelve un String con el resultado en JSON
      */
+    @NonNull
     public String insertarContacto(String id, String foto, String nombre, String apellidos, int galeria, int domicilio, int telefono, String email, String uuid) {
         String url = BDExternaLinks.insertarcontacto + id +
                 "&FOTO=" + foto +
@@ -71,7 +71,7 @@ public class BDExterna {
      * @param uuid String con el numero de uuid
      * @return devuelve "OK o "ERROR"
      */
-    public String insertarGaleria(String idusuario, String path, String uuid) {
+    public void insertarGaleria(String idusuario, String path, String uuid) {
         String url = BDExternaLinks.insertargaleria + idusuario +
                 "&PATH=" + path +
                 "&UUIDUNIQUE=" + uuid;
@@ -79,7 +79,7 @@ public class BDExterna {
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
 
-        return leerUrl(url);
+        leerUrl(url);
     }
 
     /**
@@ -89,6 +89,7 @@ public class BDExterna {
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
+    @NonNull
     public String insertarDomicilio(int id, String direccion, String uuid) {
         String url = BDExternaLinks.insertardomicilio + id +
                 "&DIRECCION=" + direccion +
@@ -106,7 +107,8 @@ public class BDExterna {
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
-    public String insertarTelefono(int id, String numero, String uuid) {
+    @NonNull
+    public String insertarTelefono(int id, @NonNull String numero, String uuid) {
         String url = BDExternaLinks.insertartelefono + id +
                 "&NUMERO=" + numero.replace("+", "%2B") +
                 "&UUIDUNIQUE=" + uuid;
@@ -121,9 +123,9 @@ public class BDExterna {
      * @param uuid
      * @return devuelve "OK o "ERROR"
      */
-    public String borrartodo(String uuid) {
+    public void borrartodo(String uuid) {
         String url = BDExternaLinks.eliminacontacto + uuid;
-        return leerUrl(url);
+        leerUrl(url);
     }
 
     /**
@@ -131,7 +133,8 @@ public class BDExterna {
      * @param pagina
      * @return Devuelve "OK" ó "ERROR"
      */
-    public String leerUrl(String pagina) {
+    @NonNull
+    private String leerUrl(String pagina) {
         String inputLine = "OK";
         try {
             URL url = new URL(pagina);
@@ -154,12 +157,10 @@ public class BDExterna {
      * @param nombre
      * @param email
      * @param path
-     * @param imagen
      * @param uuid
-     * @param mContext
      * @return devuelve "OK o "ERROR"
      */
-    public String insertarUsuario(CharSequence nombre, CharSequence email, String path, ImageView imagen, String uuid, Context mContext) {
+    public void insertarUsuario(CharSequence nombre, CharSequence email, String path, String uuid) {
 
         // verificar que no existe esa UUID
         URL url = null;
@@ -204,22 +205,20 @@ public class BDExterna {
         } catch (JSONException e) {
             System.out.println("DEBUG ERROR " + e.getMessage());
         }
-        return "";
     }
 
     /**
      * Método que busca al usuario dado su email y ejecuta un script en php
      * que nos envia por email una contraseña de 4 digitos aleatorio.
      * @param email
-     * @param mContext
      * @return
      */
-    public String insertarClave(CharSequence email,Context mContext) {
+    public void insertarClave(CharSequence email) {
 
         String url = BDExternaLinks.enviaemail + email;
         // Solución a los espacios (reemplazar por su valor hex)
         url = url.replace(" ", "%20");
-        return leerUrl(url);
+        leerUrl(url);
     }
 
     /**
@@ -238,6 +237,7 @@ public class BDExterna {
      * @param mContext
      * @return
      */
+    @NonNull
     public static ArrayList<UsuariosGaleria> devuelveUsuarios(Context mContext) {
 
         ArrayList<UsuariosGaleria> devuelta = new ArrayList<>();
@@ -280,6 +280,7 @@ public class BDExterna {
      * @param mContext
      * @return
      */
+    @NonNull
     public static ArrayList<GaleriaCompartir> devuelveGaleriaCompleta(Context mContext) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
@@ -321,6 +322,7 @@ public class BDExterna {
      * @param selectUUID
      * @return
      */
+    @NonNull
     public static ArrayList<GaleriaCompartir> devuelveGaleria(Context mContext, String selectUUID) {
         ArrayList<GaleriaCompartir> devuelta = new ArrayList<>();
         String UUID = BDInterna.getUniqueID();
@@ -364,14 +366,14 @@ public class BDExterna {
      * @param uuid
      * @return
      */
-    public String borraGaleria(String idusuario, String path, String uuid) {
+    public void borraGaleria(String idusuario, String path, String uuid) {
 
         String url = BDExternaLinks.eliminaGaleria + idusuario +
                 "&PATH=" + path +
                 "&UUIDUNIQUE=" + uuid;
 
         url = url.replace(" ", "%20");
-        return leerUrl(url);
+        leerUrl(url);
     }
 
     /**
@@ -387,9 +389,9 @@ public class BDExterna {
         // Recupera todas las redes (tanto móviles como wifi)
         NetworkInfo[] redes = connec.getAllNetworkInfo();
 
-        for (int i = 0; i < redes.length; i++) {
+        for (NetworkInfo rede : redes) {
             // Si alguna red tiene conexión, se devuelve true
-            if (redes[i].getState() == NetworkInfo.State.CONNECTED) {
+            if (rede.getState() == NetworkInfo.State.CONNECTED) {
                 connected = true;
             }
         }

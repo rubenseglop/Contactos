@@ -1,6 +1,5 @@
 package aplicacion.contactos.com.miscontactos;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -48,13 +49,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private BDInterna bdInterna;
     private BDExterna bdExterna;
     private ArrayList<Contacto> contactos;
-    private ArrayList<Galeria> galerias;
-    private ArrayList<Domicilio> domicilios;
-    private ArrayList<Telefono> telefonos;
 
     private String orderby, ordertype;
     private RVAdapter adapter;
-    private RecyclerView rv;
     private TextView tv_orden;
 
     private long inicio_tiempo;  // Usado en el método sobrescrito onBackPressed...
@@ -72,13 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,Anadir.class));
-            }
-        });
+        fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this,Anadir.class)));
 
         /*Menu lateral Navigation View*/
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -106,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return
      */
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -133,16 +124,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
-        bdInterna.actualizaContactos(orderby, ordertype);
+        bdInterna.actualizaContactos();
         contactos = bdInterna.devuelveContactos();
 
-        rv = findViewById(R.id.rv);
+        RecyclerView rv = findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         adapter = new RVAdapter(contactos,this);
         rv.setAdapter(adapter);
-        tv_orden.setText("por " + orderby);
+        tv_orden.setText(R.string.by + orderby);
 
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
@@ -169,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_compartir) {
@@ -200,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void IrCompartir() {
         if (BDExterna.hayconexion(this)) {
-            if (bdInterna.hayUUID() == true) {
+            if (bdInterna.hayUUID()) {
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
                     Intent i = new Intent(this, Compartir.class);
                     startActivity(i);
@@ -212,10 +203,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Método que lee la base de datos externa y la clona en la interna SQLITE
      */
-    public void RestaurarWebService() {
+    private void RestaurarWebService() {
 
         if (BDExterna.hayconexion(this)) {
-            if (bdInterna.hayUUID() == true) {
+            if (bdInterna.hayUUID()) {
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
 
                     // muestra un dialogo con aceptar o cancelar
@@ -223,21 +214,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dialogo1.setTitle(R.string.importante);
                     dialogo1.setMessage(R.string.mensaje_restaurar);
                     dialogo1.setCancelable(false);
-                    dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialogo1, int id) {
-                            // en el caso de aceptar el dialog
-                            bdInterna.borrarTodo();
-                            String UUID = bdInterna.getUniqueID();
-                            WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
-                            WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
-                            WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
-                        }
+                    dialogo1.setPositiveButton(R.string.confirmar, (dialogo112, id) -> {
+                        // en el caso de aceptar el dialog
+                        bdInterna.borrarTodo();
+                        String UUID = BDInterna.getUniqueID();
+                        WebSerTabla("CON", BDExternaLinks.vercontactos + UUID);
+                        WebSerTabla("DOM", BDExternaLinks.verdomicilio + UUID);
+                        WebSerTabla("TEL", BDExternaLinks.vertelefono + UUID);
                     });
-                    dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogo1, int id) {
-                            // en el caso de cancelar (no hago nada)
-                        }
+                    dialogo1.setNegativeButton(R.string.cancel, (dialogo11, id) -> {
+                        // en el caso de cancelar (no hago nada)
                     });
                     dialogo1.show();// fin muestra dialog aceptar o cancelar}
 
@@ -260,8 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void WebSerTabla(String tabla, String sUrl) {
         URL url = null;
         try {
-            String sURL = sUrl;
-            url = new URL(sURL);
+            url = new URL(sUrl);
             URLConnection request = null;
             request = url.openConnection();
             request.connect();
@@ -281,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param tabla Es la tabla que va a ser leida (la arrastro del método WebSerTabla)
      * @param jsonString Es el String que le paso de WebSerTabla con el String JSON a convertir
      */
-    public void StringToBaseDatosInterna(String tabla, String jsonString) {
+    private void StringToBaseDatosInterna(String tabla, String jsonString) {
 
         boolean error_conexion=false;
         if (tabla == "CON") {
@@ -298,8 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             json_data.getInt("GALERIAID"),
                             json_data.getInt("DOMICILIOID"),
                             json_data.getInt("TELEFONOID"),
-                            json_data.getString("EMAIL"),
-                            json_data.getString("UUIDUNIQUE")
+                            json_data.getString("EMAIL")
                     );
                     //System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
@@ -308,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 error_conexion = true;
             }
 
-        } else if (error_conexion == false && tabla == "GAL") {
+        } else if (!error_conexion && tabla == "GAL") {
             try {
                 JSONArray jArray = new JSONArray(jsonString);
                 for (int i = 0; i < jArray.length(); i++) {
@@ -323,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
-        } else if (error_conexion == false && tabla == "DOM") {
+        } else if (!error_conexion && tabla == "DOM") {
             try {
                 JSONArray jArray = new JSONArray(jsonString);
                 for (int i = 0; i < jArray.length(); i++) {
@@ -338,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
-        } else if (error_conexion == false && tabla == "TEL") {
+        } else if (!error_conexion && tabla == "TEL") {
             try {
                 JSONArray jArray = new JSONArray(jsonString);
                 for (int i = 0; i < jArray.length(); i++) {
@@ -355,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        if (error_conexion == false) {
+        if (!error_conexion) {
             ToastCustomizado.tostada(MainActivity.this, R.string.contactos_import);
             if (tabla == "TEL") actualizar();
         } else {
@@ -373,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Comprueba si hay conexión
         if (BDExterna.hayconexion(this)) {
             // Comprueba si el terminal está identificado
-            if (bdInterna.hayUUID() == true) {
+            if (bdInterna.hayUUID()) {
                 // Comprueba si hay ping externo
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
 
@@ -384,18 +368,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         dialogo1.setTitle(R.string.importante);
                         dialogo1.setMessage(R.string.mensaje_borrado);
                         dialogo1.setCancelable(false);
-                        dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
+                        dialogo1.setPositiveButton(R.string.confirmar, (dialogo112, id) -> {
+                            // en el caso de aceptar el dialog
 
-                            public void onClick(DialogInterface dialogo1, int id) {
-                                // en el caso de aceptar el dialog
-
-                                bdExterna.borrartodo(BDInterna.getUniqueID());
-                            }
+                            bdExterna.borrartodo(BDInterna.getUniqueID());
                         });
-                        dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogo1, int id) {
-                                // en el caso de cancelar (no hago nada)
-                            }
+                        dialogo1.setNegativeButton(R.string.cancel, (dialogo11, id) -> {
+                            // en el caso de cancelar (no hago nada)
                         });
                         dialogo1.show();// fin muestra dialog aceptar o cancelar}
 
@@ -425,13 +404,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     varNombre = contacto.getNombre(),
                     varApellidos = contacto.getApellidos(),
                     varCorreo = contacto.getCorreo(),
-                    varUUID = bdInterna.getUniqueID();
+                    varUUID = BDInterna.getUniqueID();
             int varGaleria = contacto.getGaleria_id(),
                     varDireccion = contacto.getDireccion_id(),
                     varTelefono = contacto.getTelefono_id();
-            galerias = contacto.getGalerias();
-            domicilios = contacto.getDomicilios();
-            telefonos = contacto.getTelefonos();
+            ArrayList<Galeria> galerias = contacto.getGalerias();
+            ArrayList<Domicilio> domicilios = contacto.getDomicilios();
+            ArrayList<Telefono> telefonos = contacto.getTelefonos();
 
             if (varId == null || varId.length() == 0) {
                 varId = "";
@@ -460,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 conexion = false;
             }
 
-            if (conexion == true) {
+            if (conexion) {
                 for (Domicilio domicilio : domicilios) {
 
                     int varIdDOM = domicilio.getId();
@@ -479,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
 
-            if (conexion == true) {
+            if (conexion) {
                 for (Telefono telefono : telefonos) {
                     int varIdTel = telefono.getId();
                     String varNumeroTel = telefono.getNumero();
@@ -503,8 +482,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
+        @Nullable
         private ColorDrawable background=null;
 
         @Override
@@ -521,8 +501,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
-            /**
-             * Diálogo que muestra si deseamos o no borrar a un contacto
+            /*
+              Diálogo que muestra si deseamos o no borrar a un contacto
              */
             new AlertDialog.Builder(viewHolder.itemView.getContext())
                     .setMessage(R.string.borrar_contacto)
@@ -557,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * @param isCurrentlyActive
          */
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
             try {
@@ -586,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * @param button
          * @param p
          */
-        private void escribe_texto(String text, Canvas c, RectF button, Paint p) {
+        private void escribe_texto(@NonNull String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);
@@ -599,11 +579,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Método que ordena alfabeticamente por el contenido de "orderby"
      */
-    public void ordenarAlfabeticamente() {
-        if (orderby.equals("Nombre")){Collections.sort(contactos, new CompararNombre());adapter.notifyDataSetChanged();}
-        else if (orderby.equals("Apellidos")){Collections.sort(contactos, new CompararApellido());adapter.notifyDataSetChanged();}
-        else if (orderby.equals("Domicilio")){Collections.sort(contactos, new CompararDomicilio());adapter.notifyDataSetChanged();}
-        else {Collections.sort(contactos, new CompararTelefono());adapter.notifyDataSetChanged();}
+    private void ordenarAlfabeticamente() {
+        switch (orderby) {
+            case "Nombre":
+                Collections.sort(contactos, new CompararNombre());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Apellidos":
+                Collections.sort(contactos, new CompararApellido());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Domicilio":
+                Collections.sort(contactos, new CompararDomicilio());
+                adapter.notifyDataSetChanged();
+                break;
+            default:
+                Collections.sort(contactos, new CompararTelefono());
+                adapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override

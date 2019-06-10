@@ -2,9 +2,9 @@ package aplicacion.contactos.com.miscontactos;
 
 import java.io.Serializable;
 
-public class Domicilio implements Serializable {
-    int id;
-    String direccion;
+class Domicilio implements Serializable {
+    private int id;
+    private String direccion;
 
     /**
      * Constructor
@@ -20,7 +20,7 @@ public class Domicilio implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
@@ -28,7 +28,7 @@ public class Domicilio implements Serializable {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
+    private void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 }

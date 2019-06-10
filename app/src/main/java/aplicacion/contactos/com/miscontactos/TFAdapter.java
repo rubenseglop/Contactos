@@ -1,5 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,24 +21,21 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
         mDatasetTEL= myDataset;
     }
 
+    @NonNull
     @Override
-    public TFAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TFAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.filas_telefono, parent, false);
-        ViewHolder vh = new ViewHolder(v, new MyCustomEditTextListener());
-        return vh;
+        return new ViewHolder(v, new MyCustomEditTextListener());
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.myCustomEditTextListener.updatePosition(holder.getAdapterPosition());
         holder.mEditText.setText(mDatasetTEL.get(holder.getAdapterPosition()));
 
-        holder.menosTelefono.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDatasetTEL.remove(position);
-                Anadir.actualizarAdaptador();
-            }
+        holder.menosTelefono.setOnClickListener(view -> {
+            mDatasetTEL.remove(position);
+            Anadir.actualizarAdaptador();
         });
     }
 
@@ -47,11 +45,11 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView menosTelefono;
-        public EditText mEditText;
-        public MyCustomEditTextListener myCustomEditTextListener;
+        final ImageView menosTelefono;
+        final EditText mEditText;
+        final MyCustomEditTextListener myCustomEditTextListener;
 
-        public ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
+        ViewHolder(@NonNull View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
             this.menosTelefono = v.findViewById(R.id.menosTelefono);
             this.mEditText = v.findViewById(R.id.id_rvtelefono);
@@ -63,7 +61,7 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
     private class MyCustomEditTextListener implements TextWatcher {
         private int position;
 
-        public void updatePosition(int position) {
+        void updatePosition(int position) {
             this.position = position;
         }
 
@@ -73,7 +71,7 @@ public class TFAdapter extends RecyclerView.Adapter<TFAdapter.ViewHolder> {
         }
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        public void onTextChanged(@NonNull CharSequence charSequence, int i, int i2, int i3) {
             mDatasetTEL.set(position, charSequence.toString());
         }
 

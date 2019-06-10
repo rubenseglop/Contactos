@@ -9,7 +9,6 @@
     tools:showIn="@layout/activity_recuperar_cuenta">
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -64,7 +63,8 @@
         android:inputType="textShortMessage|text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/bt_enviarEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/bt_enviarEmail"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/bt_enviarRespuesta"

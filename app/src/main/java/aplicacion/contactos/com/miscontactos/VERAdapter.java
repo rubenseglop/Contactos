@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,17 +20,16 @@ import java.util.ArrayList;
 
 public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolder>  {
 
-    public static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
-    ArrayList<GaleriaCompartir> galeriaCompartida;
-    ArrayList<UsuariosGaleria> usuarios;
-    Context mContext;
+    private final ArrayList<GaleriaCompartir> galeriaCompartida;
+    private final ArrayList<UsuariosGaleria> usuarios;
+    private final Context mContext;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-        ImageView fotogaleria;
-        TextView tv_nombrefoto;
-        TextView tv_emailfoto;
+        final ImageView fotogaleria;
+        final TextView tv_nombrefoto;
+        final TextView tv_emailfoto;
 
-        GalleryViewHolder(View itemView) {
+        GalleryViewHolder(@NonNull View itemView) {
             super(itemView);
             fotogaleria = itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
@@ -38,22 +38,22 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     }
     public VERAdapter(ArrayList<GaleriaCompartir> galeriaCompartida, ArrayList<UsuariosGaleria> usuarios, Context mContext){
         this.galeriaCompartida = galeriaCompartida;
-        selectedUsuarioGaleriaRecyclerView = null;
+        GaleriaCompartir selectedUsuarioGaleriaRecyclerView = null;
         this.usuarios=usuarios;
         this.mContext = mContext;
 
     }
 
+    @NonNull
     @Override
-    public VERAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public VERAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
-        VERAdapter.GalleryViewHolder pvh = new VERAdapter.GalleryViewHolder(v);
-        return pvh;
+        return new GalleryViewHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(VERAdapter.GalleryViewHolder galleryViewHolder, int i) {
+    public void onBindViewHolder(@NonNull VERAdapter.GalleryViewHolder galleryViewHolder, int i) {
         try {
 
             Glide.with(mContext)
@@ -68,12 +68,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
                     galleryViewHolder.tv_emailfoto.setText("<" + usuarios.get(j).getEmail()+">");
                 }
             }
-            galleryViewHolder.fotogaleria.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickDialog(mContext, galeriaCompartida.get(i).getPathFoto());
-                }
-            });
+            galleryViewHolder.fotogaleria.setOnClickListener(v -> clickDialog(mContext, galeriaCompartida.get(i).getPathFoto()));
 
         } catch (Exception e) {
             System.out.println("Problema detectado: " + e.getMessage());
@@ -86,6 +81,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
         try {
             result = galeriaCompartida.size();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         //System.out.println("DEBUG SPINNER " + result);
         return result;
@@ -99,8 +95,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
     private Bitmap recogerImagen(String c){
         Bitmap bitmapImage = BitmapFactory.decodeFile(c);
         int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
-        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
-        return scaled;
+        return Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
     }
 
     private String nombreArchivo(String path) {
@@ -108,7 +103,7 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
         return f.getName();
     }
 
-    private void clickDialog(Context mContext, String imagen) {
+    private void clickDialog(@NonNull Context mContext, String imagen) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
         LayoutInflater factory = LayoutInflater.from(mContext);
         final View view = factory.inflate(R.layout.imagen_dialog, null);
@@ -119,10 +114,8 @@ public class VERAdapter extends RecyclerView.Adapter<VERAdapter.GalleryViewHolde
                 .into(imageView);
 
         alertadd.setView(view);
-        alertadd.setNeutralButton(R.string.cerrar, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dlg, int sumthin) {
+        alertadd.setNeutralButton(R.string.cerrar, (dlg, sumthin) -> {
 
-            }
         });
 
         alertadd.show();

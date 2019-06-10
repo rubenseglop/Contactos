@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
@@ -11,13 +10,11 @@
     tools:showIn="@layout/activity_anadir">
 
     <ScrollView
-        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
         <TableLayout
-            android:id="@+id/tableLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorTextoToast"
@@ -35,7 +32,6 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/nombre"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -57,7 +53,8 @@
                     android:inputType="textPersonName"
                     app:layout_constraintEnd_toStartOf="@+id/fotoperfil"
                     app:layout_constraintStart_toEndOf="@+id/apellidos"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:autofillHints="" />
 
                 <ImageView
                     android:id="@+id/fotoperfil"
@@ -79,7 +76,8 @@
                     android:inputType="textPersonName"
                     app:layout_constraintEnd_toStartOf="@+id/fotoperfil"
                     app:layout_constraintStart_toEndOf="@+id/apellidos"
-                    app:layout_constraintTop_toBottomOf="@+id/id_nombre" />
+                    app:layout_constraintTop_toBottomOf="@+id/id_nombre"
+                    android:autofillHints="" />
 
                 <Button
                     android:id="@+id/imagen"
@@ -117,7 +115,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cajanombre">
 
 
-                <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/recicladordomicilio"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -133,7 +131,6 @@
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/cajadomicilioadd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -170,7 +167,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cajanombre">
 
 
-                <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/recicladortelefono"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -185,7 +182,6 @@
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/cajatelefonoadd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -231,7 +227,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Email "
+                    android:text="@string/email"
                     android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -243,8 +239,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="11dp"
+                    android:autofillHints=""
                     android:ems="10"
-                    android:inputType="textPersonName"
+                    android:inputType="textWebEmailAddress|textPersonName"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/email"
@@ -254,7 +251,6 @@
 
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/cajaboton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

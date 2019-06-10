@@ -1,10 +1,10 @@
 package aplicacion.contactos.com.miscontactos;
 
-public class GaleriaCompartir{
+class GaleriaCompartir{
 
-    String id;
-    String pathFoto;
-    String uuid;
+    private String id;
+    private String pathFoto;
+    private String uuid;
 
     /**
      * Constructor

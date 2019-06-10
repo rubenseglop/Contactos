@@ -20,8 +20,6 @@
     <dimen name="thumbnail_filas_contactos_alto">145dp</dimen>
     <dimen name="thumbail_editar_lapiz">50dp</dimen>
     <dimen name="layout_margin_start">32dp</dimen>
-    <dimen name="layout_margin_botton">16dp</dimen>
-    <dimen name="layout_margin_end">16dp</dimen>
     <dimen name="bt_recuperar_width">170dp</dimen>
     <dimen name="bt_recuperar_height">65dp</dimen>
     <dimen name="bt_foto_login_width">250dp</dimen>

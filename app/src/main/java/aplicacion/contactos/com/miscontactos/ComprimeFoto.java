@@ -11,6 +11,8 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -18,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ComprimeFoto {
+class ComprimeFoto {
 
 
     /**
@@ -27,7 +29,8 @@ public class ComprimeFoto {
      * @param mContext
      * @return
      */
-    public static String reducirfoto(String imageUri, Context mContext) {
+    @NonNull
+    public static String reducirfoto(String imageUri, @NonNull Context mContext) {
 
         String filePath = getRealPathFromURI(imageUri, mContext);
         Bitmap scaledBitmap = null;
@@ -102,7 +105,7 @@ public class ComprimeFoto {
 
         Canvas canvas = new Canvas(scaledBitmap);
         canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(bmp, middleX - (bmp.getWidth() / 2), middleY - (bmp.getHeight() / 2), new Paint(Paint.FILTER_BITMAP_FLAG));
 
 //      Verifica la rotación de la imagen y la muestra correctamente.
         ExifInterface exif;
@@ -151,13 +154,12 @@ public class ComprimeFoto {
      * @param nombre
      * @return
      */
-    public static String getFilename(String nombre) {
+    private static String getFilename(String nombre) {
         File file = new File(Environment.getExternalStorageDirectory().getPath(), "MyFolder/Images");
         if (!file.exists()) {
             file.mkdirs();
         }
-        String uriSting = (file.getAbsolutePath() + "/" + nombre);
-        return uriSting;
+        return (file.getAbsolutePath() + "/" + nombre);
     }
 
     /**
@@ -166,15 +168,17 @@ public class ComprimeFoto {
      * @param mContext
      * @return devuelve un String con el resultado del cursor.
      */
-    private static String getRealPathFromURI(String contentURI, Context mContext) {
+    @Nullable
+    private static String getRealPathFromURI(String contentURI, @NonNull Context mContext) {
         Uri contentUri = Uri.parse(contentURI);
-        Cursor cursor = mContext.getContentResolver().query(contentUri, null, null, null, null);
-        if (cursor == null) {
-            return contentUri.getPath();
-        } else {
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            return cursor.getString(index);
+        try (Cursor cursor = mContext.getContentResolver().query(contentUri, null, null, null, null)) {
+            if (cursor == null) {
+                return contentUri.getPath();
+            } else {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                return cursor.getString(index);
+            }
         }
     }
 
@@ -186,7 +190,7 @@ public class ComprimeFoto {
      * @param reqHeight
      * @return
      */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;

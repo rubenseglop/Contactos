@@ -10,10 +10,8 @@ import java.util.ArrayList;
 
 public class verCompartidos extends AppCompatActivity {
 
-    private RecyclerView verCompartidos; //Declaro un RecyclerView
-    private VERAdapter adapter;
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
-    ArrayList<UsuariosGaleria> usuarios;
+    private ArrayList<UsuariosGaleria> usuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +40,12 @@ galeriaCompartir=new ArrayList<>();
      * Actualiza el adaptador del Recyclerview
      */
     private void actualizarAdapter() {
-        verCompartidos = findViewById(R.id.recyclerVerCompartidos);
+        //Declaro un RecyclerView
+        RecyclerView verCompartidos = findViewById(R.id.recyclerVerCompartidos);
         verCompartidos.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         verCompartidos.setLayoutManager(llm);
-        adapter = new VERAdapter(galeriaCompartir,usuarios, this);
+        VERAdapter adapter = new VERAdapter(galeriaCompartir, usuarios, this);
         verCompartidos.setAdapter(adapter);
     }
 

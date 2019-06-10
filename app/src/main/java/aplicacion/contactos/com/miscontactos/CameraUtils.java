@@ -16,6 +16,8 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -25,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CameraUtils {
+class CameraUtils {
 
     /**
      * Refreshes gallery on adding new image/video. Gallery won't be refreshed
@@ -35,13 +37,11 @@ public class CameraUtils {
         // ScanFile so it will be appeared on Gallery
         MediaScannerConnection.scanFile(context,
                 new String[]{filePath}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
+                (path, uri) -> {
                 });
     }
 
-    public static boolean checkPermissions(Context context) {
+    public static boolean checkPermissions(@NonNull Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
@@ -81,7 +81,7 @@ public class CameraUtils {
         context.startActivity(intent);
     }
 
-    public static Uri getOutputMediaFileUri(Context context, File file) {
+    public static Uri getOutputMediaFileUri(@NonNull Context context, @NonNull File file) {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
     }
 
@@ -126,7 +126,8 @@ public class CameraUtils {
      * @param pixeles
      * @return devuelve un bitmap con las esquinas redondeadas
      */
-    public static Bitmap redondearEsquinas(Bitmap bitmap, int pixeles) {
+    @Nullable
+    public static Bitmap redondearEsquinas(@NonNull Bitmap bitmap, int pixeles) {
 
         Bitmap output=null;
         try {
@@ -142,6 +143,7 @@ public class CameraUtils {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bitmap, rect, rect, paint);
         } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         return output;
     }

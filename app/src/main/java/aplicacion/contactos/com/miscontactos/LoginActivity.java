@@ -1,12 +1,13 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,20 +31,22 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final int MEDIA_TYPE_IMAGE = 1;
+    private static final int MEDIA_TYPE_IMAGE = 1;
+    @Nullable
     private String imageStoragePath;
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
-    public static final int BITMAP_SAMPLE_SIZE = 8;
+    private static final int BITMAP_SAMPLE_SIZE = 8;
 
-    TextView tv_nombreUsuario,tv_emailUsuario;
-    ImageView fotoUsuario;
-    Button bt_fotoUsuario,bt_aceptaConfig, bt_cuentaOlvidada;
-    MetodoFTP myftp;
+    private TextView tv_nombreUsuario;
+    private TextView tv_emailUsuario;
+    private ImageView fotoUsuario;
+    private Button bt_cuentaOlvidada;
+    private MetodoFTP myftp;
 
-    BDInterna bdInterna;
-    BDExterna bdExterna;
+    private BDInterna bdInterna;
+    private BDExterna bdExterna;
 
-    private Bitmap bitmap;
+    @Nullable
     private String imageTempo;
 
     @Override
@@ -60,103 +63,87 @@ public class LoginActivity extends AppCompatActivity {
 
         myftp = new MetodoFTP(this);
 
-        tv_nombreUsuario = (TextView) findViewById(R.id.tv_nombreUsuario);
-        tv_emailUsuario = (TextView) findViewById(R.id.tv_emailUsuario);
-        fotoUsuario = (ImageView) findViewById(R.id.fotoUsuario);
-        bt_fotoUsuario = (Button) findViewById(R.id.bt_fotoUsuario);
-        bt_aceptaConfig = (Button) findViewById(R.id.bt_aceptaConfig);
-        bt_cuentaOlvidada = (Button) findViewById(R.id.bt_cuentaOlvidada);
+        tv_nombreUsuario = findViewById(R.id.tv_nombreUsuario);
+        tv_emailUsuario = findViewById(R.id.tv_emailUsuario);
+        fotoUsuario = findViewById(R.id.fotoUsuario);
+        Button bt_fotoUsuario = findViewById(R.id.bt_fotoUsuario);
+        Button bt_aceptaConfig = findViewById(R.id.bt_aceptaConfig);
+        bt_cuentaOlvidada = findViewById(R.id.bt_cuentaOlvidada);
         imageStoragePath= null;
 
         // Botón de Aceptar
-        bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tv_nombreUsuario.length() != 0) {
-                    if (tv_emailUsuario.length() != 0) {
+        bt_aceptaConfig.setOnClickListener(view -> {
+            if (tv_nombreUsuario.length() != 0) {
+                if (tv_emailUsuario.length() != 0) {
 
-                        if (esEmail(String.valueOf(tv_emailUsuario.getText()))) {
-                            if (!bdInterna.hayUUID()) {  // intenta generar un UUID
-                                bdInterna.crearUUID();
-                            }
-                            String url = "";
-                            try {
-                                if (!imageStoragePath.equals("NO")) {
-                                    url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
-                                } else url = "NO";
-
-                            } catch (NullPointerException e) {
-                                url = "NO";
-                            }
-
-                            if (BDExterna.hayconexion(LoginActivity.this)) {
-                                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-
-                                    try {
-                                        bdExterna.borrarUsuario(BDInterna.getUniqueID());
-
-                                    } catch (NullPointerException e) {
-                                        // No esta siendo editado, no lo borro
-                                    } finally {
-                                        bdExterna.insertarUsuario(
-                                                tv_nombreUsuario.getText(),
-                                                tv_emailUsuario.getText(),
-                                                url,
-                                                fotoUsuario,
-                                                BDInterna.getUniqueID(),
-                                                LoginActivity.this
-                                        );
-                                    }
-
-                                    try {
-                                        imageStoragePath.length();
-                                        if (!imageStoragePath.equals("NO")) {
-                                            myftp.uploadFile(new File(imageStoragePath), "perfil");
-                                        }
-                                    } catch (NullPointerException e) {
-                                        // va sin imagen
-                                    }
-                                    ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
-                                    imageStoragePath = null;
-                                    finish();
-                                }
-                            } else
-                                ToastCustomizado.tostada(LoginActivity.this, R.string.no_conexion);
-
-                        } else {
-                            ToastCustomizado.tostada(LoginActivity.this, R.string.noesemail);
+                    if (esEmail(String.valueOf(tv_emailUsuario.getText()))) {
+                        if (!bdInterna.hayUUID()) {  // intenta generar un UUID
+                            bdInterna.crearUUID();
                         }
+                        String url = "";
+                        try {
+                            if (!imageStoragePath.equals("NO")) {
+                                url = BDExternaLinks.URLFTP + "perfil/" + new File(imageStoragePath).getName();
+                            } else url = "NO";
+
+                        } catch (NullPointerException e) {
+                            url = "NO";
+                        }
+
+                        if (BDExterna.hayconexion(LoginActivity.this)) {
+                            if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+
+                                try {
+                                    bdExterna.borrarUsuario(BDInterna.getUniqueID());
+
+                                } catch (NullPointerException e) {
+                                    // No esta siendo editado, no lo borro
+                                } finally {
+                                    bdExterna.insertarUsuario(
+                                            tv_nombreUsuario.getText(),
+                                            tv_emailUsuario.getText(),
+                                            url,
+                                            BDInterna.getUniqueID()
+                                    );
+                                }
+
+                                try {
+                                    imageStoragePath.length();
+                                    if (!imageStoragePath.equals("NO")) {
+                                        myftp.uploadFile(new File(imageStoragePath), "perfil");
+                                    }
+                                } catch (NullPointerException e) {
+                                    // va sin imagen
+                                }
+                                ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
+                                imageStoragePath = null;
+                                finish();
+                            }
+                        } else
+                            ToastCustomizado.tostada(LoginActivity.this, R.string.no_conexion);
+
                     } else {
-                        ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_email);
+                        ToastCustomizado.tostada(LoginActivity.this, R.string.noesemail);
                     }
                 } else {
-                    ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_nombre);
+                    ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_email);
                 }
+            } else {
+                ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_nombre);
             }
-
         });
 
         // Botón de Foto
-        bt_fotoUsuario.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CameraUtils.checkPermissions(getApplicationContext())) {
-                    captureImage();
-                } else {
-                    requestCameraPermission(MEDIA_TYPE_IMAGE);
-                }
+        bt_fotoUsuario.setOnClickListener(v -> {
+            if (CameraUtils.checkPermissions(getApplicationContext())) {
+                captureImage();
+            } else {
+                requestCameraPermission();
             }
         });
 
         // Botón de Recuperar
-        bt_cuentaOlvidada.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,RecuperarCuenta.class));
-            }
-        });
+        bt_cuentaOlvidada.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,RecuperarCuenta.class)));
     }
 
     /**
@@ -178,9 +165,8 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Revisa los permisos de la cámara (en caso de no tener permiso
      * hacia la cámara, dexter nos preguntará si deseamos abrirlos)
-     * @param type
      */
-    private void requestCameraPermission(final int type) {
+    private void requestCameraPermission() {
         Dexter.withActivity(this)
                 .withPermissions(Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -189,11 +175,11 @@ public class LoginActivity extends AppCompatActivity {
                     private PermissionToken token;
 
                     @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                    public void onPermissionsChecked(@NonNull MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
                             // En caso de todos los permisos estén bien, capturar una foto
-                            if (type == MEDIA_TYPE_IMAGE) captureImage();
+                            if (LoginActivity.MEDIA_TYPE_IMAGE == MEDIA_TYPE_IMAGE) captureImage();
 
                             // En el caso de que no estén, los preguntamos por un dialog
                         } else if (report.isAnyPermissionPermanentlyDenied()) {
@@ -217,14 +203,8 @@ public class LoginActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.permisos_camara)
                 .setMessage(R.string.mensaje_error_camara)
-                .setPositiveButton(R.string.ir_config, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(LoginActivity.this);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
+                .setPositiveButton(R.string.ir_config, (dialog, which) -> CameraUtils.openSettings(LoginActivity.this))
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
                 }).show();
     }
 
@@ -257,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
     private void previewCapturedImage() {
         try {
             fotoUsuario.setVisibility(View.VISIBLE);
-            bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
 
             fotoUsuario.setImageBitmap(CameraUtils.redondearEsquinas(bitmap, 50));
         } catch (NullPointerException e) {
@@ -285,11 +265,11 @@ public class LoginActivity extends AppCompatActivity {
             intent_edit = true;
         }
 
-        if (intent_edit==true) {
+        if (intent_edit) {
 
             bt_cuentaOlvidada.setEnabled(false);
             bt_cuentaOlvidada.setVisibility(View.GONE);
-            ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
+            ArrayList<UsuariosGaleria> usuarios = BDExterna.devuelveUsuarios(LoginActivity.this);
 
             actualiza_Perfil(usuarios);
         }
@@ -314,6 +294,7 @@ public class LoginActivity extends AppCompatActivity {
                             imageTempo = null;
                         }
                     } catch (NullPointerException e) {
+                        e.printStackTrace();
                     }
                     Glide.with(LoginActivity.this)
                             .load(imageStoragePath)

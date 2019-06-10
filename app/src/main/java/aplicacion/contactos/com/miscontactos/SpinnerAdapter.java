@@ -2,6 +2,7 @@ package aplicacion.contactos.com.miscontactos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,14 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
-    private int groupid;
-    private ArrayList<SpinnerContactosData> list;
-    private LayoutInflater inflater;
-    private Context mContext;
+class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
+    private final int groupid;
+    @NonNull
+    private final ArrayList<SpinnerContactosData> list;
+    @NonNull
+    private final LayoutInflater inflater;
+    @NonNull
+    private final Context mContext;
 
     /**
      * Constructor
@@ -26,7 +30,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
      * @param id
      * @param list
      */
-    public SpinnerAdapter(Activity mContext, int groupid, int id, ArrayList<SpinnerContactosData> list){
+    public SpinnerAdapter(@NonNull Activity mContext, int groupid, int id, @NonNull ArrayList<SpinnerContactosData> list){
         super(mContext,id,list);
         this.mContext = mContext;
         this.list=list;
@@ -34,6 +38,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
         this.groupid=groupid;
     }
 
+    @NonNull
     public View getView(int position, View convertView, ViewGroup parent ){
         View itemView=inflater.inflate(groupid,parent,false);
         ImageView imageView= itemView.findViewById(R.id.img);
@@ -54,6 +59,7 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
         return itemView;
     }
 
+    @NonNull
     public View getDropDownView(int position, View convertView, ViewGroup
             parent){
         return getView(position,convertView,parent);

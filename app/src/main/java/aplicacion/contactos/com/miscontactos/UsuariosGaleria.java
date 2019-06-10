@@ -1,11 +1,11 @@
 package aplicacion.contactos.com.miscontactos;
 
-public class UsuariosGaleria {
-    String nombre;
-    String email;
-    String path;
-    String UUID;
-    String clave;
+class UsuariosGaleria {
+    private String nombre;
+    private String email;
+    private String path;
+    private String UUID;
+    private String clave;
 
     /**
      * Constructor

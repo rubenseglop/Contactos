@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,15 +22,16 @@ import java.util.HashMap;
 
 public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder> {
     public static HashMap selected;
-    public static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
-    ArrayList<GaleriaCompartir> galeriaCompartida;
-    Context mContext;
+    @Nullable
+    private static GaleriaCompartir selectedUsuarioGaleriaRecyclerView;
+    private final ArrayList<GaleriaCompartir> galeriaCompartida;
+    private final Context mContext;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-        ImageView fotogaleria;
-        TextView tv_nombrefoto;
+        final ImageView fotogaleria;
+        final TextView tv_nombrefoto;
 
-        GalleryViewHolder(View itemView) {
+        GalleryViewHolder(@NonNull View itemView) {
             super(itemView);
             fotogaleria = itemView.findViewById(R.id.fotogaleria);
             tv_nombrefoto = itemView.findViewById(R.id.id_nombrefoto);
@@ -41,15 +44,15 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         this.mContext = mContext;
     }
 
+    @NonNull
     @Override
-    public COAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public COAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_compartir, viewGroup, false);
-        COAdapter.GalleryViewHolder pvh = new COAdapter.GalleryViewHolder(v);
-        return pvh;
+        return new GalleryViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(COAdapter.GalleryViewHolder galleryViewHolder, int i) {
+    public void onBindViewHolder(@NonNull COAdapter.GalleryViewHolder galleryViewHolder, int i) {
 
         try {
             Glide.with(mContext)
@@ -61,12 +64,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
                     galeriaCompartida.get(i).getPathFoto(),galeriaCompartida.get(i).getUuid());
 
 
-            galleryViewHolder.fotogaleria.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickDialog(mContext, galeriaCompartida.get(i).getPathFoto());
-                }
-            });
+            galleryViewHolder.fotogaleria.setOnClickListener(v -> clickDialog(mContext, galeriaCompartida.get(i).getPathFoto()));
 
             selected.put(i,selectedUsuarioGaleriaRecyclerView);
         } catch (Exception e) {
@@ -80,6 +78,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         try {
             result = galeriaCompartida.size();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         //System.out.println("DEBUG SPINNER " + result);
         return result;
@@ -93,8 +92,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
     private Bitmap recogerImagen(String c){
         Bitmap bitmapImage = BitmapFactory.decodeFile(c);
         int nh = (int) ( bitmapImage.getHeight() * (100.0 / bitmapImage.getWidth()) );
-        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
-        return scaled;
+        return Bitmap.createScaledBitmap(bitmapImage, 100, nh, true);
     }
 
     private String nombreArchivo(String path) {
@@ -102,7 +100,7 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
         return f.getName();
     }
 
-    private void clickDialog(Context mContext, String imagen) {
+    private void clickDialog(@NonNull Context mContext, String imagen) {
         AlertDialog.Builder alertadd = new AlertDialog.Builder(mContext);
         LayoutInflater factory = LayoutInflater.from(mContext);
         final View view = factory.inflate(R.layout.imagen_dialog, null);
@@ -113,10 +111,8 @@ public class COAdapter extends RecyclerView.Adapter<COAdapter.GalleryViewHolder>
                 .into(imageView);
 
         alertadd.setView(view);
-        alertadd.setNeutralButton(R.string.cerrar, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dlg, int sumthin) {
+        alertadd.setNeutralButton(R.string.cerrar, (dlg, sumthin) -> {
 
-            }
         });
 
         alertadd.show();

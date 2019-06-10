@@ -1,6 +1,8 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -12,19 +14,19 @@ import it.sauronsoftware.ftp4j.FTPFile;
 import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 import it.sauronsoftware.ftp4j.FTPListParseException;
 
-public class MetodoFTP {
+class MetodoFTP {
 
-    static final String FTP_HOST = BDExternaLinks.FTP_HOST;
-    static final String FTP_USER = BDExternaLinks.FTP_USER;
-    static final String FTP_PASS = BDExternaLinks.FTP_PASS;
-    static Context mContext;
+    private static final String FTP_HOST = BDExternaLinks.FTP_HOST;
+    private static final String FTP_USER = BDExternaLinks.FTP_USER;
+    private static final String FTP_PASS = BDExternaLinks.FTP_PASS;
+    private static Context mContext;
 
     /**
      * Constructor
      * @param mContext
      */
     public MetodoFTP(Context mContext) {
-        this.mContext = mContext;
+        MetodoFTP.mContext = mContext;
     }
 
     /**
@@ -75,10 +77,10 @@ public class MetodoFTP {
      * @throws FTPListParseException
      */
     private boolean comprobarCarpeta(FTPClient client, String carpeta) throws IOException, FTPIllegalReplyException, FTPException, FTPDataTransferException, FTPAbortedException, FTPListParseException {
-        Boolean result = false;
+        boolean result = false;
         FTPFile[] list = client.list();
-        for (int i = 0; i < list.length; i++) {
-            if (list[i].getName().equals(carpeta) && list[i].getSize() == 0 && list[i].getType() == 1) {
+        for (FTPFile ftpFile : list) {
+            if (ftpFile.getName().equals(carpeta) && ftpFile.getSize() == 0 && ftpFile.getType() == 1) {
                 result = true;
             }
 
@@ -91,7 +93,7 @@ public class MetodoFTP {
      * @param fileName
      * @param carpeta
      */
-    public void deleteFile(File fileName, String carpeta) {
+    public void deleteFile(@NonNull File fileName, String carpeta) {
 
         FTPClient client = new FTPClient();
         try {

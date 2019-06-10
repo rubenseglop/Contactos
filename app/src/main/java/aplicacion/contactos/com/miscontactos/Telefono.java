@@ -2,7 +2,7 @@ package aplicacion.contactos.com.miscontactos;
 
 import java.io.Serializable;
 
-public class Telefono implements Serializable {
+class Telefono implements Serializable {
 
     private int id;
     private String numero;
@@ -18,7 +18,7 @@ public class Telefono implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
@@ -26,7 +26,7 @@ public class Telefono implements Serializable {
         return numero;
     }
 
-    public void setNumero(String numero) {
+    private void setNumero(String numero) {
         this.numero = numero;
     }
 }

@@ -3,7 +3,7 @@ package aplicacion.contactos.com.miscontactos;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Contacto implements Serializable {
+class Contacto implements Serializable {
     private int id;
     private String foto;
     private String nombre;
@@ -49,7 +49,7 @@ public class Contacto implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
@@ -57,7 +57,7 @@ public class Contacto implements Serializable {
         return foto;
     }
 
-    public void setFoto(String foto) {
+    private void setFoto(String foto) {
         this.foto = foto;
     }
 
@@ -65,7 +65,7 @@ public class Contacto implements Serializable {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    private void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
@@ -73,7 +73,7 @@ public class Contacto implements Serializable {
         return apellidos;
     }
 
-    public void setApellidos(String apellidos) {
+    private void setApellidos(String apellidos) {
         this.apellidos = apellidos;
     }
 
@@ -81,7 +81,7 @@ public class Contacto implements Serializable {
         return galeria_id;
     }
 
-    public void setGaleria_id(int galeria_id) {
+    private void setGaleria_id(int galeria_id) {
         this.galeria_id = galeria_id;
     }
 
@@ -89,7 +89,7 @@ public class Contacto implements Serializable {
         return direccion_id;
     }
 
-    public void setDireccion_id(int direccion_id) {
+    private void setDireccion_id(int direccion_id) {
         this.direccion_id = direccion_id;
     }
 
@@ -97,7 +97,7 @@ public class Contacto implements Serializable {
         return telefono_id;
     }
 
-    public void setTelefono_id(int telefono_id) {
+    private void setTelefono_id(int telefono_id) {
         this.telefono_id = telefono_id;
     }
 
@@ -105,7 +105,7 @@ public class Contacto implements Serializable {
         return correo;
     }
 
-    public void setCorreo(String correo) {
+    private void setCorreo(String correo) {
         this.correo = correo;
     }
 

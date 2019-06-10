@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,8 +20,8 @@ import java.util.HashMap;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
 
     public static HashMap deId_Posicion; //Mapeo de ID Contacto con la posicion ocupada en el RecyclerView
-    private ArrayList<Contacto> contactos;
-    private Context mContext;
+    private final ArrayList<Contacto> contactos;
+    private final Context mContext;
 
     /**
      * Constructor del adaptador
@@ -34,17 +35,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     }
 
     public class PersonViewHolder extends RecyclerView.ViewHolder {
-        Context context;
-        CardView cv;
-        ImageView personPhoto;
-        TextView tv_nombre;
-        TextView tv_apellido;
-        TextView tv_domicilio;
-        TextView tv_telefono;
-        TextView tv_email;
-        ImageView ImagenEditContacto;
+        final Context context;
+        final CardView cv;
+        final ImageView personPhoto;
+        final TextView tv_nombre;
+        final TextView tv_apellido;
+        final TextView tv_domicilio;
+        final TextView tv_telefono;
+        final TextView tv_email;
+        final ImageView ImagenEditContacto;
 
-        PersonViewHolder(View itemView) {
+        PersonViewHolder(@NonNull View itemView) {
             super(itemView);
             context = itemView.getContext();
             cv = itemView.findViewById(R.id.cv);
@@ -69,11 +70,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param i
      * @return
      */
+    @NonNull
     @Override
-    public PersonViewHolder onCreateViewHolder (ViewGroup viewGroup, int i) {
+    public PersonViewHolder onCreateViewHolder (@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.filas_contactos, viewGroup, false);
-        PersonViewHolder personViewHolder = new PersonViewHolder(view);
-        return personViewHolder;
+        return new PersonViewHolder(view);
     }
 
     /**
@@ -82,7 +83,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param i
      */
     @Override
-    public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(@NonNull PersonViewHolder personViewHolder, int i) {
 
         if (contactos.get(i).getFoto().equals("NO")){
             personViewHolder.personPhoto.setImageResource(R.drawable.perfil);
@@ -99,26 +100,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         }
         try {
             personViewHolder.tv_telefono.setText(contactos.get(i).getTelefonos().get(0).getNumero());
-            personViewHolder.tv_telefono.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(android.content.Intent.ACTION_CALL,
-                            Uri.parse("tel:" + contactos.get(i).getTelefonos().get(0).getNumero()));
-                    mContext.startActivity(intent);
-                }
+            personViewHolder.tv_telefono.setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_CALL,
+                        Uri.parse("tel:" + contactos.get(i).getTelefonos().get(0).getNumero()));
+                mContext.startActivity(intent);
             });
         }catch (Exception e) {
             personViewHolder.tv_telefono.setText("");
         }
         personViewHolder.tv_email.setText(contactos.get(i).getCorreo());
         deId_Posicion.put(i,contactos.get(i).getId());
-        personViewHolder.ImagenEditContacto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, Anadir.class);
-                intent.putExtra("EDIT", contactos.get(i));
-                mContext.startActivity(intent);
-            }
+        personViewHolder.ImagenEditContacto.setOnClickListener(view -> {
+            Intent intent = new Intent(mContext, Anadir.class);
+            intent.putExtra("EDIT", contactos.get(i));
+            mContext.startActivity(intent);
         });
     }
 
@@ -127,7 +122,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
      * @param recyclerView
      */
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 

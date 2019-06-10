@@ -1,9 +1,9 @@
 package aplicacion.contactos.com.miscontactos;
 
 class SpinnerContactosData {
-    String nombre;
-    String email;
-    String imageId;
+    private final String nombre;
+    private final String email;
+    private final String imageId;
 
     /**
      * Constructor

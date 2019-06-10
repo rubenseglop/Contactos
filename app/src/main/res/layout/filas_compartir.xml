@@ -12,7 +12,6 @@
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:padding="2dp">
@@ -21,7 +20,7 @@
                 android:id="@+id/fotogaleria"
                 android:layout_width="@dimen/thumbnail_filas_compartir"
                 android:layout_height="@dimen/thumbnail_filas_compartir"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_conversion_wrapHeight="350"

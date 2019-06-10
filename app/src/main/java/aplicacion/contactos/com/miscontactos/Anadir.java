@@ -1,7 +1,6 @@
 package aplicacion.contactos.com.miscontactos;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -9,12 +8,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,47 +28,32 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Anadir extends AppCompatActivity {
 
-    private Button bt_aceptar,bt_imagen,masdomicilio, mastelefono;
-    private TextView tv_nombre,tv_apellido,tv_domicilio,tv_telefono,tv_email;
+    private TextView tv_nombre;
+    private TextView tv_apellido;
+    private TextView tv_email;
     private ImageView fotoperfil;
 
-    private BDInterna bdInterna;
+    private final ArrayList<String> StringDomicilio = new ArrayList<>();
+    private final ArrayList<String> StringTelefono = new ArrayList<>();
 
-    private ArrayList<String> StringDomicilio = new ArrayList<String>(),StringTelefono = new ArrayList<String>();
-
-    private RecyclerView recyclerdomicilio, recyclertelefono;
-
-     /*Hago métodos staticos para poder acceder a ellos en la clase Anadir (para
+    /*Hago métodos staticos para poder acceder a ellos en la clase Anadir (para
      añadir un notifyDataSetChanged )*/
     private static RecyclerView.Adapter adapterdomi, adaptertelf;
 
-    // LayoutManager mide y posiciona las vistas de elementos dentro de un RecyclerView
-    private RecyclerView.LayoutManager lManagerDom, lManagerTelf;
-
     // key to store image path in savedInstance state
-    public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
+    private static final String KEY_IMAGE_STORAGE_PATH = "image_path";
     public static final int MEDIA_TYPE_IMAGE = 1;
     // Bitmap sampling size
-    public static final int BITMAP_SAMPLE_SIZE = 8;
+    private static final int BITMAP_SAMPLE_SIZE = 8;
     // Gallery directory name to store the imagenes or videos
     public static final String GALLERY_DIRECTORY_NAME = "MisContactos_fotos", IMAGE_EXTENSION = "jpg";
+    @Nullable
     private static String imageStoragePath;
 
-    private Bitmap bitmap;
     private Contacto editContacto;
-    private String editImagePath;
-
-    /**
-     * Método de la clase Activity que se ejecuta al iniciar la vista
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     /**
      * Método de la clase Activity que se ejecuta al iniciar la vista
@@ -85,32 +70,33 @@ public class Anadir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        bt_aceptar = findViewById(R.id.aceptar);
+        Button bt_aceptar = findViewById(R.id.aceptar);
         tv_nombre = findViewById(R.id.id_nombre);
         tv_apellido = findViewById(R.id.id_apellidos);
-        tv_domicilio = findViewById(R.id.id_domicilio);
-        tv_telefono = findViewById(R.id.id_telefono);
+        TextView tv_domicilio = findViewById(R.id.id_domicilio);
+        TextView tv_telefono = findViewById(R.id.id_telefono);
         tv_email = findViewById(R.id.id_email);
-        bt_imagen = findViewById(R.id.imagen);
+        Button bt_imagen = findViewById(R.id.imagen);
         fotoperfil = findViewById(R.id.fotoperfil);
-        masdomicilio = findViewById(R.id.masdomicilio);
-        mastelefono = findViewById(R.id.mastelefono);
+        Button masdomicilio = findViewById(R.id.masdomicilio);
+        Button mastelefono = findViewById(R.id.mastelefono);
 
         // Obtener el Recycler para el adatapdor DMAdapter
-        recyclerdomicilio = findViewById(R.id.recicladordomicilio);
+        RecyclerView recyclerdomicilio = findViewById(R.id.recicladordomicilio);
         recyclerdomicilio.setHasFixedSize(true);
         // Usar un administrador para LinearLayout
-        lManagerDom = new LinearLayoutManager(this);
+        // LayoutManager mide y posiciona las vistas de elementos dentro de un RecyclerView
+        RecyclerView.LayoutManager lManagerDom = new LinearLayoutManager(this);
         recyclerdomicilio.setLayoutManager(lManagerDom);
         // Crear un nuevo adaptador
         adapterdomi = new DMAdapter(StringDomicilio);
         recyclerdomicilio.setAdapter(adapterdomi);
 
         // Obtener el Recycler para el adatapdor TFAdapter
-        recyclertelefono = findViewById(R.id.recicladortelefono);
+        RecyclerView recyclertelefono = findViewById(R.id.recicladortelefono);
         recyclertelefono.setHasFixedSize(true);
         // Usar un administrador para LinearLayout
-        lManagerTelf = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager lManagerTelf = new LinearLayoutManager(this);
         recyclertelefono.setLayoutManager(lManagerTelf);
         // Crear un nuevo adaptador
         adaptertelf = new TFAdapter(StringTelefono);
@@ -159,72 +145,62 @@ public class Anadir extends AppCompatActivity {
             ToastCustomizado.tostada(Anadir.this, R.string.error_camara);
             finish();
         }
-        /**
-         * Botón de capturar imagen
+        /*
+          Botón de capturar imagen
          */
-        bt_imagen.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CameraUtils.checkPermissions(getApplicationContext())) {
-                    captureImage();
-                } else {
-                    requestCameraPermission(MEDIA_TYPE_IMAGE);
-                }
+        bt_imagen.setOnClickListener(v -> {
+            if (CameraUtils.checkPermissions(getApplicationContext())) {
+                captureImage();
+            } else {
+                requestCameraPermission();
             }
         });
 
-        /**
-         * Botón de añadir un domicilio
+        /*
+          Botón de añadir un domicilio
          */
-        masdomicilio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        masdomicilio.setOnClickListener(v -> {
 
-                int cantidadDomicilios = adapterdomi.getItemCount();
+            int cantidadDomicilios = adapterdomi.getItemCount();
 
-                if(cantidadDomicilios<=4) {
-                    if (cantidadDomicilios > 0) {
-                        if (DMAdapter.mDatasetDOM.get(cantidadDomicilios - 1).length() != 0) {
-                            StringDomicilio.add("");
-                            actualizarAdaptador();
-                        } else {
-                            ToastCustomizado.tostada(Anadir.this, R.string.rellenardomicilio);
-                        }
-                    } else {
+            if(cantidadDomicilios<=4) {
+                if (cantidadDomicilios > 0) {
+                    if (DMAdapter.mDatasetDOM.get(cantidadDomicilios - 1).length() != 0) {
                         StringDomicilio.add("");
                         actualizarAdaptador();
+                    } else {
+                        ToastCustomizado.tostada(Anadir.this, R.string.rellenardomicilio);
                     }
+                } else {
+                    StringDomicilio.add("");
+                    actualizarAdaptador();
                 }
-                else ToastCustomizado.tostada(Anadir.this,R.string.limite5);
             }
+            else ToastCustomizado.tostada(Anadir.this,R.string.limite5);
         });
 
-        /**
-         * Botón de añadir un teléfono
+        /*
+          Botón de añadir un teléfono
          */
-        mastelefono.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mastelefono.setOnClickListener(v -> {
 
-                int cantidadTelefonos = adaptertelf.getItemCount();
+            int cantidadTelefonos = adaptertelf.getItemCount();
 
-                if(cantidadTelefonos<=2) {
-                    if (cantidadTelefonos > 0) {
-                        if (TFAdapter.mDatasetTEL.get(cantidadTelefonos - 1).length() != 0) {
-                            StringTelefono.add("");
-                            actualizarAdaptador();
-                        } else {
-                            ToastCustomizado.tostada(Anadir.this, R.string.rellenartelefono);
-                        }
-                    } else {
+            if(cantidadTelefonos<=2) {
+                if (cantidadTelefonos > 0) {
+                    if (TFAdapter.mDatasetTEL.get(cantidadTelefonos - 1).length() != 0) {
                         StringTelefono.add("");
                         actualizarAdaptador();
+                    } else {
+                        ToastCustomizado.tostada(Anadir.this, R.string.rellenartelefono);
                     }
+                } else {
+                    StringTelefono.add("");
+                    actualizarAdaptador();
                 }
-                else
-                    ToastCustomizado.tostada(Anadir.this, R.string.limite3);
             }
+            else
+                ToastCustomizado.tostada(Anadir.this, R.string.limite3);
         });
     }
 
@@ -232,7 +208,7 @@ public class Anadir extends AppCompatActivity {
      * Busco si necesito permisos (no activados) para el uso de la cámara con Dexter.
      * Dexter es una libreria que simplifica el proceso de requerir permisos en tiempo de ejecución
      */
-    private void requestCameraPermission(final int type) {
+    private void requestCameraPermission() {
         Dexter.withActivity(this)
                 .withPermissions(Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -241,11 +217,11 @@ public class Anadir extends AppCompatActivity {
                     private PermissionToken token;
 
                     @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                    public void onPermissionsChecked(@NonNull MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
 
                             // En caso de todos los permisos estén bien, capturar una foto
-                            if (type == MEDIA_TYPE_IMAGE) captureImage();
+                            if (Anadir.MEDIA_TYPE_IMAGE == MEDIA_TYPE_IMAGE) captureImage();
 
                         } else if (report.isAnyPermissionPermanentlyDenied()) {
                             dialogPermisos();
@@ -279,7 +255,7 @@ public class Anadir extends AppCompatActivity {
      * Guardo la ruta de la imagen tomada (URI) en caso de cerrar la Activity (o girar la pantalla)
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
@@ -288,7 +264,7 @@ public class Anadir extends AppCompatActivity {
      * Restaura la ruta de la imagen tomada (URI)
      */
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
          imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
@@ -314,14 +290,14 @@ public class Anadir extends AppCompatActivity {
             error = true;
         }
         //guardar
-        if (error == false) {
+        if (!error) {
             if (imageStoragePath == null) {
                 imageStoragePath = "NO";
             }
 
-            editImagePath = imageStoragePath;
+            String editImagePath = imageStoragePath;
 
-            bdInterna = new BDInterna(this);
+            BDInterna bdInterna = new BDInterna(this);
 
             //Última ID de la tabla Usuarios (para generar un nuevo contacto)
             int last_id = bdInterna.ultimo_id("CONTACTOS");
@@ -346,8 +322,7 @@ public class Anadir extends AppCompatActivity {
                         editContacto.getGaleria_id(),
                         editContacto.getDireccion_id(),
                         editContacto.getTelefono_id(),
-                        tv_email.getText().toString(),
-                        bdInterna.getUniqueID()
+                        tv_email.getText().toString()
                 );
                 for (int i = 0; i < adapterdomi.getItemCount(); i++) {
                     bdInterna.insertarDomicilio(editContacto.getDireccion_id(), DMAdapter.mDatasetDOM.get(i));
@@ -365,8 +340,7 @@ public class Anadir extends AppCompatActivity {
                         last_id,
                         last_id,
                         last_id,
-                        tv_email.getText().toString(),
-                        bdInterna.getUniqueID()
+                        tv_email.getText().toString()
                 );
                 for (int i = 0; i < adapterdomi.getItemCount(); i++) {
                     bdInterna.insertarDomicilio(last_id, DMAdapter.mDatasetDOM.get(i));
@@ -417,7 +391,7 @@ public class Anadir extends AppCompatActivity {
     private void previewCapturedImage() {
         try {
             fotoperfil.setVisibility(View.VISIBLE);
-            bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
+            Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             fotoperfil.setImageBitmap(CameraUtils.redondearEsquinas(bitmap,50));
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -431,14 +405,8 @@ public class Anadir extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.permisos_camara)
                 .setMessage(R.string.mensaje_error_camara)
-                .setPositiveButton(R.string.ir_config, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        CameraUtils.openSettings(Anadir.this);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
+                .setPositiveButton(R.string.ir_config, (dialog, which) -> CameraUtils.openSettings(Anadir.this))
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
                 }).show();
     }
 

@@ -10,6 +10,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,30 +35,24 @@ import in.myinnos.awesomeimagepicker.models.Image;
 public class Compartir extends AppCompatActivity {
 
     private Spinner spinner; //Declaro un Spinner
-    private RecyclerView co; //Declaro un RecyclerView
-    private ArrayList idSpinner = new ArrayList(); //Copia del ArrayList anterior, pero almacenando las ids
+    private final ArrayList idSpinner = new ArrayList(); //Copia del ArrayList anterior, pero almacenando las ids
     private String selectedIdSpinner; //Contendrá la id del Spinner seleccionado en el adaptador
 
-    private ArrayList<Contacto> contactos; //Declaro un ArrayList de Contactos
     private ArrayList<GaleriaCompartir> galeriaCompartir; //Declaro un ArrayList de GaleriaCompartir
-    private ArrayList<UsuariosGaleria> usuarios;
 
-    private BDInterna bdInterna; //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
     private BDExterna bdExterna;
 
     private COAdapter adapter;
-    private Button bt_anadirGaleria;
-    private ImageButton bt_verCompartidos;
     private ImageButton bt_share;
 
-    private MetodoFTP myftp = new MetodoFTP(this);
+    private final MetodoFTP myftp = new MetodoFTP(this);
 
     /**
      * Constructor de la clase Compartir
      */
     public Compartir() {
         if (galeriaCompartir == null) {
-            galeriaCompartir = new ArrayList<GaleriaCompartir>();
+            galeriaCompartir = new ArrayList<>();
             selectedIdSpinner = "";
         }
     }
@@ -74,20 +70,22 @@ public class Compartir extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        bdInterna = new BDInterna(this);
+        //Declaro un objeto de tupo BDInterna para usar los métodos SQLITE interna
+        BDInterna bdInterna = new BDInterna(this);
         bdExterna = new BDExterna(this);
-        bdInterna.actualizaContactos("NOMBRE", "ASC");
+        bdInterna.actualizaContactos();
         bdInterna.hayUUID();
-        contactos = bdInterna.contactos;
+        //Declaro un ArrayList de Contactos
+        ArrayList<Contacto> contactos = bdInterna.contactos;
 
-        bt_anadirGaleria = (Button) findViewById(R.id.bt_anadirGaleria);
-        bt_verCompartidos = (ImageButton) findViewById(R.id.bt_vercompartido);
+        Button bt_anadirGaleria = findViewById(R.id.bt_anadirGaleria);
+        ImageButton bt_verCompartidos = findViewById(R.id.bt_vercompartido);
 
         //Limpio la galeria
         galeriaCompartir.clear();
 
         // Carga un ArrayList para el Spinner de usuarios cogidos de la BDExterna (los toma a todos excepto al del móvil propietario)
-        usuarios = BDExterna.devuelveUsuarios(this);
+        ArrayList<UsuariosGaleria> usuarios = BDExterna.devuelveUsuarios(this);
         ArrayList<SpinnerContactosData> spinnerContactosData = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
 
@@ -118,38 +116,31 @@ public class Compartir extends AppCompatActivity {
 
         actualizarSpinner();
 
-        /**
-         * Botón de añadir imagenes para compartir
+        /*
+          Botón de añadir imagenes para compartir
          */
-        bt_anadirGaleria.setOnClickListener(new View.OnClickListener() {
+        bt_anadirGaleria.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                if (BDExterna.hayconexion(Compartir.this)) {
-                    if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-                        // https://github.com/myinnos/AwesomeImagePicker
-                        Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
-                        intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
-                        startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-                    } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
-                } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
-            }
+            if (BDExterna.hayconexion(Compartir.this)) {
+                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                    // https://github.com/myinnos/AwesomeImagePicker
+                    Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
+                    intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
+                    startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
+            } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
         });
 
-        /**
-         * Botón de ver las imágenes compartidas
+        /*
+          Botón de ver las imágenes compartidas
          */
-        bt_verCompartidos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BDExterna.hayconexion(Compartir.this)) {
-                    if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-                        Intent intent = new Intent(Compartir.this, verCompartidos.class);
-                        startActivity(intent);
-                    } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
-                } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
-            }
+        bt_verCompartidos.setOnClickListener(v -> {
+            if (BDExterna.hayconexion(Compartir.this)) {
+                if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
+                    Intent intent = new Intent(Compartir.this, verCompartidos.class);
+                    startActivity(intent);
+                } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
+            } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
         });
     }
 
@@ -180,14 +171,6 @@ public class Compartir extends AppCompatActivity {
     }
 
     /**
-     * Método de la clase Activity que se ejecuta al finalizar
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
      * Método que se ejecuta al cerrar / girar la pantalla
      * @param outState
      */
@@ -211,7 +194,8 @@ public class Compartir extends AppCompatActivity {
      * Método que actualiza del RecyclerView
      */
     private void actualizarAdapter() {
-        co = findViewById(R.id.recyfotos);
+        //Declaro un RecyclerView
+        RecyclerView co = findViewById(R.id.recyfotos);
         co.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         co.setLayoutManager(llm);
@@ -230,7 +214,7 @@ public class Compartir extends AppCompatActivity {
      * @param data
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
@@ -244,13 +228,13 @@ public class Compartir extends AppCompatActivity {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
 
                 //Busco si ya la tenemos repetida
-                Boolean repetido = false;
+                boolean repetido = false;
                 for (int j = 0; j < galeriaCompartir.size(); j++) {
                     if (images.get(i).path.equals(galeriaCompartir.get(j).getPathFoto())) {
                         repetido = true;
                     }
                 }
-                if (repetido == false) {
+                if (!repetido) {
                     arrayUri.add(uri);
                     // Guardo la informacion IDUSUARIO - PATH - USUARIOALQUECOMPARTO
 
@@ -267,8 +251,9 @@ public class Compartir extends AppCompatActivity {
     /**
      * Esta es la interfaz que le permite escuchar los eventos de "movimiento" y "deslizamiento" del RecyclerView
      */
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
+        @Nullable
         private ColorDrawable background = null;
 
         /**
@@ -324,7 +309,7 @@ public class Compartir extends AppCompatActivity {
          * @param isCurrentlyActive
          */
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
             try {
@@ -357,7 +342,7 @@ public class Compartir extends AppCompatActivity {
          * @param button
          * @param p
          */
-        private void drawText(String text, Canvas c, RectF button, Paint p) {
+        private void drawText(@NonNull String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);
