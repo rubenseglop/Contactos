@@ -265,22 +265,35 @@ public class Compartir extends AppCompatActivity {
 
 
     /**
-     * Swype del RecyclerView
+     * Esta es la interfaz que le permite escuchar los eventos de "movimiento" y "deslizamiento" del RecyclerView
      */
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         private Drawable icon;
         private ColorDrawable background = null;
 
+        /**
+         * Método "movimiento"
+         * @param recyclerView
+         * @param viewHolder
+         * @param target
+         * @return
+         */
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             ToastCustomizado.tostada(Compartir.this, R.string.movegale);
             return false;
         }
 
+        /**
+         * Método "deslizamiento"
+         * @param viewHolder
+         * @param swipeDir
+         */
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
 
 
+            // Diálog que muestra si deseo o no compartir la foto
             new AlertDialog.Builder(viewHolder.itemView.getContext())
                     .setMessage(R.string.borrar_galeria)
                     .setPositiveButton(R.string.boton_si, (dialog, which) -> {
@@ -337,6 +350,13 @@ public class Compartir extends AppCompatActivity {
             }
         }
 
+        /**
+         * Método que dibuja un cuadro de texto
+         * @param text
+         * @param c
+         * @param button
+         * @param p
+         */
         private void drawText(String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);

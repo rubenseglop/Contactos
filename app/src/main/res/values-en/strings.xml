@@ -99,4 +99,5 @@
     <string name="title_activity_recuperar_cuenta">Recover Account</string>
     <string name="iniciar_id">Create ID</string>
     <string name="borrar_galeria">"Stop sharing this photo? "</string>
+    <string name="mensaje_borrado">There are no contacts to perform the backup, do you want to delete the previous backup?</string>
 </resources>

@@ -6,6 +6,12 @@ public class GaleriaCompartir{
     String pathFoto;
     String uuid;
 
+    /**
+     * Constructor
+     * @param id
+     * @param pathFoto
+     * @param uuid
+     */
     public GaleriaCompartir(String id, String pathFoto, String uuid) {
         this.id = id;
         this.pathFoto = pathFoto;

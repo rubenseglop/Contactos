@@ -57,13 +57,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView rv;
     private TextView tv_orden;
 
-    private long inicio_tiempo;  // Usado en el método sobrescrito onBackPressed
+    private long inicio_tiempo;  // Usado en el método sobrescrito onBackPressed...
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Establecer la politica de permisos necesarios para leer JSON (mas adelante usado para la BDExterna)
+        // Establecer la política de permisos necesarios para leer JSON (mas adelante usado para la BDExterna)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -101,11 +101,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Menu Navigation Drawler
+     * Menú Navigation Drawler
      * @param item
      * @return
      */
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -129,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Método actualizar que lee de la BDInterna y actualiza los POJOS de contactos, galerias
-     * domicilios y telefonos
+     * Método actualizar que lee de la BDInterna y actualiza los POJOS de contactos, galerías
+     * domicilios y teléfonos
      */
     private void actualizar() {
         //Me traigo los contactos de BD (en objetos) //es mi POJO personalizado
@@ -171,9 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.action_compartir) {
@@ -199,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Abre el layout de compartir
+     */
     private void IrCompartir() {
         if (BDExterna.hayconexion(this)) {
             if (bdInterna.hayUUID() == true) {
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Método que lee la base de datos externa y la clona en la interna SQLITE
      */
-    private void RestaurarWebService() {
+    public void RestaurarWebService() {
 
         if (BDExterna.hayconexion(this)) {
             if (bdInterna.hayUUID() == true) {
@@ -364,99 +363,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Método para clonar la base de datos interna SQLITE a la base de datos externa
+     */
     private void ExportarWebService() {
 
         boolean conexion = true;
 
+        // Comprueba si hay conexión
         if (BDExterna.hayconexion(this)) {
+            // Comprueba si el terminal está identificado
             if (bdInterna.hayUUID() == true) {
+                // Comprueba si hay ping externo
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
-                    bdExterna.borrartodo(BDInterna.getUniqueID());
 
-                    for (Contacto contacto : contactos) {
-                        String varId = Integer.toString(contacto.getId()),
-                                varFoto = contacto.getFoto(),
-                                varNombre = contacto.getNombre(),
-                                varApellidos = contacto.getApellidos(),
-                                varCorreo = contacto.getCorreo(),
-                                varUUID = bdInterna.getUniqueID();
-                        int varGaleria = contacto.getGaleria_id(),
-                                varDireccion = contacto.getDireccion_id(),
-                                varTelefono = contacto.getTelefono_id();
-                        galerias = contacto.getGalerias();
-                        domicilios = contacto.getDomicilios();
-                        telefonos = contacto.getTelefonos();
+                    // Comprueba si existen contactos... en caso de no haberlo, elimino la base de datos externa
+                    if (contactos.size()==0){
 
-                        if (varId == null || varId.length() == 0) {
-                            varId = "";
-                        }
-                        if (varFoto == null || varFoto.length() == 0) {
-                            varFoto = "";
-                        }
-                        if (varNombre == null || varNombre.length() == 0) {
-                            varNombre = "";
-                        }
-                        if (varApellidos == null || varApellidos.length() == 0) {
-                            varApellidos = "";
-                        }
-                        if (varCorreo == null || varCorreo.length() == 0) {
-                            varCorreo = "";
-                        }
+                        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+                        dialogo1.setTitle(R.string.importante);
+                        dialogo1.setMessage(R.string.mensaje_borrado);
+                        dialogo1.setCancelable(false);
+                        dialogo1.setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
 
-                        String error = bdExterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
-                                varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
+                            public void onClick(DialogInterface dialogo1, int id) {
+                                // en el caso de aceptar el dialog
 
-                        String drbug = error;
-                        if (error.equals("OK")) {
-                            conexion = true;
-                        } else {
-                            ToastCustomizado.tostada(MainActivity.this, R.string.error_contacto);
-                            conexion = false;
-                        }
-
-                        if (conexion == true) {
-                            for (Domicilio domicilio : domicilios) {
-
-                                int varIdDOM = domicilio.getId();
-                                String varDireccionDOM = domicilio.getDireccion();
-                                if (varDireccionDOM == null || varDireccionDOM.length() == 0) {
-                                    varDireccionDOM = "";
-                                }
-
-                                error = bdExterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
-                                if (error.equals("OK")) {
-                                    conexion = true;
-                                } else {
-                                    ToastCustomizado.tostada(MainActivity.this, R.string.error_domicilio);
-                                    conexion = false;
-                                }
+                                bdExterna.borrartodo(BDInterna.getUniqueID());
                             }
-                        }
-
-                        if (conexion == true) {
-                            for (Telefono telefono : telefonos) {
-                                int varIdTel = telefono.getId();
-                                String varNumeroTel = telefono.getNumero();
-
-                                if (varNumeroTel == null || varNumeroTel.length() == 0) {
-                                    varNumeroTel = "";
-                                }
-
-                                error = bdExterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
-                                if (error.equals("OK")) {
-                                    conexion = true;
-                                } else {
-                                    ToastCustomizado.tostada(MainActivity.this, R.string.error_telefono);
-                                    conexion = false;
-                                }
+                        });
+                        dialogo1.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogo1, int id) {
+                                // en el caso de cancelar (no hago nada)
                             }
-                        }
+                        });
+                        dialogo1.show();// fin muestra dialog aceptar o cancelar}
+
                     }
-                    if (contactos.size() != 0) {
-                        ToastCustomizado.tostada(MainActivity.this, R.string.contactos_export);
-                    } else {
-                        ToastCustomizado.tostada(MainActivity.this, R.string.no_contactos);
-                    }
+
+                    actualizaContactos();
                 }
             } else {
                 ToastCustomizado.tostada(MainActivity.this, R.string.entrar_config);
@@ -466,6 +411,95 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             ToastCustomizado.tostada(MainActivity.this, R.string.no_conexion);
             conexion = false;
+        }
+    }
+
+    /**
+     * Método que recorre los objetos instanciados de contactos y los guarda en la base de datos externa
+     */
+    private void actualizaContactos() {
+        boolean conexion;
+        for (Contacto contacto : contactos) {
+            String varId = Integer.toString(contacto.getId()),
+                    varFoto = contacto.getFoto(),
+                    varNombre = contacto.getNombre(),
+                    varApellidos = contacto.getApellidos(),
+                    varCorreo = contacto.getCorreo(),
+                    varUUID = bdInterna.getUniqueID();
+            int varGaleria = contacto.getGaleria_id(),
+                    varDireccion = contacto.getDireccion_id(),
+                    varTelefono = contacto.getTelefono_id();
+            galerias = contacto.getGalerias();
+            domicilios = contacto.getDomicilios();
+            telefonos = contacto.getTelefonos();
+
+            if (varId == null || varId.length() == 0) {
+                varId = "";
+            }
+            if (varFoto == null || varFoto.length() == 0) {
+                varFoto = "";
+            }
+            if (varNombre == null || varNombre.length() == 0) {
+                varNombre = "";
+            }
+            if (varApellidos == null || varApellidos.length() == 0) {
+                varApellidos = "";
+            }
+            if (varCorreo == null || varCorreo.length() == 0) {
+                varCorreo = "";
+            }
+
+            String error = bdExterna.insertarContacto(varId, varFoto, varNombre, varApellidos,
+                    varGaleria, varDireccion, varTelefono, varCorreo, varUUID);
+
+            String drbug = error;
+            if (error.equals("OK")) {
+                conexion = true;
+            } else {
+                ToastCustomizado.tostada(MainActivity.this, R.string.error_contacto);
+                conexion = false;
+            }
+
+            if (conexion == true) {
+                for (Domicilio domicilio : domicilios) {
+
+                    int varIdDOM = domicilio.getId();
+                    String varDireccionDOM = domicilio.getDireccion();
+                    if (varDireccionDOM == null || varDireccionDOM.length() == 0) {
+                        varDireccionDOM = "";
+                    }
+
+                    error = bdExterna.insertarDomicilio(varIdDOM, varDireccionDOM, varUUID);
+                    if (error.equals("OK")) {
+                        conexion = true;
+                    } else {
+                        ToastCustomizado.tostada(MainActivity.this, R.string.error_domicilio);
+                        conexion = false;
+                    }
+                }
+            }
+
+            if (conexion == true) {
+                for (Telefono telefono : telefonos) {
+                    int varIdTel = telefono.getId();
+                    String varNumeroTel = telefono.getNumero();
+
+                    if (varNumeroTel == null || varNumeroTel.length() == 0) {
+                        varNumeroTel = "";
+                    }
+
+                    error = bdExterna.insertarTelefono(varIdTel, varNumeroTel, varUUID);
+                    if (error.equals("OK")) {
+                        conexion = true;
+                    } else {
+                        ToastCustomizado.tostada(MainActivity.this, R.string.error_telefono);
+                        conexion = false;
+                    }
+                }
+            }
+        }
+        if (contactos.size() != 0) {
+            ToastCustomizado.tostada(MainActivity.this, R.string.contactos_export);
         }
     }
 
@@ -513,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         /**
-         * Método onChildDraw de la clase ItemTouchHelper por el cual se dibuja por debajo del elemento onMove
+         * Método onChildDraw de la clase ItemTouchHelper que nos dibuja un cuadro de color rojo
          * @param c
          * @param recyclerView
          * @param viewHolder
@@ -522,7 +556,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * @param actionState
          * @param isCurrentlyActive
          */
-
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -537,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                     paint.setColor(Color.RED);
                     c.drawRoundRect(rightButton, corners, corners, paint);
-                    drawText(getString(R.string.borrar), c, rightButton, paint);
+                    escribe_texto(getString(R.string.borrar), c, rightButton, paint);
                 }else {
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
@@ -545,7 +578,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         }
-        private void drawText(String text, Canvas c, RectF button, Paint p) {
+
+        /**
+         * Método que escribe texto en una caja
+         * @param text
+         * @param c
+         * @param button
+         * @param p
+         */
+        private void escribe_texto(String text, Canvas c, RectF button, Paint p) {
             float textSize = 40;
             p.setColor(Color.WHITE);
             p.setAntiAlias(true);
@@ -577,6 +618,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
     }
 
+    /**
+     * Método que se acciona al presionar el boton atrás
+     */
     @Override
     public void onBackPressed(){
 

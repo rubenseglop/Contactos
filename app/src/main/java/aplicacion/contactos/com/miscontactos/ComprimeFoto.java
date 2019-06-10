@@ -21,6 +21,12 @@ import java.io.IOException;
 public class ComprimeFoto {
 
 
+    /**
+     * Método que realiza una compresión a las imágenes
+     * @param imageUri
+     * @param mContext
+     * @return
+     */
     public static String reducirfoto(String imageUri, Context mContext) {
 
         String filePath = getRealPathFromURI(imageUri, mContext);
@@ -28,22 +34,23 @@ public class ComprimeFoto {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
 
-//      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
-//      you try the use the bitmap here, you will get null.
+
+        /*estableciendo este campo como verdadero, los píxeles reales del mapa de bits no se cargan en la memoria. Sólo se cargan los límites. Si
+        intenta utilizar el mapa de bits aquí, obtendrá nulo.*/
         options.inJustDecodeBounds = true;
         Bitmap bmp = BitmapFactory.decodeFile(filePath, options);
 
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
 
-//      max Height and width values of the compressed image is taken as 816x612
+//      Los valores máximos de altura y anchura de la imagen comprimida se toman como 816x612
 
         float maxHeight = 816.0f;
         float maxWidth = 612.0f;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 
-//      width and height values are set maintaining the aspect ratio of the image
+//        Los valores de ancho y alto se establecen manteniendo la relación de aspecto de la imagen.
 
         if (actualHeight > maxHeight || actualWidth > maxWidth) {
             if (imgRatio < maxRatio) {
@@ -61,20 +68,19 @@ public class ComprimeFoto {
             }
         }
 
-//      setting inSampleSize value allows to load a scaled down version of the original image
-
+//        La configuración del valor inSampleSize permite cargar una versión reducida de la imagen original
         options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
 
-//      inJustDecodeBounds set to false to load the actual bitmap
+//      inJustDecodeBounds a falso para cargar el mapa de bits real
         options.inJustDecodeBounds = false;
 
-//      this options allow android to claim the bitmap memory if it runs low on memory
+//      estas opciones permiten a Android reclamar la memoria de mapa de bits si se queda con poca memoria
         options.inPurgeable = true;
         options.inInputShareable = true;
         options.inTempStorage = new byte[16 * 1024];
 
         try {
-//          load the bitmap from its path
+//          cargar el mapa de bits desde su ruta
             bmp = BitmapFactory.decodeFile(filePath, options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
@@ -98,7 +104,7 @@ public class ComprimeFoto {
         canvas.setMatrix(scaleMatrix);
         canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
 
-//      check the rotation of the image and display it properly
+//      Verifica la rotación de la imagen y la muestra correctamente.
         ExifInterface exif;
         try {
             exif = new ExifInterface(filePath);
@@ -129,7 +135,7 @@ public class ComprimeFoto {
         try {
             out = new FileOutputStream(filename);
 
-//          write the compressed bitmap at the destination specified by filename.
+//          Escribe el mapa de bits comprimido en el destino especificado por nombre de archivo.
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
         } catch (FileNotFoundException e) {
@@ -140,6 +146,11 @@ public class ComprimeFoto {
 
     }
 
+    /**
+     * Crea una carpeta destino en el caso de no tenerla y obtiene la dirección Uri
+     * @param nombre
+     * @return
+     */
     public static String getFilename(String nombre) {
         File file = new File(Environment.getExternalStorageDirectory().getPath(), "MyFolder/Images");
         if (!file.exists()) {
@@ -149,6 +160,12 @@ public class ComprimeFoto {
         return uriSting;
     }
 
+    /**
+     * Método que consulta el URI dado, devolviendo un Cursor sobre el conjunto de resultados.
+     * @param contentURI
+     * @param mContext
+     * @return devuelve un String con el resultado del cursor.
+     */
     private static String getRealPathFromURI(String contentURI, Context mContext) {
         Uri contentUri = Uri.parse(contentURI);
         Cursor cursor = mContext.getContentResolver().query(contentUri, null, null, null, null);
@@ -162,6 +179,13 @@ public class ComprimeFoto {
     }
 
 
+    /**
+     * Método que permite cargar una versión reducida de la imagen original
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;

@@ -6,6 +6,11 @@ public class Domicilio implements Serializable {
     int id;
     String direccion;
 
+    /**
+     * Constructor
+     * @param id
+     * @param direccion
+     */
     public Domicilio(int id, String direccion){
         this.setId(id);
         this.setDireccion(direccion);

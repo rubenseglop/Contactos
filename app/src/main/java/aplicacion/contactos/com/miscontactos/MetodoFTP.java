@@ -19,10 +19,19 @@ public class MetodoFTP {
     static final String FTP_PASS = BDExternaLinks.FTP_PASS;
     static Context mContext;
 
+    /**
+     * Constructor
+     * @param mContext
+     */
     public MetodoFTP(Context mContext) {
         this.mContext = mContext;
     }
 
+    /**
+     * Método para subir un archivo
+     * @param fileName
+     * @param carpeta
+     */
     public void uploadFile(File fileName, String carpeta){
 
         File reducido = new File(ComprimeFoto.reducirfoto(String.valueOf(fileName), mContext));
@@ -53,7 +62,18 @@ public class MetodoFTP {
     }
 
 
-
+    /**
+     * Método que comprueba si existe una carpeta en el servidor ftp
+     * @param client
+     * @param carpeta
+     * @return
+     * @throws IOException
+     * @throws FTPIllegalReplyException
+     * @throws FTPException
+     * @throws FTPDataTransferException
+     * @throws FTPAbortedException
+     * @throws FTPListParseException
+     */
     private boolean comprobarCarpeta(FTPClient client, String carpeta) throws IOException, FTPIllegalReplyException, FTPException, FTPDataTransferException, FTPAbortedException, FTPListParseException {
         Boolean result = false;
         FTPFile[] list = client.list();
@@ -66,6 +86,11 @@ public class MetodoFTP {
         return result;
     }
 
+    /**
+     * Método que elimina un archivo del servidor de ftp
+     * @param fileName
+     * @param carpeta
+     */
     public void deleteFile(File fileName, String carpeta) {
 
         FTPClient client = new FTPClient();

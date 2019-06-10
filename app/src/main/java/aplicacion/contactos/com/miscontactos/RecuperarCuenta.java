@@ -39,11 +39,12 @@ public class RecuperarCuenta extends AppCompatActivity {
         try{BDInterna.clearUUID();}catch (NullPointerException e){ /*borrado de la uuid*/}
 
 
+        // Botón de enviar email
         bt_enviarEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
+                // Comprueba que existe ese email en la base de datos externa
                 boolean existe = false;
                 ArrayList<UsuariosGaleria> usuarios = BDExterna.devuelveUsuarios(RecuperarCuenta.this);
                 for (int i = 0; i < usuarios.size(); i++) {
@@ -52,7 +53,10 @@ public class RecuperarCuenta extends AppCompatActivity {
                         existe = true;
                     }
                 }
+
                 if (existe==true){
+
+                    // Si existe, genero una clave aleatoria (mediante php)
 
                     bdExterna.insertarClave(String.valueOf(et_email_respuesta.getText()).trim(),RecuperarCuenta.this);
 
@@ -66,6 +70,7 @@ public class RecuperarCuenta extends AppCompatActivity {
             }
         });
 
+        // Botón de enviar respuesta a la clave por email
         bt_enviarRespuesta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +79,6 @@ public class RecuperarCuenta extends AppCompatActivity {
 
                 ArrayList<UsuariosGaleria> usuarios = BDExterna.devuelveUsuarios(RecuperarCuenta.this);
                 for (int i = 0; i < usuarios.size(); i++) {
-                    System.out.println("DEBUG compara " + usuarios.get(i).getClave().trim().equals(String.valueOf(et_respuesta.getText()).trim()));
                     if (usuarios.get(i).getClave().trim().equals(String.valueOf(et_respuesta.getText()).trim())) {
                         bdInterna.crearUUID(usuarios.get(i).getUUID());
                         recuperada = true;

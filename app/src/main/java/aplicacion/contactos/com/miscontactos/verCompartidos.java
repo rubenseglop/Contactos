@@ -27,6 +27,9 @@ galeriaCompartir=new ArrayList<>();
         actualizarGaleriadeSQL();
     }
 
+    /**
+     * Actualiza los usuarios de la base de datos externa
+     */
     private void actualizarGaleriadeSQL() {
         galeriaCompartir.clear();
         galeriaCompartir = BDExterna.devuelveGaleriaCompleta(this);
@@ -35,6 +38,9 @@ galeriaCompartir=new ArrayList<>();
         actualizarAdapter();
     }
 
+    /**
+     * Actualiza el adaptador del Recyclerview
+     */
     private void actualizarAdapter() {
         verCompartidos = findViewById(R.id.recyclerVerCompartidos);
         verCompartidos.setHasFixedSize(true);

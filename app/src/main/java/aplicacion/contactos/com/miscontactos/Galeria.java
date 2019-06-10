@@ -6,6 +6,11 @@ public class Galeria implements Serializable {
     private int id;
     private String path;
 
+    /**
+     * Constructor
+     * @param id
+     * @param URL
+     */
     public Galeria(int id, String URL){
         this.setId(id);
         this.setPath(URL);

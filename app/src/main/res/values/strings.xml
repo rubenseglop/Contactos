@@ -103,4 +103,5 @@
     <string name="error_contrasena">Contraseña errónea</string>
     <string name="iniciar_id">Crear ID</string>
     <string name="borrar_galeria">¿Dejar de compartir esta foto?</string>
+    <string name="mensaje_borrado">No hay contactos para realizar la copia de seguridad, ¿desea elimina la anterior copia de seguridad?</string>
 </resources>

@@ -5,6 +5,12 @@ class SpinnerContactosData {
     String email;
     String imageId;
 
+    /**
+     * Constructor
+     * @param nombre
+     * @param email
+     * @param imageId
+     */
     public SpinnerContactosData(String nombre, String email, String imageId) {
         this.nombre = nombre;
         this.imageId = imageId;

@@ -7,6 +7,14 @@ public class UsuariosGaleria {
     String UUID;
     String clave;
 
+    /**
+     * Constructor
+     * @param nombre
+     * @param email
+     * @param path
+     * @param UUID
+     * @param clave
+     */
     public UsuariosGaleria(String nombre, String email, String path, String UUID, String clave) {
         this.nombre = nombre;
         this.email = email;

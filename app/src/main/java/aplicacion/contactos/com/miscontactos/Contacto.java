@@ -17,6 +17,20 @@ public class Contacto implements Serializable {
     private ArrayList<Domicilio> domicilios;
     private ArrayList<Telefono> telefonos;
 
+    /**
+     * Constructor
+     * @param id
+     * @param foto
+     * @param nombre
+     * @param apellidos
+     * @param galeria_id
+     * @param direccion_id
+     * @param telefono_id
+     * @param correo
+     * @param galerias
+     * @param domicilios
+     * @param telefonos
+     */
     public Contacto(int id, String foto, String nombre, String apellidos, int galeria_id, int direccion_id, int telefono_id, String correo, ArrayList<Galeria> galerias, ArrayList<Domicilio> domicilios, ArrayList<Telefono> telefonos) {
         this.setId(id);
         this.setFoto(foto);

@@ -15,6 +15,10 @@ public class DMAdapter extends RecyclerView.Adapter<DMAdapter.ViewHolder> {
 
     public static ArrayList<String> mDatasetDOM;
 
+    /**
+     * Constructor
+     * @param myDataset
+     */
     public DMAdapter(ArrayList<String> myDataset) {
         mDatasetDOM = myDataset;
     }

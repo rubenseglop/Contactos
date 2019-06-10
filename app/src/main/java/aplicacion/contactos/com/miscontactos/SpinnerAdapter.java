@@ -19,6 +19,13 @@ public class SpinnerAdapter extends ArrayAdapter<SpinnerContactosData> {
     private LayoutInflater inflater;
     private Context mContext;
 
+    /**
+     * Constructor
+     * @param mContext
+     * @param groupid
+     * @param id
+     * @param list
+     */
     public SpinnerAdapter(Activity mContext, int groupid, int id, ArrayList<SpinnerContactosData> list){
         super(mContext,id,list);
         this.mContext = mContext;

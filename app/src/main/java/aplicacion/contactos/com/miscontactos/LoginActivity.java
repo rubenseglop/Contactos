@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         bt_cuentaOlvidada = (Button) findViewById(R.id.bt_cuentaOlvidada);
         imageStoragePath= null;
 
+        // Botón de Aceptar
         bt_aceptaConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
 
         });
 
+        // Botón de Foto
         bt_fotoUsuario.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -147,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Botón de Recuperar
         bt_cuentaOlvidada.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -157,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Capturar foto, y el link URI de la foto la envio mediante Bundle
+     * Método de capturar foto, y el link URI de la foto la envío mediante Bundle
      */
     private void captureImage() {
 
@@ -262,6 +265,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Método que comprueba si el text tiene el patrón de un email.
+     * @param email
+     * @return
+     */
     private boolean esEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
@@ -280,29 +288,38 @@ public class LoginActivity extends AppCompatActivity {
         if (intent_edit==true) {
 
             bt_cuentaOlvidada.setEnabled(false);
+            bt_cuentaOlvidada.setVisibility(View.GONE);
             ArrayList<UsuariosGaleria> usuarios = bdExterna.devuelveUsuarios(LoginActivity.this);
 
-            for (int i = 0; i < usuarios.size(); i++) {
-                bdInterna.hayUUID();
-                if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
-                    tv_nombreUsuario.setText(usuarios.get(i).getNombre());
-                    tv_emailUsuario.setText(usuarios.get(i).getEmail());
-                    if (!usuarios.get(i).getPath().equals("NO")) {
-                        imageStoragePath = usuarios.get(i).getPath();
-                        try {
-                            if (imageTempo != null) {
-                                imageStoragePath = imageTempo;
-                                imageTempo = null;
-                            }
-                        } catch (NullPointerException e) {
+            actualiza_Perfil(usuarios);
+        }
+        super.onResume();
+    }
+
+    /**
+     * Método que actualiza el perfil en pantalla
+     * @param usuarios
+     */
+    private void actualiza_Perfil(ArrayList<UsuariosGaleria> usuarios) {
+        for (int i = 0; i < usuarios.size(); i++) {
+            bdInterna.hayUUID();
+            if (usuarios.get(i).getUUID().equals(BDInterna.getUniqueID())) {
+                tv_nombreUsuario.setText(usuarios.get(i).getNombre());
+                tv_emailUsuario.setText(usuarios.get(i).getEmail());
+                if (!usuarios.get(i).getPath().equals("NO")) {
+                    imageStoragePath = usuarios.get(i).getPath();
+                    try {
+                        if (imageTempo != null) {
+                            imageStoragePath = imageTempo;
+                            imageTempo = null;
                         }
-                        Glide.with(LoginActivity.this)
-                                .load(imageStoragePath)
-                                .into(fotoUsuario);
+                    } catch (NullPointerException e) {
                     }
+                    Glide.with(LoginActivity.this)
+                            .load(imageStoragePath)
+                            .into(fotoUsuario);
                 }
             }
         }
-        super.onResume();
     }
 }

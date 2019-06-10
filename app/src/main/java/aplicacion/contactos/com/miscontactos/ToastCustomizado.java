@@ -12,6 +12,11 @@ import android.widget.Toast;
 
 public class ToastCustomizado {
 
+    /**
+     * Método que saca en pantalla un Toast customizado al centro y de fondo color verde
+     * @param mContext
+     * @param texto
+     */
     public static void tostada(Context mContext, int texto) {
 
         View view;
