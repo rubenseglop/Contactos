@@ -26,7 +26,7 @@ class ToastCustomizado {
         LinearLayout toastLayout = (LinearLayout) toast.getView();
         TextView toastTV = (TextView) toastLayout.getChildAt(0);
         toastTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimension(R.dimen.texto_grande));
-        toast.setGravity(Gravity.CENTER, 0, 150);
+        toast.setGravity(Gravity.CENTER, 0, -100);
         view = toast.getView();
         text = view.findViewById(android.R.id.message);
         text.setTextColor(mContext.getResources().getColor(R.color.colorTextoToast));

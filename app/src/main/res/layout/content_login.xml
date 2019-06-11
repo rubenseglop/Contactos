@@ -96,7 +96,7 @@
                 style="@style/BotonEstiloRedondo"
                 android:layout_width="@dimen/bt_foto_login_width"
                 android:layout_height="@dimen/bt_foto_login_height"
-                android:text="Foto"
+                android:text="@string/foto"
                 android:textSize="@dimen/texto_pequeno"
                 app:layout_constraintEnd_toEndOf="@+id/fotoUsuario"
                 app:layout_constraintHorizontal_bias="0.516"

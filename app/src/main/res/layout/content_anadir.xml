@@ -85,7 +85,7 @@
                     android:layout_width="@dimen/bt_foto_anadir_width"
                     android:layout_height="@dimen/bt_foto_anadir_height"
                     android:onClick="clickAnadir"
-                    android:text="Foto"
+                    android:text="@string/foto"
                     android:textSize="@dimen/texto_pequeno"
                     app:layout_constraintEnd_toEndOf="@+id/fotoperfil"
                     app:layout_constraintStart_toStartOf="@+id/fotoperfil"

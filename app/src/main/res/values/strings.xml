@@ -80,5 +80,6 @@
     <string name="borrar_galeria">¿Dejar de compartir esta foto?</string>
     <string name="mensaje_borrado">No hay contactos para realizar la copia de seguridad, ¿desea elimina la anterior copia de seguridad?</string>
     <string name="email" translatable="false">Email</string>
-    <string name="by">por</string>
+    <string name="foto">Foto</string>
+    <string name="anadir_galeria">Añadir de Galería</string>
 </resources>

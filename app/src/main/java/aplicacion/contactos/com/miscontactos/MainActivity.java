@@ -131,7 +131,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rv.setLayoutManager(llm);
         adapter = new RVAdapter(contactos,this);
         rv.setAdapter(adapter);
-        tv_orden.setText(R.string.by + orderby);
+
+        // Corrección para el idioma (por nombre, por apellido, por domicilio, por telefono)
+        if (orderby.equals("Nombre")) {
+            tv_orden.setText(getString(R.string.menu_nombre));
+        } else if (orderby.equals("Apellidos")) {
+            tv_orden.setText(getString(R.string.menu_apellido));
+        } else if (orderby.equals("Domicilio")) {
+            tv_orden.setText(getString(R.string.menu_domicilio));
+        } else {
+            tv_orden.setText(getString(R.string.menu_telefono));
+        }
 
         //esto es parte del Swype
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
@@ -224,8 +234,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         // en el caso de cancelar (no hago nada)
                     });
                     dialogo1.show();// fin muestra dialog aceptar o cancelar}
-
-
                 }
             } else {
                 ToastCustomizado.tostada(this, R.string.entrar_config);
@@ -368,17 +376,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         dialogo1.setCancelable(false);
                         dialogo1.setPositiveButton(R.string.confirmar, (dialogo112, id) -> {
                             // en el caso de aceptar el dialog
-
-                            bdExterna.borrartodo(BDInterna.getUniqueID());
+                            actualizaContactos();
                         });
                         dialogo1.setNegativeButton(R.string.cancel, (dialogo11, id) -> {
                             // en el caso de cancelar (no hago nada)
                         });
                         dialogo1.show();// fin muestra dialog aceptar o cancelar}
 
+                    } else {
+                        actualizaContactos();
                     }
-
-                    actualizaContactos();
                 }
             } else {
                 ToastCustomizado.tostada(MainActivity.this, R.string.entrar_config);
@@ -395,6 +402,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Método que recorre los objetos instanciados de contactos y los guarda en la base de datos externa
      */
     private void actualizaContactos() {
+        bdExterna.borrartodo(BDInterna.getUniqueID());
         boolean conexion;
         for (Contacto contacto : contactos) {
             String varId = Integer.toString(contacto.getId()),
@@ -506,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setPositiveButton(R.string.boton_si, (dialog, which) -> {
 
                         /* Al tener la lista desordenada, utilizo un HashMap con (Posicion, ID)
-                         * para descubrir la ID de la posición eliminada con Swipe
+                         * para descubrir la ID de la posición eliminada con el Swipe del RecyclerView
                          */
                         HashMap deId_Posicion;
                         deId_Posicion = RVAdapter.deId_Posicion;

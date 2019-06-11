@@ -48,11 +48,11 @@
     <string name="boton_no">No</string>
     <string name="boton_si">Yes</string>
     <string name="cerrar">Close</string>
-    <string name="entrar_config">" You must enter before configuration"</string>
+    <string name="entrar_config">" You must enter before settings"</string>
     <string name="error_contacto">" An error occurred while entering a contact"</string>
     <string name="error_domicilio">" An error occurred while entering a street"</string>
     <string name="error_telefono">" An error occurred while entering a phone"</string>
-    <string name="guardada">Saved the configuration</string>
+    <string name="guardada">Saved the settings</string>
     <string name="introducir_nombre">You must enter an name</string>
     <string name="introducir_email">" You must enter an email"</string>
     <string name="no_conexion">There is no connection</string>
@@ -76,4 +76,6 @@
     <string name="iniciar_id">Create ID</string>
     <string name="borrar_galeria">"Stop sharing this photo? "</string>
     <string name="mensaje_borrado">There are no contacts to perform the backup, do you want to delete the previous backup?</string>
+    <string name="foto">Photo</string>
+    <string name="anadir_galeria">Add Gallery</string>
 </resources>

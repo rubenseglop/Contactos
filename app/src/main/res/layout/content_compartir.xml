@@ -78,7 +78,7 @@
             android:layout_marginRight="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Añadir de Galería" />
+            android:text="@string/anadir_galeria" />
 
         <ImageButton
             android:id="@+id/bt_vercompartido"
