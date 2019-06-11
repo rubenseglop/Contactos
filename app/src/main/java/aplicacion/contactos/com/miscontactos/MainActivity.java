@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tv_orden = findViewById(R.id.ordenadopor);
 
         ordertype="ASC";
+        setTheme(R.style.AppTheme);
         actualizar();
     }
 
