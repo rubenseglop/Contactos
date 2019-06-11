@@ -139,7 +139,7 @@ public class Anadir extends AppCompatActivity {
 
         // Chequea si tu dispositivo tiene incorporada una cámara
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
-            ToastCustomizado.tostada(Anadir.this, R.string.error_camara);
+            ToastCustomizado.posicion(Anadir.this, R.string.error_camara);
             finish();
         }
         /*
@@ -166,14 +166,14 @@ public class Anadir extends AppCompatActivity {
                         StringDomicilio.add("");
                         actualizarAdaptador();
                     } else {
-                        ToastCustomizado.tostada(Anadir.this, R.string.rellenardomicilio);
+                        ToastCustomizado.posicion(Anadir.this, R.string.rellenardomicilio);
                     }
                 } else {
                     StringDomicilio.add("");
                     actualizarAdaptador();
                 }
             }
-            else ToastCustomizado.tostada(Anadir.this,R.string.limite5);
+            else ToastCustomizado.posicion(Anadir.this,R.string.limite5);
         });
 
         /*
@@ -189,7 +189,7 @@ public class Anadir extends AppCompatActivity {
                         StringTelefono.add("");
                         actualizarAdaptador();
                     } else {
-                        ToastCustomizado.tostada(Anadir.this, R.string.rellenartelefono);
+                        ToastCustomizado.posicion(Anadir.this, R.string.rellenartelefono);
                     }
                 } else {
                     StringTelefono.add("");
@@ -197,7 +197,7 @@ public class Anadir extends AppCompatActivity {
                 }
             }
             else
-                ToastCustomizado.tostada(Anadir.this, R.string.limite3);
+                ToastCustomizado.posicion(Anadir.this, R.string.limite3);
         });
     }
 
@@ -283,7 +283,7 @@ public class Anadir extends AppCompatActivity {
 
         boolean error = false;
         if (tv_nombre.getText().length() == 0) {
-            ToastCustomizado.tostada(Anadir.this, R.string.minimo_nombre);
+            ToastCustomizado.posicion(Anadir.this, R.string.minimo_nombre);
             error = true;
         }
         //guardar
@@ -374,10 +374,10 @@ public class Anadir extends AppCompatActivity {
             previewCapturedImage();
         } else if (resultCode == RESULT_CANCELED) {
             // Foto cancelada, muestro un Toast
-            ToastCustomizado.tostada(Anadir.this, R.string.foto_cancelada);
+            ToastCustomizado.posicion(Anadir.this, R.string.foto_cancelada);
         } else {
             // Fallo al tomar la foto, muestro un Toast
-            ToastCustomizado.tostada(Anadir.this, R.string.errorfoto);
+            ToastCustomizado.posicion(Anadir.this, R.string.errorfoto);
         }
     }
 

@@ -258,12 +258,12 @@ class BDExterna {
                             ));
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(mContext, R.string.error_metodo);
+                ToastCustomizado.posicion(mContext, R.string.error_metodo);
             }
         } catch (MalformedURLException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorserver);
+            ToastCustomizado.posicion(mContext, R.string.errorserver);
         } catch (IOException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorconex);
+            ToastCustomizado.posicion(mContext, R.string.errorconex);
         }
         return devuelta;
     }
@@ -298,12 +298,12 @@ class BDExterna {
                     ));
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(mContext, R.string.error_metodo);
+                ToastCustomizado.posicion(mContext, R.string.error_metodo);
             }
         } catch (MalformedURLException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorserver);
+            ToastCustomizado.posicion(mContext, R.string.errorserver);
         } catch (IOException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorconex);
+            ToastCustomizado.posicion(mContext, R.string.errorconex);
         }
         return devuelta;
     }
@@ -340,12 +340,12 @@ class BDExterna {
                     }
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(mContext, R.string.error_metodo);
+                ToastCustomizado.posicion(mContext, R.string.error_metodo);
             }
         } catch (MalformedURLException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorserver);
+            ToastCustomizado.posicion(mContext, R.string.errorserver);
         } catch (IOException e) {
-            ToastCustomizado.tostada(mContext, R.string.errorconex);
+            ToastCustomizado.posicion(mContext, R.string.errorconex);
         }
         return devuelta;
     }

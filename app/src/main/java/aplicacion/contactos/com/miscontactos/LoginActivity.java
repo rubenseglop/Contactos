@@ -111,21 +111,21 @@ public class LoginActivity extends AppCompatActivity {
                                 } catch (NullPointerException e) {
                                     // va sin imagen
                                 }
-                                ToastCustomizado.tostada(LoginActivity.this, R.string.guardada);
+                                ToastCustomizado.posicion(LoginActivity.this, R.string.guardada);
                                 imageStoragePath = null;
                                 finish();
                             }
                         } else
-                            ToastCustomizado.tostada(LoginActivity.this, R.string.no_conexion);
+                            ToastCustomizado.posicion(LoginActivity.this, R.string.no_conexion);
 
                     } else {
-                        ToastCustomizado.tostada(LoginActivity.this, R.string.noesemail);
+                        ToastCustomizado.posicion(LoginActivity.this, R.string.noesemail);
                     }
                 } else {
-                    ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_email);
+                    ToastCustomizado.posicion(LoginActivity.this, R.string.introducir_email);
                 }
             } else {
-                ToastCustomizado.tostada(LoginActivity.this, R.string.introducir_nombre);
+                ToastCustomizado.posicion(LoginActivity.this, R.string.introducir_nombre);
             }
         });
 
@@ -218,11 +218,11 @@ public class LoginActivity extends AppCompatActivity {
             previewCapturedImage();
         } else if (resultCode == RESULT_CANCELED) {
             // Foto cancelada, muestro un Toast
-            ToastCustomizado.tostada(LoginActivity.this, R.string.foto_cancelada);
+            ToastCustomizado.posicion(LoginActivity.this, R.string.foto_cancelada);
 
         } else {
             // Fallo al tomar la foto, muestro un Toast
-            ToastCustomizado.tostada(LoginActivity.this, R.string.errorfoto);
+            ToastCustomizado.posicion(LoginActivity.this, R.string.errorfoto);
 
         }
     }

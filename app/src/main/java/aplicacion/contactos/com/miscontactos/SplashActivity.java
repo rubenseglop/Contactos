@@ -7,10 +7,8 @@ import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
 public class SplashActivity extends Activity {
-    // Duración en milisegundos que se mostrará el splash
-    private static int tiempo_splash=1500;
+    private static int tiempo_splash=1600; //tiempo
     private ImageView logo;
     @Override
     public void onCreate(Bundle savedInstanceState) {

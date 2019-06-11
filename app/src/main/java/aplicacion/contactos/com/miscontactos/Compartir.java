@@ -125,8 +125,8 @@ public class Compartir extends AppCompatActivity {
                     Intent intent = new Intent(Compartir.this, AlbumSelectActivity.class);
                     intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 15); // set limit for image selection
                     startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-                } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
-            } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
+                } else ToastCustomizado.posicion(Compartir.this, R.string.problema_servidor);
+            } else ToastCustomizado.posicion(Compartir.this, R.string.errorconex);
         });
 
         /*
@@ -137,8 +137,8 @@ public class Compartir extends AppCompatActivity {
                 if (BDExterna.hayservidor(BDExternaLinks.SERVIDOR)) {
                     Intent intent = new Intent(Compartir.this, verCompartidos.class);
                     startActivity(intent);
-                } else ToastCustomizado.tostada(Compartir.this, R.string.problema_servidor);
-            } else ToastCustomizado.tostada(Compartir.this, R.string.errorconex);
+                } else ToastCustomizado.posicion(Compartir.this, R.string.problema_servidor);
+            } else ToastCustomizado.posicion(Compartir.this, R.string.errorconex);
         });
     }
 
@@ -262,7 +262,7 @@ public class Compartir extends AppCompatActivity {
          */
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            ToastCustomizado.tostada(Compartir.this, R.string.movegale);
+            ToastCustomizado.posicion(Compartir.this, R.string.movegale);
             return false;
         }
 
@@ -283,7 +283,7 @@ public class Compartir extends AppCompatActivity {
                         GaleriaCompartir sel = (GaleriaCompartir) selected.get(viewHolder.getAdapterPosition());
                         bdExterna.borraGaleria(sel.getId(), sel.getPathFoto(), sel.getUuid());
                         myftp.deleteFile(new File(sel.getPathFoto()), sel.getId());
-//                        ToastCustomizado.tostada(Compartir.this, R.string.swypefoto);
+//                        ToastCustomizado.posicion(Compartir.this, R.string.swypefoto);
                         actualizarGaleriadeSQL();
 
                     })

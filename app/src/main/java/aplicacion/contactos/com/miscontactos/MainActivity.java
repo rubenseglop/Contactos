@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
 
             } else {
-                ToastCustomizado.tostada(this, R.string.errorconex);
+                ToastCustomizado.posicion(this, R.string.errorconex);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -205,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Intent i = new Intent(this, Compartir.class);
                     startActivity(i);
                 }
-            } else ToastCustomizado.tostada(this, R.string.entrar_config);
-        } else ToastCustomizado.tostada(this, R.string.no_conexion);
+            } else ToastCustomizado.posicion(this, R.string.entrar_config);
+        } else ToastCustomizado.posicion(this, R.string.no_conexion);
     }
 
     /**
@@ -237,11 +237,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dialogo1.show();// fin muestra dialog aceptar o cancelar}
                 }
             } else {
-                ToastCustomizado.tostada(this, R.string.entrar_config);
+                ToastCustomizado.posicion(this, R.string.entrar_config);
             }
 
         } else {
-            ToastCustomizado.tostada(this, R.string.no_conexion);
+            ToastCustomizado.posicion(this, R.string.no_conexion);
         }
     }
 
@@ -262,9 +262,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             StringToBaseDatosInterna(tabla, root.toString()); // convierto esa String en un ArrayList de esa Tabla
         } catch (MalformedURLException e) {
-            ToastCustomizado.tostada(MainActivity.this, R.string.errorserver);
+            ToastCustomizado.posicion(MainActivity.this, R.string.errorserver);
         } catch (IOException e) {
-            ToastCustomizado.tostada(MainActivity.this, R.string.errorconex);
+            ToastCustomizado.posicion(MainActivity.this, R.string.errorconex);
         }
     }
 
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //System.out.println("DEBUG FOTO" + json_data.getString("FOTO"));
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
+                ToastCustomizado.posicion(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
 
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (Exception e) {
-                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
+                ToastCustomizado.posicion(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         } else if (!error_conexion && tabla == "DOM") {
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
+                ToastCustomizado.posicion(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         } else if (!error_conexion && tabla == "TEL") {
@@ -341,16 +341,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     );
                 }
             } catch (JSONException e) {
-                ToastCustomizado.tostada(MainActivity.this, R.string.error_metodo);
+                ToastCustomizado.posicion(MainActivity.this, R.string.error_metodo);
                 error_conexion = true;
             }
         }
 
         if (!error_conexion) {
-            ToastCustomizado.tostada(MainActivity.this, R.string.contactos_import);
+            ToastCustomizado.posicion(MainActivity.this, R.string.contactos_import);
             if (tabla == "TEL") actualizar();
         } else {
-            ToastCustomizado.tostada(MainActivity.this, R.string.errorconex);
+            ToastCustomizado.posicion(MainActivity.this, R.string.errorconex);
         }
     }
 
@@ -389,12 +389,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             } else {
-                ToastCustomizado.tostada(MainActivity.this, R.string.entrar_config);
+                ToastCustomizado.posicion(MainActivity.this, R.string.entrar_config);
                 conexion = false;
             }
 
         } else {
-            ToastCustomizado.tostada(MainActivity.this, R.string.no_conexion);
+            ToastCustomizado.posicion(MainActivity.this, R.string.no_conexion);
             conexion = false;
         }
     }
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (error.equals("OK")) {
                 conexion = true;
             } else {
-                ToastCustomizado.tostada(MainActivity.this, R.string.error_contacto);
+                ToastCustomizado.posicion(MainActivity.this, R.string.error_contacto);
                 conexion = false;
             }
 
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (error.equals("OK")) {
                         conexion = true;
                     } else {
-                        ToastCustomizado.tostada(MainActivity.this, R.string.error_domicilio);
+                        ToastCustomizado.posicion(MainActivity.this, R.string.error_domicilio);
                         conexion = false;
                     }
                 }
@@ -478,14 +478,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (error.equals("OK")) {
                         conexion = true;
                     } else {
-                        ToastCustomizado.tostada(MainActivity.this, R.string.error_telefono);
+                        ToastCustomizado.posicion(MainActivity.this, R.string.error_telefono);
                         conexion = false;
                     }
                 }
             }
         }
         if (contactos.size() != 0) {
-            ToastCustomizado.tostada(MainActivity.this, R.string.contactos_export);
+            ToastCustomizado.posicion(MainActivity.this, R.string.contactos_export);
         }
     }
 
@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            ToastCustomizado.tostada(MainActivity.this, R.string.moveswype);
+            ToastCustomizado.posicion(MainActivity.this, R.string.moveswype);
             return false;
         }
 
@@ -521,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         deId_Posicion = RVAdapter.deId_Posicion;
                         int id = (int) deId_Posicion.get(viewHolder.getAdapterPosition());
                         bdInterna.borraContacto(id);
-                        ToastCustomizado.tostada(MainActivity.this, R.string.delswype);
+                        ToastCustomizado.posicion(MainActivity.this, R.string.delswype);
                         actualizar();
                     })
                     .setNegativeButton(R.string.boton_no, (dialog, id) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
@@ -629,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
             return;
         }else {
-            ToastCustomizado.tostada(MainActivity.this, R.string.salir);
+            ToastCustomizado.posicion(MainActivity.this, R.string.salir);
         }
         inicio_tiempo = System.currentTimeMillis();
     }

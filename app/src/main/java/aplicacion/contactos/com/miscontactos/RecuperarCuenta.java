@@ -57,13 +57,13 @@ public class RecuperarCuenta extends AppCompatActivity {
 
                 bdExterna.insertarClave(String.valueOf(et_email_respuesta.getText()).trim());
 
-                ToastCustomizado.tostada(RecuperarCuenta.this, R.string.enviado_email);
+                ToastCustomizado.posicion(RecuperarCuenta.this, R.string.enviado_email);
                 bt_enviarRespuesta.setEnabled(true);
                 et_respuesta.setEnabled(true);
 
 
             } else
-                ToastCustomizado.tostada(RecuperarCuenta.this, R.string.noexisteusuario);
+                ToastCustomizado.posicion(RecuperarCuenta.this, R.string.noexisteusuario);
         });
 
         // Botón de enviar respuesta a la clave por email
@@ -79,13 +79,13 @@ public class RecuperarCuenta extends AppCompatActivity {
                 }
             }
             if (recuperada) {
-                ToastCustomizado.tostada(RecuperarCuenta.this, R.string.recuperada);
+                ToastCustomizado.posicion(RecuperarCuenta.this, R.string.recuperada);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("EDIT", true);
                 setResult(RESULT_OK, returnIntent);
                 finish();
             } else
-                ToastCustomizado.tostada(RecuperarCuenta.this, R.string.error_contrasena);
+                ToastCustomizado.posicion(RecuperarCuenta.this, R.string.error_contrasena);
         });
     }
 
